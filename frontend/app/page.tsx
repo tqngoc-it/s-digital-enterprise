@@ -12,6 +12,7 @@ import BlogSection from '@/components/BlogSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import AiChatWidget from '@/components/AiChatWidget';
+import ServiceRecommendationWizard from '@/components/ServiceRecommendationWizard';
 import {
   FALLBACK_COMPANY,
   FALLBACK_PARTNERS,
@@ -114,6 +115,9 @@ export default async function HomePage() {
 
       {/* 13. AI CHATBOT WIDGET (S-DIGITAL AI ASSISTANT 24/7) */}
       <AiChatWidget />
+
+      {/* 14. AI SERVICE RECOMMENDATION WIZARD (MODAL) */}
+      <ServiceRecommendationWizard />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { CheckCircle2, Sparkles, ArrowRight, ShieldCheck, Award, Clock, Zap } from 'lucide-react';
 import {
   FALLBACK_PRICING,
@@ -27,7 +29,7 @@ export default function PricingSection({
   };
 
   return (
-    <section id="pricing" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-16 border-t border-white/5">
+    <section id="pricing" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-12 border-t border-white/5">
       {/* HEADER */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-[#FF5722] text-xs font-mono tracking-widest uppercase font-bold">
@@ -39,6 +41,30 @@ export default function PricingSection({
         <p className="text-xs sm:text-sm text-slate-400">
           Lựa chọn phương án đầu tư tối ưu phù hợp với quy mô và mục tiêu tăng trưởng của doanh nghiệp bạn.
         </p>
+      </div>
+
+      {/* STRATEGIC RECOMMENDATION BANNER */}
+      <div className="max-w-3xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FF5722]/10 via-[#00E5FF]/10 to-[#FF5722]/10 border border-[#00E5FF]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_0_25px_rgba(0,229,255,0.08)]">
+        <div className="space-y-1 text-center sm:text-left">
+          <h3 className="text-sm sm:text-base font-bold text-white">
+            Chưa chắc chắn gói nào phù hợp với doanh nghiệp?
+          </h3>
+          <p className="text-xs text-slate-400">
+            Hệ thống sẽ đối chiếu lĩnh vực, mục tiêu và mức đầu tư để gợi ý phương án tối ưu ROI cho doanh nghiệp trong 30 giây.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('sdigital:open-wizard'));
+            }
+          }}
+          className="shrink-0 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-orange-600 hover:brightness-110 text-white font-bold text-xs shadow-lg shadow-[#FF5722]/30 hover:shadow-[#FF5722]/50 transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
+        >
+          <span>Tìm phương án phù hợp</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* 3 PRICING TIERS */}

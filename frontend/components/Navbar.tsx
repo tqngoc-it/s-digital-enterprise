@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ArrowUpRight, Flame } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Flame, Compass } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -66,7 +66,18 @@ export default function Navbar() {
         </nav>
 
         {/* CTA DESKTOP */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('sdigital:open-wizard'));
+            }}
+            className="px-4 py-2.5 rounded-xl bg-[#0c1222] border border-[#00E5FF]/50 hover:border-[#00E5FF] text-[#00E5FF] hover:text-white hover:bg-[#00E5FF]/15 font-bold text-xs transition-all shadow-[0_0_15px_rgba(0,229,255,0.15)] flex items-center gap-1.5 hover:scale-105 cursor-pointer"
+          >
+            <Compass className="w-3.5 h-3.5 text-[#00E5FF]" />
+            <span>Phân tích nhu cầu</span>
+          </button>
+
           <a
             href="#contact"
             className="px-5 py-2.5 rounded-xl bg-[#FF5722] hover:bg-orange-600 text-white font-bold text-xs transition-all shadow-lg shadow-[#FF5722]/25 hover:shadow-[#FF5722]/40 flex items-center gap-1.5 hover:scale-105"
@@ -101,13 +112,26 @@ export default function Navbar() {
               </a>
             ))}
           </nav>
-          <a
-            href="#contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="w-full py-3.5 rounded-xl bg-[#FF5722] hover:bg-orange-600 text-white font-bold text-sm transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-[#FF5722]/30"
-          >
-            <span>Tư vấn ngay ↗</span>
-          </a>
+          <div className="flex flex-col gap-2.5 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.dispatchEvent(new CustomEvent('sdigital:open-wizard'));
+              }}
+              className="w-full py-3 rounded-xl bg-[#0c1222] border border-[#00E5FF]/60 text-[#00E5FF] font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,229,255,0.2)]"
+            >
+              <Compass className="w-4 h-4 text-[#00E5FF]" />
+              <span>Phân tích nhu cầu</span>
+            </button>
+            <a
+              href="#contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-3.5 rounded-xl bg-[#FF5722] hover:bg-orange-600 text-white font-bold text-sm transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-[#FF5722]/30"
+            >
+              <span>Tư vấn ngay ↗</span>
+            </a>
+          </div>
         </div>
       )}
     </header>

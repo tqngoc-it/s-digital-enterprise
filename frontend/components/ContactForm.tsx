@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { submitLeadAction } from '@/app/actions/leads';
 import { Send, Loader2, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
 
@@ -16,6 +16,19 @@ export default function ContactForm() {
   const [phone, setPhone] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [message, setMessage] = useState('');
+
+  // Lắng nghe gợi ý từ AI ServiceRecommendationWizard
+  useEffect(() => {
+    const handleApplyRecommendation = (e: any) => {
+      if (e.detail?.message) {
+        setMessage(e.detail.message);
+      }
+    };
+    window.addEventListener('sdigital:apply-recommendation', handleApplyRecommendation);
+    return () => {
+      window.removeEventListener('sdigital:apply-recommendation', handleApplyRecommendation);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,7 +81,7 @@ export default function ContactForm() {
 
   return (
     <>
-      <div className="p-8 md:p-10 rounded-3xl bg-[#0B111E] border border-white/10 space-y-6 shadow-2xl relative">
+      <div id="contact-form" className="p-8 md:p-10 rounded-3xl bg-[#0B111E] border border-white/10 space-y-6 shadow-2xl relative scroll-mt-24">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF5722]/10 border border-[#FF5722]/20 text-[#FF5722] text-[11px] font-mono font-bold">
             <Sparkles className="w-3 h-3" />
@@ -172,6 +185,7 @@ export default function ContactForm() {
               Nhu cầu tư vấn / Lời nhắn <span className="text-[#FF5722]">*</span>
             </label>
             <textarea
+              id="contact-message-input"
               name="message"
               rows={4}
               required
