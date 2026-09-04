@@ -11,6 +11,7 @@ import PricingSection from '@/components/PricingSection';
 import BlogSection from '@/components/BlogSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import AiChatWidget from '@/components/AiChatWidget';
 import {
   FALLBACK_COMPANY,
   FALLBACK_PARTNERS,
@@ -110,6 +111,9 @@ export default async function HomePage() {
 
       {/* 12. FOOTER */}
       <Footer companyInfo={companyInfo} />
+
+      {/* 13. AI CHATBOT WIDGET (S-DIGITAL AI ASSISTANT 24/7) */}
+      <AiChatWidget />
     </div>
   );
 }
