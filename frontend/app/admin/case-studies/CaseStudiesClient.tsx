@@ -1,15 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createCaseStudyAction, updateCaseStudyAction, deleteCaseStudyAction } from '@/app/actions/admin-case-studies';
 import { Plus, Trash2, Edit2, X, Loader2, Sparkles, Users, Newspaper, Eye } from 'lucide-react';
 import { CaseStudyItem } from '@/lib/fallbackData';
 
 export default function CaseStudiesClient({ initialStudies }: { initialStudies: CaseStudyItem[] }) {
+  const router = useRouter();
   const [studies, setStudies] = useState<CaseStudyItem[]>(initialStudies);
   const [editingStudy, setEditingStudy] = useState<CaseStudyItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setStudies(initialStudies);
+  }, [initialStudies]);
 
   async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,23 +25,11 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
 
     const res = await createCaseStudyAction(formData);
     if (res.success) {
-      const newStudy: CaseStudyItem = {
-        id: 'new-' + Date.now(),
-        title: (formData.get('title') as string) || '',
-        client_name: (formData.get('client_name') as string) || '',
-        challenge: (formData.get('challenge') as string) || '',
-        solution: (formData.get('solution') as string) || '',
-        results: {
-          athletes: (formData.get('athletes') as string) || '5.2K VĐV',
-          articles: (formData.get('articles') as string) || '50+ Bài Báo',
-          views: (formData.get('views') as string) || '2M Lượt Xem',
-        },
-        is_featured: formData.get('is_featured') === 'on',
-      };
-      setStudies((prev) => [newStudy, ...prev]);
+      router.refresh();
       setIsCreating(false);
+      form.reset();
     } else {
-      alert(res.error || 'Tạo Case Study thất bại');
+      alert(res.error || 'Tạo mới thất bại');
     }
     setIsSubmitting(false);
   }
@@ -49,25 +43,7 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
 
     const res = await updateCaseStudyAction(editingStudy.id, formData);
     if (res.success) {
-      setStudies((prev) =>
-        prev.map((s) =>
-          s.id === editingStudy.id
-            ? {
-                ...s,
-                title: (formData.get('title') as string) || s.title,
-                client_name: (formData.get('client_name') as string) || s.client_name,
-                challenge: (formData.get('challenge') as string) || s.challenge,
-                solution: (formData.get('solution') as string) || s.solution,
-                results: {
-                  athletes: (formData.get('athletes') as string) || s.results?.athletes,
-                  articles: (formData.get('articles') as string) || s.results?.articles,
-                  views: (formData.get('views') as string) || s.results?.views,
-                },
-                is_featured: formData.get('is_featured') === 'on',
-              }
-            : s
-        )
-      );
+      router.refresh();
       setEditingStudy(null);
     } else {
       alert(res.error || 'Cập nhật thất bại');
@@ -76,13 +52,17 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
   }
 
   async function handleDelete(id?: string) {
-    if (!id) return;
-    if (!confirm('Bạn có chắc muốn xóa Case Study này?')) return;
+    if (!id || id.startsWith('new-')) {
+      alert('ID không hợp lệ hoặc dữ liệu chưa được lưu đồng bộ');
+      return;
+    }
+    if (!confirm('Bạn có chắc muốn xóa mục này?')) return;
+
     const res = await deleteCaseStudyAction(id);
     if (res.success) {
-      setStudies((prev) => prev.filter((s) => s.id !== id));
+      router.refresh();
     } else {
-      alert(res.error || 'Xóa Case Study thất bại');
+      alert(res.error || 'Xóa thất bại');
     }
   }
 

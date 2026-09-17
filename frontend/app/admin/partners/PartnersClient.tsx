@@ -1,17 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createPartnerAction, updatePartnerAction, deletePartnerAction } from '@/app/actions/admin-partners';
 import { Plus, Trash2, Edit2, X, Loader2, Building, Handshake, Search } from 'lucide-react';
 import { PartnerItem } from '@/lib/fallbackData';
 
 export default function PartnersClient({ initialPartners }: { initialPartners: PartnerItem[] }) {
+  const router = useRouter();
   const [partners, setPartners] = useState<PartnerItem[]>(initialPartners);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('ALL');
   const [editingPartner, setEditingPartner] = useState<PartnerItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setPartners(initialPartners);
+  }, [initialPartners]);
 
   const filteredPartners = partners.filter((p) => {
     const matchSearch =
@@ -29,18 +35,11 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
 
     const res = await createPartnerAction(formData);
     if (res.success) {
-      const newPartner: PartnerItem = {
-        id: 'new-' + Date.now(),
-        name: (formData.get('name') as string) || '',
-        type: ((formData.get('type') as string) || 'CUSTOMER') as 'CUSTOMER' | 'PARTNER',
-        industry: (formData.get('industry') as string) || '',
-        website_url: (formData.get('website_url') as string) || '',
-        display_order: parseInt((formData.get('display_order') as string) || '0', 10),
-      };
-      setPartners((prev) => [...prev, newPartner]);
+      router.refresh();
       setIsCreating(false);
+      form.reset();
     } else {
-      alert(res.error || 'Tạo đối tác thất bại');
+      alert(res.error || 'Tạo mới thất bại');
     }
     setIsSubmitting(false);
   }
@@ -54,35 +53,26 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
 
     const res = await updatePartnerAction(editingPartner.id, formData);
     if (res.success) {
-      setPartners((prev) =>
-        prev.map((p) =>
-          p.id === editingPartner.id
-            ? {
-                ...p,
-                name: (formData.get('name') as string) || p.name,
-                type: ((formData.get('type') as string) || p.type) as 'CUSTOMER' | 'PARTNER',
-                industry: (formData.get('industry') as string) || p.industry,
-                website_url: (formData.get('website_url') as string) || p.website_url,
-                display_order: parseInt((formData.get('display_order') as string) || '0', 10),
-              }
-            : p
-        )
-      );
+      router.refresh();
       setEditingPartner(null);
     } else {
-      alert(res.error || 'Cập nhật đối tác thất bại');
+      alert(res.error || 'Cập nhật thất bại');
     }
     setIsSubmitting(false);
   }
 
   async function handleDelete(id?: string) {
-    if (!id) return;
-    if (!confirm('Bạn có chắc muốn xóa đối tác này?')) return;
+    if (!id || id.startsWith('new-')) {
+      alert('ID không hợp lệ hoặc dữ liệu chưa được lưu đồng bộ');
+      return;
+    }
+    if (!confirm('Bạn có chắc muốn xóa mục này?')) return;
+
     const res = await deletePartnerAction(id);
     if (res.success) {
-      setPartners((prev) => prev.filter((p) => p.id !== id));
+      router.refresh();
     } else {
-      alert(res.error || 'Xóa đối tác thất bại');
+      alert(res.error || 'Xóa thất bại');
     }
   }
 

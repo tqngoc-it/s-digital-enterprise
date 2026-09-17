@@ -1,15 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createPricingPlanAction, updatePricingPlanAction, deletePricingPlanAction } from '@/app/actions/admin-pricing';
 import { Plus, Trash2, Edit2, X, Loader2, CheckCircle2 } from 'lucide-react';
 import { PricingPlanItem } from '@/lib/fallbackData';
 
 export default function PricingClient({ initialPlans }: { initialPlans: PricingPlanItem[] }) {
+  const router = useRouter();
   const [plans, setPlans] = useState<PricingPlanItem[]>(initialPlans);
   const [editingPlan, setEditingPlan] = useState<PricingPlanItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setPlans(initialPlans);
+  }, [initialPlans]);
 
   async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,22 +25,11 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
 
     const res = await createPricingPlanAction(formData);
     if (res.success) {
-      const features = ((formData.get('features') as string) || '')
-        .split('\n')
-        .map((f) => f.trim())
-        .filter(Boolean);
-
-      const newPlan: PricingPlanItem = {
-        id: 'new-' + Date.now(),
-        tier_name: (formData.get('tier_name') as string) || '',
-        target_audience: (formData.get('target_audience') as string) || '',
-        price_display: (formData.get('price_display') as string) || '',
-        features,
-      };
-      setPlans((prev) => [...prev, newPlan]);
+      router.refresh();
       setIsCreating(false);
+      form.reset();
     } else {
-      alert(res.error || 'Tạo gói giá thất bại');
+      alert(res.error || 'Tạo mới thất bại');
     }
     setIsSubmitting(false);
   }
@@ -48,24 +43,7 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
 
     const res = await updatePricingPlanAction(editingPlan.id, formData);
     if (res.success) {
-      const features = ((formData.get('features') as string) || '')
-        .split('\n')
-        .map((f) => f.trim())
-        .filter(Boolean);
-
-      setPlans((prev) =>
-        prev.map((p) =>
-          p.id === editingPlan.id
-            ? {
-                ...p,
-                tier_name: (formData.get('tier_name') as string) || p.tier_name,
-                target_audience: (formData.get('target_audience') as string) || p.target_audience,
-                price_display: (formData.get('price_display') as string) || p.price_display,
-                features,
-              }
-            : p
-        )
-      );
+      router.refresh();
       setEditingPlan(null);
     } else {
       alert(res.error || 'Cập nhật thất bại');
@@ -74,13 +52,17 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
   }
 
   async function handleDelete(id?: string) {
-    if (!id) return;
-    if (!confirm('Bạn có chắc muốn xóa gói dịch vụ này?')) return;
+    if (!id || id.startsWith('new-')) {
+      alert('ID không hợp lệ hoặc dữ liệu chưa được lưu đồng bộ');
+      return;
+    }
+    if (!confirm('Bạn có chắc muốn xóa mục này?')) return;
+
     const res = await deletePricingPlanAction(id);
     if (res.success) {
-      setPlans((prev) => prev.filter((p) => p.id !== id));
+      router.refresh();
     } else {
-      alert(res.error || 'Xóa gói giá thất bại');
+      alert(res.error || 'Xóa thất bại');
     }
   }
 

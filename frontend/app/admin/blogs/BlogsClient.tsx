@@ -1,15 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createBlogAction, updateBlogAction, deleteBlogAction } from '@/app/actions/admin-blogs';
 import { Plus, Trash2, Edit2, X, Loader2, Clock, BookOpen } from 'lucide-react';
 import { BlogPostItem } from '@/lib/fallbackData';
 
 export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostItem[] }) {
+  const router = useRouter();
   const [blogs, setBlogs] = useState<BlogPostItem[]>(initialBlogs);
   const [editingBlog, setEditingBlog] = useState<BlogPostItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setBlogs(initialBlogs);
+  }, [initialBlogs]);
 
   async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,19 +25,11 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
 
     const res = await createBlogAction(formData);
     if (res.success) {
-      const newBlog: BlogPostItem = {
-        id: 'new-' + Date.now(),
-        title: (formData.get('title') as string) || '',
-        slug: (formData.get('slug') as string) || '',
-        excerpt: (formData.get('excerpt') as string) || '',
-        category: (formData.get('category') as string) || 'Marketing',
-        author: (formData.get('author') as string) || 'S-Digital',
-        published_at: new Date().toLocaleDateString('vi-VN'),
-      };
-      setBlogs((prev) => [newBlog, ...prev]);
+      router.refresh();
       setIsCreating(false);
+      form.reset();
     } else {
-      alert(res.error || 'Tạo bài viết thất bại');
+      alert(res.error || 'Tạo mới thất bại');
     }
     setIsSubmitting(false);
   }
@@ -45,18 +43,7 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
 
     const res = await updateBlogAction(editingBlog.id, formData);
     if (res.success) {
-      setBlogs((prev) =>
-        prev.map((b) =>
-          b.id === editingBlog.id
-            ? {
-                ...b,
-                title: (formData.get('title') as string) || b.title,
-                excerpt: (formData.get('excerpt') as string) || b.excerpt,
-                category: (formData.get('category') as string) || b.category,
-              }
-            : b
-        )
-      );
+      router.refresh();
       setEditingBlog(null);
     } else {
       alert(res.error || 'Cập nhật thất bại');
@@ -65,13 +52,17 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
   }
 
   async function handleDelete(id?: string) {
-    if (!id) return;
-    if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+    if (!id || id.startsWith('new-')) {
+      alert('ID không hợp lệ hoặc dữ liệu chưa được lưu đồng bộ');
+      return;
+    }
+    if (!confirm('Bạn có chắc muốn xóa mục này?')) return;
+
     const res = await deleteBlogAction(id);
     if (res.success) {
-      setBlogs((prev) => prev.filter((b) => b.id !== id));
+      router.refresh();
     } else {
-      alert(res.error || 'Xóa bài viết thất bại');
+      alert(res.error || 'Xóa thất bại');
     }
   }
 

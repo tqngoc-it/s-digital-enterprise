@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   createServiceAction,
   updateServiceAction,
@@ -57,7 +58,13 @@ export default function ServicesClient({
 }: {
   initialServices: ServiceItem[];
 }) {
+  const router = useRouter();
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
+
+  useEffect(() => {
+    setServices(initialServices);
+  }, [initialServices]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'DIGITAL' | 'SPORTS'>('ALL');
 
@@ -159,6 +166,8 @@ export default function ServicesClient({
         prev.map((item) => (item.id === s.id ? { ...item, is_active: currentActive } : item))
       );
       alert(res.error || 'Cập nhật trạng thái thất bại');
+    } else {
+      router.refresh();
     }
     setTogglingId(null);
   }
@@ -175,31 +184,11 @@ export default function ServicesClient({
 
     const res = await createServiceAction(formData);
     if (res.success) {
-      const is_active_val = formData.get('is_active');
-      const is_active =
-        is_active_val === 'on' || is_active_val === 'true' || is_active_val === null;
-
-      const newService: ServiceItem = {
-        id: 'new-' + Date.now(),
-        title: formTitle.trim(),
-        slug: formSlug.trim() || generateSlug(formTitle),
-        sub_title: (formData.get('sub_title') as string) || '',
-        short_description: (formData.get('short_description') as string) || '',
-        category: ((formData.get('category') as string) || 'DIGITAL') as
-          | 'DIGITAL'
-          | 'SPORTS',
-        display_order: parseInt((formData.get('display_order') as string) || '0', 10),
-        bullet_points: cleanBulletPoints,
-        features: cleanBulletPoints,
-        points: cleanBulletPoints,
-        icon_name: (formData.get('icon_name') as string) || 'TrendingUp',
-        is_active,
-      };
-
-      setServices((prev) => [...prev, newService]);
+      router.refresh();
       setIsCreating(false);
+      form.reset();
     } else {
-      alert(res.error || 'Tạo dịch vụ thất bại');
+      alert(res.error || 'Tạo mới thất bại');
     }
     setIsSubmitting(false);
   }
@@ -217,51 +206,26 @@ export default function ServicesClient({
 
     const res = await updateServiceAction(editingService.id, formData);
     if (res.success) {
-      const is_active =
-        formData.get('is_active') === 'on' || formData.get('is_active') === 'true';
-
-      setServices((prev) =>
-        prev.map((s) =>
-          s.id === editingService.id
-            ? {
-                ...s,
-                title: formTitle.trim(),
-                slug: formSlug.trim() || generateSlug(formTitle),
-                sub_title: (formData.get('sub_title') as string) || s.sub_title,
-                short_description:
-                  (formData.get('short_description') as string) || s.short_description,
-                category: ((formData.get('category') as string) || s.category) as
-                  | 'DIGITAL'
-                  | 'SPORTS',
-                display_order: parseInt(
-                  (formData.get('display_order') as string) || '0',
-                  10
-                ),
-                bullet_points: cleanBulletPoints,
-                features: cleanBulletPoints,
-                points: cleanBulletPoints,
-                icon_name: (formData.get('icon_name') as string) || s.icon_name,
-                is_active,
-              }
-            : s
-        )
-      );
+      router.refresh();
       setEditingService(null);
     } else {
-      alert(res.error || 'Cập nhật dịch vụ thất bại');
+      alert(res.error || 'Cập nhật thất bại');
     }
     setIsSubmitting(false);
   }
 
   async function handleDelete(id?: string) {
-    if (!id) return;
-    if (!confirm('Bạn có chắc chắn muốn xóa dịch vụ này khỏi hệ thống?')) return;
+    if (!id || id.startsWith('new-')) {
+      alert('ID không hợp lệ hoặc dữ liệu chưa được lưu đồng bộ');
+      return;
+    }
+    if (!confirm('Bạn có chắc muốn xóa mục này?')) return;
 
     const res = await deleteServiceAction(id);
     if (res.success) {
-      setServices((prev) => prev.filter((s) => s.id !== id));
+      router.refresh();
     } else {
-      alert(res.error || 'Xóa dịch vụ thất bại');
+      alert(res.error || 'Xóa thất bại');
     }
   }
 
