@@ -1,11 +1,20 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLeadDto {
   @IsString()
-  @IsNotEmpty({ message: 'Họ tên không được để trống' })
-  fullName!: string;
+  @IsOptional()
+  name?: string;
+
+  @IsString()
+  @IsOptional()
+  fullName?: string;
+
+  @IsString()
+  @IsOptional()
+  full_name?: string;
 
   @IsEmail({}, { message: 'Email không đúng định dạng' })
+  @IsNotEmpty({ message: 'Email không được để trống' })
   email!: string;
 
   @IsString()
@@ -13,6 +22,32 @@ export class CreateLeadDto {
   phone?: string;
 
   @IsString()
-  @MinLength(5, { message: 'Nội dung liên hệ tối thiểu 5 ký tự' })
+  @IsOptional()
+  service?: string;
+
+  @IsString()
+  @IsOptional()
+  budget?: string;
+
+  @IsString()
+  @IsOptional()
+  company?: string;
+
+  @IsString()
+  @IsOptional()
+  company_name?: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'Nội dung liên hệ không được để trống' })
   message!: string;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
+}
+
+export class UpdateLeadStatusDto {
+  @IsString()
+  @IsNotEmpty({ message: 'Trạng thái không được để trống' })
+  status!: string;
 }

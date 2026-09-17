@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import PartnersClient from './PartnersClient';
 import { Handshake } from 'lucide-react';
 import { FALLBACK_PARTNERS } from '@/lib/fallbackData';
@@ -7,14 +6,23 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminPartnersPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let partners: any[] = [];
 
-  const { data: partners } = await supabase
-    .from('partners')
-    .select('*')
-    .order('display_order', { ascending: true });
+  try {
+    const res = await fetch(`${backendUrl}/api/partners`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      partners = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_PARTNERS_FETCH_ERROR]:', e);
+  }
 
-  const displayPartners = partners && partners.length > 0 ? partners : FALLBACK_PARTNERS;
+  const displayPartners =
+    partners && partners.length > 0 ? partners : FALLBACK_PARTNERS;
 
   return (
     <div className="space-y-8">

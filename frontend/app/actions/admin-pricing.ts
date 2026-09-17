@@ -1,12 +1,11 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export async function createPricingPlanAction(formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const tier_name = (formData.get('tier_name') as string)?.trim();
     const target_audience = (formData.get('target_audience') as string)?.trim();
     const price_display = (formData.get('price_display') as string)?.trim();
@@ -21,16 +20,21 @@ export async function createPricingPlanAction(formData: FormData) {
       return { success: false, error: 'Tên gói và mức giá là bắt buộc.' };
     }
 
-    const { error } = await supabase.from('pricing_plans').insert([
-      {
+    const res = await fetch(`${backendUrl}/api/pricing`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         tier_name,
         target_audience,
         price_display,
         features,
-      },
-    ]);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể tạo gói giá mới.' };
+    }
 
     revalidatePath('/admin/pricing');
     revalidatePath('/admin');
@@ -43,8 +47,6 @@ export async function createPricingPlanAction(formData: FormData) {
 
 export async function updatePricingPlanAction(id: string, formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const tier_name = (formData.get('tier_name') as string)?.trim();
     const target_audience = (formData.get('target_audience') as string)?.trim();
     const price_display = (formData.get('price_display') as string)?.trim();
@@ -59,17 +61,21 @@ export async function updatePricingPlanAction(id: string, formData: FormData) {
       return { success: false, error: 'Tên gói và mức giá là bắt buộc.' };
     }
 
-    const { error } = await supabase
-      .from('pricing_plans')
-      .update({
+    const res = await fetch(`${backendUrl}/api/pricing/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         tier_name,
         target_audience,
         price_display,
         features,
-      })
-      .eq('id', id);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật gói giá.' };
+    }
 
     revalidatePath('/admin/pricing');
     revalidatePath('/admin');
@@ -82,11 +88,14 @@ export async function updatePricingPlanAction(id: string, formData: FormData) {
 
 export async function deletePricingPlanAction(id: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const res = await fetch(`${backendUrl}/api/pricing/${id}`, {
+      method: 'DELETE',
+    });
 
-    const { error } = await supabase.from('pricing_plans').delete().eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể xóa gói giá.' };
+    }
 
     revalidatePath('/admin/pricing');
     revalidatePath('/admin');

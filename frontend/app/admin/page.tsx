@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { Users, Handshake, Layers, Award, FileText, ArrowUpRight, TrendingUp, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
@@ -6,21 +5,31 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let statsData = {
+    leads: 0,
+    partners: 25,
+    services: 11,
+    pricing: 3,
+    caseStudies: 1,
+    blogs: 3,
+  };
 
-  const [leadsRes, partnersRes, servicesRes, pricingRes, caseStudiesRes, blogsRes] = await Promise.all([
-    supabase.from('leads').select('*', { count: 'exact', head: true }),
-    supabase.from('partners').select('*', { count: 'exact', head: true }),
-    supabase.from('services').select('*', { count: 'exact', head: true }),
-    supabase.from('pricing_plans').select('*', { count: 'exact', head: true }),
-    supabase.from('case_studies').select('*', { count: 'exact', head: true }),
-    supabase.from('blogs').select('*', { count: 'exact', head: true }),
-  ]);
+  try {
+    const res = await fetch(`${backendUrl}/api/stats`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      statsData = await res.json();
+    }
+  } catch (e) {
+    console.error('[ADMIN_STATS_FETCH_ERROR]:', e);
+  }
 
   const stats = [
     {
       label: 'Khách Hàng Tiềm Năng (Leads)',
-      value: leadsRes.count || 0,
+      value: statsData.leads,
       icon: Users,
       color: 'text-blue-400',
       bg: 'bg-blue-500/10 border-blue-500/20',
@@ -28,7 +37,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: 'Khách Hàng & Đối Tác',
-      value: partnersRes.count || 25,
+      value: statsData.partners,
       icon: Handshake,
       color: 'text-[#00E5FF]',
       bg: 'bg-[#00E5FF]/10 border-[#00E5FF]/20',
@@ -36,7 +45,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: 'Hệ Sinh Thái Dịch Vụ',
-      value: servicesRes.count || 11,
+      value: statsData.services,
       icon: Briefcase,
       color: 'text-violet-400',
       bg: 'bg-violet-500/10 border-violet-500/20',
@@ -44,7 +53,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: 'Bảng Giá & Gói Dịch Vụ',
-      value: pricingRes.count || 3,
+      value: statsData.pricing,
       icon: Layers,
       color: 'text-[#FF5722]',
       bg: 'bg-[#FF5722]/10 border-[#FF5722]/20',
@@ -52,7 +61,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: 'Case Studies Tiêu Biểu',
-      value: caseStudiesRes.count || 1,
+      value: statsData.caseStudies,
       icon: Award,
       color: 'text-emerald-400',
       bg: 'bg-emerald-500/10 border-emerald-500/20',
@@ -60,7 +69,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: 'Bài Viết Blog & Tin Tức',
-      value: blogsRes.count || 3,
+      value: statsData.blogs,
       icon: FileText,
       color: 'text-amber-400',
       bg: 'bg-amber-500/10 border-amber-500/20',
@@ -73,7 +82,7 @@ export default async function AdminDashboardPage() {
       <div>
         <h1 className="text-3xl font-black text-white tracking-tight">Dashboard Quản Trị Hệ Thống</h1>
         <p className="text-xs md:text-sm text-slate-400 mt-1">
-          Hệ thống điều hành và thống kê dữ liệu trực tiếp của S-Digital Media & Sports.
+          Hệ thống điều hành và thống kê dữ liệu trực tiếp của S-Digital Media & Sports qua NestJS Core Backend.
         </p>
       </div>
 
@@ -109,9 +118,9 @@ export default async function AdminDashboardPage() {
           <TrendingUp className="w-4 h-4" />
           <span>HƯỚNG DẪN QUẢN TRỊ VIÊN</span>
         </div>
-        <h3 className="text-xl font-black text-white">Tự Động Đồng Bộ Dữ Liệu Trang Chủ</h3>
+        <h3 className="text-xl font-black text-white">Kiến Trúc Phân Tầng Độc Lập (NestJS Backend Core)</h3>
         <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
-          Mỗi khi bạn thêm, sửa hoặc xóa dữ liệu tại các trang quản trị (Leads, Đối tác, Bảng giá, Case Studies, Blogs), hệ thống sẽ tự động kích hoạt Next.js On-Demand Revalidation (`revalidatePath('/')`) để trang chủ landing page cập nhật dữ liệu tức thì mà không cần rebuild ứng dụng.
+          Mọi thao tác quản lý dữ liệu (Leads, Đối tác, Dịch vụ, Bảng giá, Case Studies, Blogs) đã được chuyển giao hoàn toàn sang NestJS Core Backend độc lập. Frontend Next.js hoạt động thuần túy dưới vai trò Presentation Layer, tự động đồng bộ thời gian thực qua REST API tiêu chuẩn.
         </p>
       </div>
     </div>

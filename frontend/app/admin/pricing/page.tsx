@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import PricingClient from './PricingClient';
 import { Layers } from 'lucide-react';
 import { FALLBACK_PRICING } from '@/lib/fallbackData';
@@ -7,14 +6,23 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminPricingPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let pricingPlans: any[] = [];
 
-  const { data: pricingPlans } = await supabase
-    .from('pricing_plans')
-    .select('*')
-    .order('id', { ascending: true });
+  try {
+    const res = await fetch(`${backendUrl}/api/pricing`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      pricingPlans = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_PRICING_FETCH_ERROR]:', e);
+  }
 
-  const displayPlans = pricingPlans && pricingPlans.length > 0 ? pricingPlans : FALLBACK_PRICING;
+  const displayPlans =
+    pricingPlans && pricingPlans.length > 0 ? pricingPlans : FALLBACK_PRICING;
 
   return (
     <div className="space-y-8">

@@ -1,7 +1,8 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 function generateSlug(text: string): string {
   return text
@@ -15,7 +16,10 @@ function generateSlug(text: string): string {
 }
 
 function parseBulletPoints(formData: FormData): string[] {
-  const raw = (formData.get('bullet_points') as string)?.trim() || (formData.get('features') as string)?.trim() || '';
+  const raw =
+    (formData.get('bullet_points') as string)?.trim() ||
+    (formData.get('features') as string)?.trim() ||
+    '';
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
@@ -33,15 +37,16 @@ function parseBulletPoints(formData: FormData): string[] {
 
 export async function createServiceAction(formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     if (!title) {
       return { success: false, error: 'Tiêu đề dịch vụ là bắt buộc.' };
     }
 
     const slug = (formData.get('slug') as string)?.trim() || generateSlug(title);
-    const sub_title = (formData.get('sub_title') as string)?.trim() || (formData.get('subtitle') as string)?.trim() || null;
+    const sub_title =
+      (formData.get('sub_title') as string)?.trim() ||
+      (formData.get('subtitle') as string)?.trim() ||
+      null;
     const short_description = (formData.get('short_description') as string)?.trim() || null;
     const categoryRaw = (formData.get('category') as string)?.toUpperCase() || 'DIGITAL';
     const category = categoryRaw === 'SPORTS' ? 'SPORTS' : 'DIGITAL';
@@ -50,12 +55,18 @@ export async function createServiceAction(formData: FormData) {
     const thumbnail_url = (formData.get('thumbnail_url') as string)?.trim() || null;
 
     const is_active_val = formData.get('is_active');
-    const is_active = is_active_val === 'true' || is_active_val === 'on' || is_active_val === '1' || is_active_val === null;
+    const is_active =
+      is_active_val === 'true' ||
+      is_active_val === 'on' ||
+      is_active_val === '1' ||
+      is_active_val === null;
 
     const bullet_points = parseBulletPoints(formData);
 
-    const { error } = await supabase.from('services').insert([
-      {
+    const res = await fetch(`${backendUrl}/api/services`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         sub_title,
@@ -66,10 +77,13 @@ export async function createServiceAction(formData: FormData) {
         icon_name,
         thumbnail_url,
         is_active,
-      },
-    ]);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể tạo dịch vụ mới.' };
+    }
 
     revalidatePath('/admin/services');
     revalidatePath('/admin');
@@ -82,15 +96,16 @@ export async function createServiceAction(formData: FormData) {
 
 export async function updateServiceAction(id: string, formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     if (!title) {
       return { success: false, error: 'Tiêu đề dịch vụ là bắt buộc.' };
     }
 
     const slug = (formData.get('slug') as string)?.trim() || generateSlug(title);
-    const sub_title = (formData.get('sub_title') as string)?.trim() || (formData.get('subtitle') as string)?.trim() || null;
+    const sub_title =
+      (formData.get('sub_title') as string)?.trim() ||
+      (formData.get('subtitle') as string)?.trim() ||
+      null;
     const short_description = (formData.get('short_description') as string)?.trim() || null;
     const categoryRaw = (formData.get('category') as string)?.toUpperCase() || 'DIGITAL';
     const category = categoryRaw === 'SPORTS' ? 'SPORTS' : 'DIGITAL';
@@ -99,13 +114,15 @@ export async function updateServiceAction(id: string, formData: FormData) {
     const thumbnail_url = (formData.get('thumbnail_url') as string)?.trim() || null;
 
     const is_active_val = formData.get('is_active');
-    const is_active = is_active_val === 'true' || is_active_val === 'on' || is_active_val === '1';
+    const is_active =
+      is_active_val === 'true' || is_active_val === 'on' || is_active_val === '1';
 
     const bullet_points = parseBulletPoints(formData);
 
-    const { error } = await supabase
-      .from('services')
-      .update({
+    const res = await fetch(`${backendUrl}/api/services/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         sub_title,
@@ -116,10 +133,13 @@ export async function updateServiceAction(id: string, formData: FormData) {
         icon_name,
         thumbnail_url,
         is_active,
-      })
-      .eq('id', id);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật dịch vụ.' };
+    }
 
     revalidatePath('/admin/services');
     revalidatePath('/admin');
@@ -132,11 +152,14 @@ export async function updateServiceAction(id: string, formData: FormData) {
 
 export async function deleteServiceAction(id: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const res = await fetch(`${backendUrl}/api/services/${id}`, {
+      method: 'DELETE',
+    });
 
-    const { error } = await supabase.from('services').delete().eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể xóa dịch vụ.' };
+    }
 
     revalidatePath('/admin/services');
     revalidatePath('/admin');
@@ -149,14 +172,16 @@ export async function deleteServiceAction(id: string) {
 
 export async function toggleServiceActiveAction(id: string, is_active: boolean) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const res = await fetch(`${backendUrl}/api/services/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_active }),
+    });
 
-    const { error } = await supabase
-      .from('services')
-      .update({ is_active })
-      .eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật trạng thái hiển thị.' };
+    }
 
     revalidatePath('/admin/services');
     revalidatePath('/admin');

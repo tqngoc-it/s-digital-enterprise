@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import ServicesClient from './ServicesClient';
 import { Briefcase } from 'lucide-react';
 import { FALLBACK_SERVICES, ServiceItem } from '@/lib/fallbackData';
@@ -7,12 +6,20 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminServicesPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let services: ServiceItem[] = [];
 
-  const { data: services } = await supabase
-    .from('services')
-    .select('*')
-    .order('display_order', { ascending: true });
+  try {
+    const res = await fetch(`${backendUrl}/api/services`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      services = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_SERVICES_FETCH_ERROR]:', e);
+  }
 
   const displayServices: ServiceItem[] =
     services && services.length > 0 ? services : FALLBACK_SERVICES;

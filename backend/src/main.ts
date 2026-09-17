@@ -8,25 +8,25 @@ async function bootstrap() {
 
   // 1. Cho phép Frontend Next.js gọi API (Tránh lỗi CORS)
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // 2. Định dạng tiền tố API chuẩn: /api/v1/...
-  app.setGlobalPrefix('api/v1');
+  // 2. Định dạng tiền tố API chuẩn: /api
+  app.setGlobalPrefix('api');
 
   // 3. Tự động validate dữ liệu Request Body qua DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transform: true,
     }),
   );
 
-  const port = process.env.PORT || 5000;
-  await app.listen(port);
-  logger.log(`🚀 S-Digital Backend đang chạy tại: http://localhost:${port}/api/v1`);
+  const port = process.env.PORT || 8000;
+  await app.listen(port, '0.0.0.0');
+  logger.log(`🚀 S-Digital Backend đang chạy tại: http://localhost:${port}/api`);
 }
 bootstrap();

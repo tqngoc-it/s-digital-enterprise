@@ -1,18 +1,20 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
 export async function updateLeadStatusAction(id: string, status: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const res = await fetch(`${backendUrl}/api/leads/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
 
-    const { error } = await supabase
-      .from('leads')
-      .update({ status })
-      .eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật trạng thái' };
+    }
 
     revalidatePath('/admin/leads');
     revalidatePath('/admin');
@@ -25,14 +27,15 @@ export async function updateLeadStatusAction(id: string, status: string) {
 
 export async function deleteLeadAction(id: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const res = await fetch(`${backendUrl}/api/leads/${id}`, {
+      method: 'DELETE',
+    });
 
-    const { error } = await supabase
-      .from('leads')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể xóa lead' };
+    }
 
     revalidatePath('/admin/leads');
     revalidatePath('/admin');

@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import BlogsClient from './BlogsClient';
 import { FileText } from 'lucide-react';
 import { FALLBACK_BLOGS } from '@/lib/fallbackData';
@@ -7,12 +6,20 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminBlogsPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let blogs: any[] = [];
 
-  const { data: blogs } = await supabase
-    .from('blogs')
-    .select('*')
-    .order('published_at', { ascending: false });
+  try {
+    const res = await fetch(`${backendUrl}/api/blogs`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      blogs = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_BLOGS_FETCH_ERROR]:', e);
+  }
 
   const displayBlogs = blogs && blogs.length > 0 ? blogs : FALLBACK_BLOGS;
 

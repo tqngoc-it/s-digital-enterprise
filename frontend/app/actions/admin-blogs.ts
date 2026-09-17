@@ -1,12 +1,11 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export async function createBlogAction(formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     const excerpt = (formData.get('excerpt') as string)?.trim();
     const content = (formData.get('content') as string)?.trim() || excerpt;
@@ -21,18 +20,25 @@ export async function createBlogAction(formData: FormData) {
       return { success: false, error: 'Tiêu đề và tóm tắt bài viết là bắt buộc.' };
     }
 
-    const { error } = await supabase.from('blogs').insert([
-      {
+    const res = await fetch(`${backendUrl}/api/blogs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         excerpt,
         content,
+        category,
+        author,
         status,
         published_at: new Date().toISOString(),
-      },
-    ]);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể tạo bài viết mới.' };
+    }
 
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');
@@ -45,11 +51,11 @@ export async function createBlogAction(formData: FormData) {
 
 export async function updateBlogAction(id: string, formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     const excerpt = (formData.get('excerpt') as string)?.trim();
     const content = (formData.get('content') as string)?.trim() || excerpt;
+    const category = (formData.get('category') as string)?.trim() || 'Marketing';
+    const author = (formData.get('author') as string)?.trim() || 'S-Digital';
     const slug =
       (formData.get('slug') as string)?.trim() ||
       title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -59,18 +65,24 @@ export async function updateBlogAction(id: string, formData: FormData) {
       return { success: false, error: 'Tiêu đề và tóm tắt bài viết là bắt buộc.' };
     }
 
-    const { error } = await supabase
-      .from('blogs')
-      .update({
+    const res = await fetch(`${backendUrl}/api/blogs/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         excerpt,
         content,
+        category,
+        author,
         status,
-      })
-      .eq('id', id);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật bài viết.' };
+    }
 
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');
@@ -83,11 +95,14 @@ export async function updateBlogAction(id: string, formData: FormData) {
 
 export async function deleteBlogAction(id: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const res = await fetch(`${backendUrl}/api/blogs/${id}`, {
+      method: 'DELETE',
+    });
 
-    const { error } = await supabase.from('blogs').delete().eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể xóa bài viết.' };
+    }
 
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');

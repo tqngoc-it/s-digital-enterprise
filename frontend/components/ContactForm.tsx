@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { submitLeadAction } from '@/app/actions/leads';
 import { Send, Loader2, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
 
 export default function ContactForm() {
@@ -51,16 +50,22 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-      formData.append('full_name', fullName.trim());
-      formData.append('email', email.trim());
-      formData.append('phone', phone.trim());
-      formData.append('company_name', companyName.trim());
-      formData.append('message', message.trim());
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/api/leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim() || undefined,
+          company_name: companyName.trim() || undefined,
+          message: message.trim(),
+        }),
+      });
 
-      const res = await submitLeadAction(formData);
+      const data = await res.json();
 
-      if (res?.success) {
+      if (res.ok && data?.success) {
         setSuccess(true);
         setShowSuccessModal(true);
         // Reset form
@@ -70,7 +75,11 @@ export default function ContactForm() {
         setCompanyName('');
         setMessage('');
       } else {
-        setErrorMessage(res?.error || 'Không thể gửi thông tin. Vui lòng thử lại sau.');
+        setErrorMessage(
+          Array.isArray(data?.message)
+            ? data.message.join(', ')
+            : data?.message || data?.error || 'Không thể gửi thông tin. Vui lòng thử lại sau.'
+        );
       }
     } catch (err: any) {
       setErrorMessage(err?.message || 'Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối mạng.');

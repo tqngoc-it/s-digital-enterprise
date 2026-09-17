@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import CaseStudiesClient from './CaseStudiesClient';
 import { Award } from 'lucide-react';
 import { FALLBACK_CASE_STUDIES } from '@/lib/fallbackData';
@@ -7,14 +6,23 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminCaseStudiesPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let caseStudies: any[] = [];
 
-  const { data: caseStudies } = await supabase
-    .from('case_studies')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const res = await fetch(`${backendUrl}/api/case-studies`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      caseStudies = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_CASE_STUDIES_FETCH_ERROR]:', e);
+  }
 
-  const displayStudies = caseStudies && caseStudies.length > 0 ? caseStudies : FALLBACK_CASE_STUDIES;
+  const displayStudies =
+    caseStudies && caseStudies.length > 0 ? caseStudies : FALLBACK_CASE_STUDIES;
 
   return (
     <div className="space-y-8">

@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import LeadsClient from './LeadsClient';
 import { Users } from 'lucide-react';
 
@@ -6,12 +5,20 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminLeadsPage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  let leads: any[] = [];
 
-  const { data: leads } = await supabase
-    .from('leads')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const res = await fetch(`${backendUrl}/api/leads`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      leads = Array.isArray(data) ? data : data?.data || [];
+    }
+  } catch (e) {
+    console.error('[ADMIN_LEADS_FETCH_ERROR]:', e);
+  }
 
   return (
     <div className="space-y-8">

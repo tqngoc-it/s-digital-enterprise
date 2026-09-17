@@ -1,12 +1,11 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export async function createCaseStudyAction(formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     const client_name = (formData.get('client_name') as string)?.trim();
     const challenge = (formData.get('challenge') as string)?.trim();
@@ -23,8 +22,10 @@ export async function createCaseStudyAction(formData: FormData) {
       return { success: false, error: 'Tiêu đề dự án và tên khách hàng là bắt buộc.' };
     }
 
-    const { error } = await supabase.from('case_studies').insert([
-      {
+    const res = await fetch(`${backendUrl}/api/case-studies`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         client_name,
@@ -32,10 +33,13 @@ export async function createCaseStudyAction(formData: FormData) {
         solution,
         results: { athletes, articles, views },
         is_featured,
-      },
-    ]);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể tạo Case Study mới.' };
+    }
 
     revalidatePath('/admin/case-studies');
     revalidatePath('/admin');
@@ -48,8 +52,6 @@ export async function createCaseStudyAction(formData: FormData) {
 
 export async function updateCaseStudyAction(id: string, formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient();
-
     const title = (formData.get('title') as string)?.trim();
     const client_name = (formData.get('client_name') as string)?.trim();
     const challenge = (formData.get('challenge') as string)?.trim();
@@ -66,9 +68,10 @@ export async function updateCaseStudyAction(id: string, formData: FormData) {
       return { success: false, error: 'Tiêu đề dự án và tên khách hàng là bắt buộc.' };
     }
 
-    const { error } = await supabase
-      .from('case_studies')
-      .update({
+    const res = await fetch(`${backendUrl}/api/case-studies/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         title,
         slug,
         client_name,
@@ -76,10 +79,13 @@ export async function updateCaseStudyAction(id: string, formData: FormData) {
         solution,
         results: { athletes, articles, views },
         is_featured,
-      })
-      .eq('id', id);
+      }),
+    });
 
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể cập nhật Case Study.' };
+    }
 
     revalidatePath('/admin/case-studies');
     revalidatePath('/admin');
@@ -92,11 +98,14 @@ export async function updateCaseStudyAction(id: string, formData: FormData) {
 
 export async function deleteCaseStudyAction(id: string) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const res = await fetch(`${backendUrl}/api/case-studies/${id}`, {
+      method: 'DELETE',
+    });
 
-    const { error } = await supabase.from('case_studies').delete().eq('id', id);
-
-    if (error) throw error;
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể xóa Case Study.' };
+    }
 
     revalidatePath('/admin/case-studies');
     revalidatePath('/admin');

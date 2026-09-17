@@ -8,8 +8,12 @@ export class SupabaseService {
   public client: SupabaseClient;
 
   constructor(private configService: ConfigService) {
-    const supabaseUrl = this.configService.get<string>('NEXT_PUBLIC_SUPABASE_URL');
-    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
+    const supabaseUrl =
+      this.configService.get<string>('SUPABASE_URL') ||
+      this.configService.get<string>('NEXT_PUBLIC_SUPABASE_URL');
+    const supabaseKey =
+      this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY') ||
+      this.configService.get<string>('SUPABASE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
       this.logger.error('Thiếu thông tin cấu hình SUPABASE trong file .env');

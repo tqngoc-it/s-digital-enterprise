@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { updateLeadStatusAction, deleteLeadAction } from '@/app/actions/admin-leads';
 import {
   Search,
   Trash2,
@@ -39,44 +38,77 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Cập nhật trạng thái xử lý Lead
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
+  // Cập nhật trạng thái xử lý Lead qua NestJS Backend
   async function handleStatusChange(id: string, newStatus: string) {
     setUpdatingId(id);
-    const res = await updateLeadStatusAction(id, newStatus);
-    if (res.success) {
-      setLeads((prev) =>
-        prev.map((lead) => (lead.id === id ? { ...lead, status: newStatus } : lead))
-      );
-      if (selectedLead && selectedLead.id === id) {
-        setSelectedLead({ ...selectedLead, status: newStatus });
+    try {
+      const res = await fetch(`${backendUrl}/api/leads/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const result = await res.json();
+      if (res.ok && result?.success) {
+        setLeads((prev) =>
+          prev.map((lead) => (lead.id === id ? { ...lead, status: newStatus } : lead))
+        );
+        if (selectedLead && selectedLead.id === id) {
+          setSelectedLead({ ...selectedLead, status: newStatus });
+        }
+        setNotification({
+          type: 'success',
+          message: `Đã cập nhật trạng thái lead thành công!`,
+        });
+      } else {
+        alert(result?.message || 'Cập nhật trạng thái thất bại');
       }
-    } else {
-      alert(res.error || 'Cập nhật trạng thái thất bại');
+    } catch (err: any) {
+      alert(err?.message || 'Lỗi kết nối khi cập nhật trạng thái');
+    } finally {
+      setUpdatingId(null);
     }
-    setUpdatingId(null);
   }
 
-  // Xóa Lead
+  // Xóa Lead qua NestJS Backend
   async function handleDelete(id: string) {
     if (!confirm('Bạn có chắc chắn muốn xóa khách hàng tiềm năng này?')) return;
     setUpdatingId(id);
-    const res = await deleteLeadAction(id);
-    if (res.success) {
-      setLeads((prev) => prev.filter((lead) => lead.id !== id));
-      if (selectedLead?.id === id) setSelectedLead(null);
-    } else {
-      alert(res.error || 'Xóa thất bại');
+    try {
+      const res = await fetch(`${backendUrl}/api/leads/${id}`, {
+        method: 'DELETE',
+      });
+      const result = await res.json();
+      if (res.ok && result?.success) {
+        setLeads((prev) => prev.filter((lead) => lead.id !== id));
+        if (selectedLead?.id === id) setSelectedLead(null);
+        setNotification({
+          type: 'success',
+          message: 'Đã xóa khách hàng tiềm năng thành công!',
+        });
+      } else {
+        alert(result?.message || 'Xóa thất bại');
+      }
+    } catch (err: any) {
+      alert(err?.message || 'Lỗi kết nối khi xóa lead');
+    } finally {
+      setUpdatingId(null);
     }
-    setUpdatingId(null);
   }
 
-  // Thẩm định chất lượng Lead
+  // Thẩm định chất lượng Lead qua NestJS Backend
   async function handleScoreLead(lead: any) {
     setScoringId(lead.id);
     setNotification(null);
 
     try {
-      const res = await fetch('/api/admin/score-lead', {
+      // Gọi endpoint rescore nếu lead đã có ID trong DB, ngược lại gọi score
+      const endpoint = lead.id
+        ? `${backendUrl}/api/leads/${lead.id}/rescore`
+        : `${backendUrl}/api/leads/score`;
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -103,11 +135,12 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
 
         const updatedLead = {
           ...lead,
-          ai_score: scoreData.score,
-          ai_tier: scoreData.tier,
-          ai_summary: scoreData.summary,
-          ai_action_plan: scoreData.actionPlan,
-          ai_estimated_value: scoreData.estimatedValue,
+          ...(result.data && typeof result.data === 'object' ? result.data : {}),
+          ai_score: scoreData.score ?? scoreData.ai_score,
+          ai_tier: scoreData.tier ?? scoreData.ai_tier,
+          ai_summary: scoreData.summary ?? scoreData.ai_summary,
+          ai_action_plan: scoreData.actionPlan ?? scoreData.ai_action_plan,
+          ai_estimated_value: scoreData.estimatedValue ?? scoreData.ai_estimated_value,
         };
 
         setLeads((prev) => prev.map((l) => (l.id === lead.id ? updatedLead : l)));
@@ -118,28 +151,10 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
 
         setNotification({
           type: 'success',
-          message: `Thẩm định hoàn tất cho "${lead.full_name}": ${scoreData.score}/100 điểm (${tierText})`,
+          message: `Thẩm định hoàn tất cho "${lead.full_name}": ${scoreData.score ?? scoreData.ai_score}/100 điểm (${tierText})`,
         });
-
-        // Thử đồng bộ dữ liệu vào Supabase nếu bảng có sẵn các cột
-        try {
-          const { createBrowserSupabaseClient } = await import('@/lib/supabase/client');
-          const supabase = createBrowserSupabaseClient();
-          await supabase
-            .from('leads')
-            .update({
-              ai_score: scoreData.score,
-              ai_tier: scoreData.tier,
-              ai_summary: scoreData.summary,
-              ai_action_plan: scoreData.actionPlan,
-              ai_estimated_value: scoreData.estimatedValue,
-            })
-            .eq('id', lead.id);
-        } catch {
-          // Bỏ qua nếu cột chưa tồn tại trong schema Supabase
-        }
       } else {
-        throw new Error(result.error || 'Không nhận được kết quả thẩm định');
+        throw new Error(result.error || result.message || 'Không nhận được kết quả thẩm định');
       }
     } catch (err: any) {
       console.error('[SCORE_LEAD_CLIENT_ERROR]:', err);

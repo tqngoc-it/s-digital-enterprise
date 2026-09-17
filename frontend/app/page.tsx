@@ -1,4 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import CustomersPartners from '@/components/CustomersPartners';
@@ -26,47 +25,42 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const supabase = await createServerSupabaseClient();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
-  // Truy vấn song song các bảng Supabase hiện có
-  const [companyRes, partnersRes, servicesRes, pricingRes, caseStudiesRes, blogsRes] = await Promise.allSettled([
-    supabase.from('company_info').select('*').limit(1).single(),
-    supabase.from('partners').select('*').order('display_order', { ascending: true }),
-    supabase.from('services').select('*').order('display_order', { ascending: true }),
-    supabase.from('pricing_plans').select('*').order('id', { ascending: true }),
-    supabase.from('case_studies').select('*').order('created_at', { ascending: false }),
-    supabase.from('blogs').select('*').order('published_at', { ascending: false }),
+  // Truy vấn song song các endpoints từ NestJS Core Backend
+  const [partnersRes, servicesRes, pricingRes, caseStudiesRes, blogsRes] = await Promise.allSettled([
+    fetch(`${backendUrl}/api/partners`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/services`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/pricing`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/case-studies`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/blogs`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
   ]);
 
-  // Fallback an toàn 100% nếu DB trả về rỗng / null / error
-  const companyInfo =
-    companyRes.status === 'fulfilled' && companyRes.value.data
-      ? { ...FALLBACK_COMPANY, ...companyRes.value.data }
-      : FALLBACK_COMPANY;
+  const companyInfo = FALLBACK_COMPANY;
 
   const partners =
-    partnersRes.status === 'fulfilled' && partnersRes.value.data && partnersRes.value.data.length > 0
-      ? partnersRes.value.data
+    partnersRes.status === 'fulfilled' && Array.isArray(partnersRes.value) && partnersRes.value.length > 0
+      ? partnersRes.value
       : FALLBACK_PARTNERS;
 
   const services =
-    servicesRes.status === 'fulfilled' && servicesRes.value.data && servicesRes.value.data.length > 0
-      ? servicesRes.value.data
+    servicesRes.status === 'fulfilled' && Array.isArray(servicesRes.value) && servicesRes.value.length > 0
+      ? servicesRes.value
       : (FALLBACK_SERVICES || []);
 
   const pricingPlans =
-    pricingRes.status === 'fulfilled' && pricingRes.value.data && pricingRes.value.data.length > 0
-      ? pricingRes.value.data
+    pricingRes.status === 'fulfilled' && Array.isArray(pricingRes.value) && pricingRes.value.length > 0
+      ? pricingRes.value
       : FALLBACK_PRICING;
 
   const caseStudies =
-    caseStudiesRes.status === 'fulfilled' && caseStudiesRes.value.data && caseStudiesRes.value.data.length > 0
-      ? caseStudiesRes.value.data
+    caseStudiesRes.status === 'fulfilled' && Array.isArray(caseStudiesRes.value) && caseStudiesRes.value.length > 0
+      ? caseStudiesRes.value
       : FALLBACK_CASE_STUDIES;
 
   const blogs =
-    blogsRes.status === 'fulfilled' && blogsRes.value.data && blogsRes.value.data.length > 0
-      ? blogsRes.value.data
+    blogsRes.status === 'fulfilled' && Array.isArray(blogsRes.value) && blogsRes.value.length > 0
+      ? blogsRes.value
       : FALLBACK_BLOGS;
 
   return (

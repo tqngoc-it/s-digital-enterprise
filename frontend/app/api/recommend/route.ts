@@ -19,7 +19,12 @@ export interface RecommendationResult {
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json().catch(() => ({}))) as RecommendRequest;
-    const { industry = 'Doanh nghiệp chung', goal = 'Tăng trưởng doanh số', budget = '20-50tr', note = '' } = body;
+    const payload: RecommendRequest = {
+      industry: body.industry || 'Doanh nghiệp chung',
+      goal: body.goal || 'Tăng trưởng doanh số',
+      budget: body.budget || '20-50tr',
+      note: body.note || '',
+    };
 
     const apiKey =
       process.env.GEMINI_API_KEY ||
@@ -29,7 +34,7 @@ export async function POST(req: NextRequest) {
     // 1. Thử gọi Google Gemini API nếu có API Key
     if (apiKey) {
       try {
-        const geminiResult = await callGeminiRecommendation(apiKey, { industry, goal, budget, note });
+        const geminiResult = await callGeminiRecommendation(apiKey, payload);
         if (geminiResult) {
           return NextResponse.json({
             success: true,
@@ -38,20 +43,25 @@ export async function POST(req: NextRequest) {
           });
         }
       } catch (geminiError) {
-        console.warn('Gemini Recommendation API error, switching to logic fallback:', geminiError);
+        console.warn('[GEMINI_RECOMMEND] Chuyển thẳng sang Smart Fallback nội bộ:', geminiError);
       }
     }
 
-    // 2. Cơ chế Fallback an toàn thông minh dựa trên ma trận logic ngân sách & mục tiêu
-    const fallbackData = computeSmartFallback(industry, goal, budget, note);
+    // 2. Cơ chế chuẩn: Lượt gọi gemini-3.7-flash thất bại -> chuyển thẳng lập tức sang hàm computeSmartFallback(payload) nội bộ mà không gọi thêm bất kỳ request API nào khác.
+    const fallbackData = computeSmartFallback(payload);
     return NextResponse.json({
       success: true,
       data: fallbackData,
-      source: 'logic-matrix-fallback',
+      source: 'smart-fallback',
     });
   } catch (error: any) {
     console.error('Lỗi xử lý recommend API:', error);
-    const safeData = computeSmartFallback('Doanh nghiệp', 'Tăng doanh số', '20-50tr', '');
+    const safeData = computeSmartFallback({
+      industry: 'Doanh nghiệp',
+      goal: 'Tăng doanh số',
+      budget: '20-50tr',
+      note: '',
+    });
     return NextResponse.json({
       success: true,
       data: safeData,
@@ -121,33 +131,26 @@ Hãy phân tích bài toán và trả về JSON đề xuất giải pháp tối 
     },
   };
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(15000),
-  });
-
-  if (!response.ok) {
-    // Thử fallback sang gemini-2.5-flash nếu 3.7-flash chưa khả dụng trên region hiện tại
-    const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    const fbRes = await fetch(fallbackUrl, {
+  try {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(20000),
     });
-    if (!fbRes.ok) {
-      throw new Error(`Gemini API failed: ${fbRes.status}`);
-    }
-    const fbData = await fbRes.json();
-    const rawText = fbData?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return parseJsonResult(rawText);
-  }
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  return parseJsonResult(text);
+    if (!response.ok) {
+      console.warn(`[GEMINI_RECOMMEND] Gemini API trả mã lỗi: ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return parseJsonResult(text);
+  } catch (err: any) {
+    console.warn(`[GEMINI_RECOMMEND] Lỗi kết nối hoặc timeout khi gọi Gemini:`, err?.message || err);
+    return null;
+  }
 }
 
 function parseJsonResult(rawText?: string): RecommendationResult | null {
@@ -171,11 +174,27 @@ function parseJsonResult(rawText?: string): RecommendationResult | null {
  * Ma trận logic định sẵn để fallback chuẩn xác và đảm bảo không có emoji
  */
 function computeSmartFallback(
-  industry: string,
-  goal: string,
-  budget: string,
-  note: string
+  industryOrPayload: string | RecommendRequest,
+  goalParam?: string,
+  budgetParam?: string,
+  noteParam?: string
 ): RecommendationResult {
+  let industry = 'Doanh nghiệp chung';
+  let goal = 'Tăng trưởng doanh số';
+  let budget = '20-50tr';
+  let note = '';
+
+  if (typeof industryOrPayload === 'object' && industryOrPayload !== null) {
+    industry = industryOrPayload.industry || industry;
+    goal = industryOrPayload.goal || goal;
+    budget = industryOrPayload.budget || budget;
+    note = industryOrPayload.note || note;
+  } else {
+    industry = industryOrPayload || industry;
+    goal = goalParam || goal;
+    budget = budgetParam || budget;
+    note = noteParam || note;
+  }
   const goalLower = goal.toLowerCase();
   const industryLower = industry.toLowerCase();
 
