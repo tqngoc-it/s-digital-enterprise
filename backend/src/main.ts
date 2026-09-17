@@ -8,8 +8,13 @@ async function bootstrap() {
 
   // 1. Cho phép Frontend Next.js gọi API (Tránh lỗi CORS)
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      /\.vercel\.app$/,
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
 
