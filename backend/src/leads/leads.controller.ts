@@ -12,6 +12,7 @@ import {
 import { LeadsService } from './leads.service';
 import { CreateLeadDto, UpdateLeadStatusDto } from './dto/create-lead.dto';
 import { ScoreLeadDto } from './dto/score-lead.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('leads')
 export class LeadsController {
@@ -20,6 +21,7 @@ export class LeadsController {
   /**
    * Pipeline tiếp nhận lead: lưu DB -> thẩm định AI tự động -> cập nhật DB -> trả về kết quả
    */
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createLead(@Body() dto: CreateLeadDto) {
@@ -56,6 +58,7 @@ export class LeadsController {
   /**
    * Kích hoạt thẩm định lại Lead bằng AI và cập nhật trực tiếp vào cơ sở dữ liệu
    */
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post(':id/rescore')
   @HttpCode(HttpStatus.OK)
   async rescoreLead(@Param('id') id: string) {
@@ -73,6 +76,7 @@ export class LeadsController {
   /**
    * Endpoint chấm điểm nhanh độc lập
    */
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('score')
   @HttpCode(HttpStatus.OK)
   async scoreLead(@Body() dto: ScoreLeadDto) {

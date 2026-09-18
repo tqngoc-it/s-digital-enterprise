@@ -1,17 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('Bootstrap');
+
+  // Kích hoạt bảo vệ HTTP Headers bằng Helmet
+  app.use(helmet());
 
   // 1. Cho phép Frontend Next.js gọi API (Tránh lỗi CORS)
   app.enableCors({
     origin: [
       'http://localhost:3000',
       'http://127.0.0.1:3000',
-      /\.vercel\.app$/,
+      'https://s-digital-vn.vercel.app',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
