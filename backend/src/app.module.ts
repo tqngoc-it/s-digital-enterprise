@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 import { SupabaseModule } from './supabase/supabase.module';
+import { GeminiModule } from './gemini/gemini.module';
 import { LeadsModule } from './leads/leads.module';
 import { ServicesModule } from './services/services.module';
 import { PricingModule } from './pricing/pricing.module';
@@ -25,6 +26,7 @@ import { StatsModule } from './stats/stats.module';
     ]),
 
     SupabaseModule,
+    GeminiModule,
     LeadsModule,
     ServicesModule,
     PricingModule,

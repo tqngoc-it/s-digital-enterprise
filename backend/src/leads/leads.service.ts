@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { GeminiService } from '../gemini/gemini.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { ScoreLeadDto, ScoreLeadResponse } from './dto/score-lead.dto';
 
@@ -39,7 +40,10 @@ function normalizeLead(lead: any) {
 export class LeadsService {
   private readonly logger = new Logger(LeadsService.name);
 
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(
+    private readonly supabase: SupabaseService,
+    private readonly geminiService: GeminiService,
+  ) {}
 
   /**
    * Luồng tự động hóa khi tiếp nhận Lead:
@@ -276,44 +280,33 @@ export class LeadsService {
     const message = dto.message || dto.notes || '';
     const company = dto.company || dto.company_name || '';
 
-    const apiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.GOOGLE_API_KEY ||
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    try {
+      const geminiResult = await this.callGeminiScoreLead({
+        name,
+        email,
+        phone,
+        service,
+        budget,
+        message,
+        company,
+      });
 
-    if (apiKey) {
-      try {
-        const geminiResult = await this.callGeminiScoreLead(apiKey, {
-          name,
-          email,
-          phone,
-          service,
-          budget,
-          message,
-          company,
-        });
-
-        if (geminiResult) {
-          this.logger.log(
-            `[AI_SCORE_LEAD] Gemini thẩm định thành công: ${name} (${geminiResult.score}/100 - ${geminiResult.tier})`,
-          );
-          return {
-            success: true,
-            ...geminiResult,
-            data: geminiResult,
-            source: 'gemini',
-          };
-        }
-      } catch (geminiError: any) {
-        this.logger.warn(
-          `[AI_SCORE_LEAD] Gemini API gặp lỗi hoặc timeout, kích hoạt Smart Fallback: ${
-            geminiError?.message || geminiError
-          }`,
+      if (geminiResult) {
+        this.logger.log(
+          `[AI_SCORE_LEAD] Gemini (${geminiResult.source}) thẩm định thành công: ${name} (${geminiResult.score}/100 - ${geminiResult.tier})`,
         );
+        return {
+          success: true,
+          ...geminiResult,
+          data: geminiResult,
+          source: geminiResult.source || 'gemini',
+        };
       }
-    } else {
+    } catch (geminiError: any) {
       this.logger.warn(
-        '[AI_SCORE_LEAD] Chưa cấu hình GEMINI_API_KEY, tự động chuyển sang Smart Fallback',
+        `[AI_SCORE_LEAD] Gemini API gặp sự cố, kích hoạt Smart Fallback: ${
+          geminiError?.message || geminiError
+        }`,
       );
     }
 
@@ -340,108 +333,67 @@ export class LeadsService {
     };
   }
 
-  private async callGeminiScoreLead(
-    apiKey: string,
-    params: {
-      name: string;
-      email: string;
-      phone: string;
-      service: string;
-      budget: string;
-      message: string;
-      company: string;
-    },
-  ): Promise<ScoreLeadResponse | null> {
-    const model = 'gemini-3.7-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
+  private async callGeminiScoreLead(params: {
+    name: string;
+    email: string;
+    phone: string;
+    service: string;
+    budget: string;
+    message: string;
+    company: string;
+  }): Promise<(ScoreLeadResponse & { source?: string }) | null> {
     const systemPrompt = `
 Bạn là Giám đốc Kinh doanh B2B cấp cao của S-Digital Media & Sports - tổ hợp Tiếp thị số & Giải pháp Thể thao hàng đầu Việt Nam.
-Nhiệm vụ của bạn là thẩm định chất lượng khách hàng tiềm năng (AI Lead Scoring) để tối ưu hóa nguồn lực chuyển đổi của đội ngũ sales B2B.
+Nhiệm vụ: Thẩm định chất lượng khách hàng tiềm năng (AI Lead Scoring) để tối ưu hóa nguồn lực chuyển đổi.
 
-TIÊU CHÍ ĐÁNH GIÁ VÀ TRỌNG SỐ:
-1. Thông tin liên hệ và tính xác thực (25%): Có tên công ty rõ ràng, email doanh nghiệp (tên miền riêng), số điện thoại hợp lệ.
-2. Quy mô ngân sách và khả năng chi trả (35%):
-   - Ngân sách lớn (> 100 triệu hoặc gói Doanh nghiệp/Enterprise): Tiềm năng cao nhất.
-   - Ngân sách 35 - 100 triệu (Gói Growth / Chuyên nghiệp / Giải thể thao): Tiềm năng tốt.
-   - Ngân sách 15 - 35 triệu (Gói Starter): Khách hàng SME/Khởi nghiệp.
-   - Ngân sách không xác định hoặc dưới 15 triệu: Cần sàng lọc thêm.
-3. Nhu cầu dịch vụ và tính phù hợp với S-Digital (20%): Phù hợp với thế mạnh cốt lõi như Performance Marketing, Tổ chức giải chạy Marathon chuẩn quốc tế AIMS, Booking 100+ trọng tài AFC/FIBA, Booking KOLs/KOCs, TVC/Video viral 4K, Xử lý khủng hoảng truyền thông 24/7.
-4. Mức độ cấp thiết và chi tiết trong yêu cầu (20%): Nội dung tin nhắn chi tiết, có bài toán cụ thể, mục tiêu đo lường rõ ràng, thời hạn triển khai gấp.
-
-PHÂN CẤP KHÁCH HÀNG (TIER):
-- "HOT": Điểm 75 - 100. Khách hàng doanh nghiệp rõ ràng, ngân sách lớn hoặc nhu cầu rất cấp bách, đầy đủ thông tin liên hệ. Ưu tiên phản hồi trong 15 - 30 phút.
-- "WARM": Điểm 45 - 74. Có tiềm năng thực tế, thông tin cơ bản đầy đủ, ngân sách tầm trung hoặc đang tìm hiểu giải pháp, cần tư vấn định hướng. Phản hồi trong 2 giờ.
-- "COLD": Điểm 0 - 44. Thông tin liên hệ sơ sài (thiếu SĐT hoặc công ty), ngân sách quá thấp, nội dung mơ hồ hoặc dấu hiệu thử nghiệm/spam. Chăm sóc tự động qua email.
+TIÊU CHÍ ĐÁNH GIÁ (0 - 100):
+- HOT (75 - 100): Doanh nghiệp rõ ràng, ngân sách > 50-100tr hoặc rất cấp bách. Phản hồi trong 15-30 phút.
+- WARM (45 - 74): Có tiềm năng thực tế, ngân sách 15-50tr hoặc cần tư vấn định hướng. Phản hồi trong 2 giờ.
+- COLD (0 - 44): Thông tin sơ sài, ngân sách thấp, nhu cầu chưa rõ. Chăm sóc tự động qua email.
 
 QUY TẮC BẮT BUỘC:
-1. Tuyệt đối không sử dụng bất kỳ icon robot hay biểu tượng emoji nào trong toàn bộ nội dung.
+1. Tuyệt đối không dùng bất kỳ emoji hay icon robot nào.
 2. Trả về đúng định dạng JSON thuần túy theo cấu trúc:
 {
-  "score": number, // Số nguyên từ 0 đến 100
+  "score": number,
   "tier": "HOT" | "WARM" | "COLD",
-  "summary": string, // Nhận định nhu cầu khách
-  "actionPlan": string, // Kịch bản hành động cho Sales (liên hệ trong 15p, gửi brochure,...)
-  "estimatedValue": string // Giá trị hợp đồng ước tính
+  "summary": string,
+  "actionPlan": string,
+  "estimatedValue": string
 }
 `.trim();
 
-    const userContent = `
-Hồ sơ khách hàng tiềm năng gửi yêu cầu tư vấn:
-- Họ và tên: ${params.name}
-- Tên công ty / Tổ chức: ${params.company || 'Chưa cung cấp'}
+    const userPrompt = `
+Hồ sơ khách hàng tiềm năng:
+- Họ tên: ${params.name}
+- Công ty: ${params.company || 'Chưa cung cấp'}
 - Email: ${params.email || 'Chưa cung cấp'}
-- Số điện thoại: ${params.phone || 'Chưa cung cấp'}
-- Dịch vụ quan tâm: ${params.service}
-- Mức ngân sách dự kiến: ${params.budget}
-- Nội dung yêu cầu / Lời nhắn: ${params.message || 'Không có lời nhắn bổ sung'}
+- SĐT: ${params.phone || 'Chưa cung cấp'}
+- Dịch vụ: ${params.service}
+- Ngân sách: ${params.budget}
+- Lời nhắn: ${params.message || 'Không có'}
 
-Hãy thực hiện thẩm định toàn diện và xuất kết quả theo định dạng JSON yêu cầu.
+Hãy thẩm định và trả về JSON theo yêu cầu.
 `.trim();
 
-    const payload = {
-      system_instruction: {
-        parts: [{ text: systemPrompt }],
-      },
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: userContent }],
-        },
-      ],
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.2,
-        maxOutputTokens: 1000,
-      },
+    const result = await this.geminiService.generateContent({
+      systemInstruction: systemPrompt,
+      prompt: userPrompt,
+      temperature: 0.2,
+      maxOutputTokens: 250,
+      responseMimeType: 'application/json',
+      timeoutMs: 25000,
+    });
+
+    if (!result || !result.text) return null;
+
+    const parsed = this.parseGeminiScoreResponse(result.text);
+    if (!parsed) return null;
+
+    return {
+      ...parsed,
+      source: result.model,
     };
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(30000),
-      });
-
-      if (!response.ok) {
-        const errorBody = await response.text().catch(() => '');
-        this.logger.warn(`[AI_SCORE_LEAD] Gemini API trả mã lỗi [${response.status}]: ${errorBody}`);
-        return null;
-      }
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      return this.parseGeminiScoreResponse(rawText);
-    } catch (err: any) {
-      this.logger.warn(
-        `[AI_SCORE_LEAD] Lỗi mạng hoặc timeout khi gọi Gemini API (Timeout 30s): ${err?.message || err}`,
-      );
-      return null;
-    }
   }
 
   private parseGeminiScoreResponse(rawText?: string): ScoreLeadResponse | null {

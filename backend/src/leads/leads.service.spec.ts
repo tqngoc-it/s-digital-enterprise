@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LeadsService } from './leads.service';
 import { SupabaseService } from '../supabase/supabase.service';
+import { GeminiService } from '../gemini/gemini.service';
 
 describe('LeadsService', () => {
   let service: LeadsService;
@@ -19,6 +20,12 @@ describe('LeadsService', () => {
               single: jest.fn().mockResolvedValue({ data: {}, error: null }),
               order: jest.fn().mockResolvedValue({ data: [], error: null }),
             },
+          },
+        },
+        {
+          provide: GeminiService,
+          useValue: {
+            generateContent: jest.fn().mockResolvedValue(null),
           },
         },
       ],

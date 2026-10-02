@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { callGeminiFailover } from '@/lib/ai/geminiEngine';
 
 export interface RecommendRequest {
   industry: string;
@@ -26,28 +27,17 @@ export async function POST(req: NextRequest) {
       note: body.note || '',
     };
 
-    const apiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.GOOGLE_API_KEY ||
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-
-    // 1. Thử gọi Google Gemini API nếu có API Key
-    if (apiKey) {
-      try {
-        const geminiResult = await callGeminiRecommendation(apiKey, payload);
-        if (geminiResult) {
-          return NextResponse.json({
-            success: true,
-            data: geminiResult,
-            source: 'gemini-3.7-flash',
-          });
-        }
-      } catch (geminiError) {
-        console.warn('[GEMINI_RECOMMEND] Chuyển thẳng sang Smart Fallback nội bộ:', geminiError);
-      }
+    // 1. Gọi Gemini Failover Engine tập trung (gemini-3.5-flash-lite -> gemini-3.1-flash-lite)
+    const geminiResult = await callGeminiRecommendation(payload);
+    if (geminiResult) {
+      return NextResponse.json({
+        success: true,
+        data: geminiResult.data,
+        source: geminiResult.model,
+      });
     }
 
-    // 2. Cơ chế chuẩn: Lượt gọi gemini-3.7-flash thất bại -> chuyển thẳng lập tức sang hàm computeSmartFallback(payload) nội bộ mà không gọi thêm bất kỳ request API nào khác.
+    // 2. Dự phòng an toàn: Trả về bản phân tích định hướng cơ bản theo gói dịch vụ phổ biến nhất
     const fallbackData = computeSmartFallback(payload);
     return NextResponse.json({
       success: true,
@@ -55,7 +45,7 @@ export async function POST(req: NextRequest) {
       source: 'smart-fallback',
     });
   } catch (error: any) {
-    console.error('Lỗi xử lý recommend API:', error);
+    console.warn('[RECOMMEND_API] Xử lý sự cố với fallback an toàn:', error?.message || error);
     const safeData = computeSmartFallback({
       industry: 'Doanh nghiệp',
       goal: 'Tăng doanh số',
@@ -71,29 +61,26 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Gọi Google Gemini API (gemini-3.7-flash) với prompt phân tích chiến lược
+ * Gọi Gemini Failover Engine với prompt phân tích nhu cầu và bóc tách gói dịch vụ
+ * generationConfig: { temperature: 0.3, maxOutputTokens: 800, responseMimeType: "application/json" }
  */
 async function callGeminiRecommendation(
-  apiKey: string,
   params: RecommendRequest
-): Promise<RecommendationResult | null> {
-  const model = 'gemini-3.7-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
+): Promise<{ data: RecommendationResult; model: string } | null> {
   const systemInstruction = `
 Bạn là Chuyên gia Hoạch định Chiến lược Cấp cao của S-Digital Media & Sports.
-Nhiệm vụ của bạn: Phân tích bài toán kinh doanh của khách hàng và đề xuất gói giải pháp tối ưu nhất dựa trên dữ liệu thực tế của S-Digital.
+Nhiệm vụ của bạn: Bóc tách mục tiêu kinh doanh (Tăng nhận diện thương hiệu, Tăng trưởng doanh số, Tổ chức giải chạy Marathon, Mạng lưới trọng tài, Xử lý khủng hoảng...) và đề xuất gói dịch vụ phù hợp nhất từ hệ sinh thái S-Digital.
 
 DỮ LIỆU DỊCH VỤ VÀ BẢNG GIÁ THỰC TẾ S-DIGITAL:
-- Gói Cơ Bản (Starter): Từ 15.000.000 VNĐ/tháng. Phù hợp cho ngân sách dưới 20 triệu, SME & Startup. Triển khai Google/Facebook Ads cơ bản, 12 bài viết fanpage, báo cáo tháng.
+- Gói Cơ Bản (Starter): Từ 15.000.000 VNĐ/tháng. Phù hợp cho ngân sách dưới 20 triệu, SME & Startup. Chạy Google/Facebook Ads cơ bản, 12 bài viết fanpage, báo cáo tháng.
 - Gói Chuyên Nghiệp (Growth - Phổ biến nhất): Từ 35.000.000 VNĐ/tháng. Phù hợp cho ngân sách 20 - 50 triệu và 50 - 100 triệu. Tối ưu đa kênh Meta, Google, TikTok Ads; sản xuất 4 video ngắn + TVC; booking 3-5 KOLs/KOCs; tối ưu SEO và Landing Page; Dashboard realtime 24/7.
 - Gói Doanh Nghiệp (Enterprise): May đo riêng (thường > 100 triệu). Trọn gói Omni-channel, chiến lược thương hiệu độc quyền, dedicated account team.
 - Dịch vụ Giải pháp Thể thao: Tổ chức giải chạy Marathon (chuẩn quốc tế AIMS, hệ thống chip timing điện tử), giải bóng đá doanh nghiệp, đại hội thể thao đa môn, cung cấp 100+ trọng tài quốc tế AFC/FIBA, học viện thể thao.
-- Dịch vụ Xử lý Khủng hoảng Truyền thông 24/7: Phản ứng nhanh trong 30 phút, dập tắt rủi ro truyền thông.
+- Dịch vụ Xử lý Khủng hoảng Truyền thông 24/7: Phản ứng nhanh trong 30 phút, bảo vệ danh tiếng thương hiệu an toàn tuyệt đối.
 
 QUY TẮC BẮT BUỘC:
 1. TUYỆT ĐỐI KHÔNG SỬ DỤNG BẤT KỲ EMOJI NÀO TRONG VĂN BẢN TRẢ VỀ.
-2. Trả về đúng định dạng JSON thuần túy, không thừa ký tự, theo cấu trúc schema sau:
+2. Trả về đúng định dạng JSON thuần túy theo cấu trúc:
 {
   "recommendedPlan": string,
   "estimatedBudget": string,
@@ -114,43 +101,24 @@ Dữ liệu khách hàng cung cấp:
 Hãy phân tích bài toán và trả về JSON đề xuất giải pháp tối ưu nhất.
 `.trim();
 
-  const payload = {
-    system_instruction: {
-      parts: [{ text: systemInstruction }],
-    },
-    contents: [
-      {
-        role: 'user',
-        parts: [{ text: userPrompt }],
-      },
-    ],
-    generationConfig: {
-      temperature: 0.4,
-      maxOutputTokens: 1000,
-      responseMimeType: 'application/json',
-    },
+  const result = await callGeminiFailover({
+    systemInstruction,
+    prompt: userPrompt,
+    temperature: 0.3,
+    maxOutputTokens: 800,
+    responseMimeType: 'application/json',
+    timeoutMs: 25000,
+  });
+
+  if (!result || !result.text) return null;
+
+  const parsed = parseJsonResult(result.text);
+  if (!parsed) return null;
+
+  return {
+    data: parsed,
+    model: result.model,
   };
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(20000),
-    });
-
-    if (!response.ok) {
-      console.warn(`[GEMINI_RECOMMEND] Gemini API trả mã lỗi: ${response.status}`);
-      return null;
-    }
-
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return parseJsonResult(text);
-  } catch (err: any) {
-    console.warn(`[GEMINI_RECOMMEND] Lỗi kết nối hoặc timeout khi gọi Gemini:`, err?.message || err);
-    return null;
-  }
 }
 
 function parseJsonResult(rawText?: string): RecommendationResult | null {
@@ -171,7 +139,7 @@ function parseJsonResult(rawText?: string): RecommendationResult | null {
 }
 
 /**
- * Ma trận logic định sẵn để fallback chuẩn xác và đảm bảo không có emoji
+ * Ma trận logic định sẵn để fallback chuẩn xác theo gói phổ biến nhất
  */
 function computeSmartFallback(
   industryOrPayload: string | RecommendRequest,
@@ -291,11 +259,11 @@ function computeSmartFallback(
     };
   }
 
-  // Nhánh 5: Ngân sách 20-50tr hoặc 50-100tr (Mặc định tiêu chuẩn) -> Gói Chuyên Nghiệp (Growth)
+  // Nhánh 5: Mặc định theo Gói Phổ Biến Nhất -> Gói Chuyên Nghiệp (Growth)
   return {
-    recommendedPlan: 'Gói Chuyên Nghiệp (Growth - Đề xuất tối ưu)',
+    recommendedPlan: 'Gói Chuyên Nghiệp (Growth - Đề xuất phổ biến nhất)',
     estimatedBudget: 'Từ 35.000.000 VNĐ/tháng',
-    analysis: `Đối với mục tiêu ${goal} trong ngành ${industry} với ngân sách ${budget}, Gói Chuyên Nghiệp (Growth) mang lại tỷ suất hoàn vốn ROI cao nhất. Gói này kết hợp đồng thời quảng cáo chuyển đổi đa kênh (Meta, Google, TikTok), sản xuất video ngắn viral và tối ưu tỷ lệ chuyển đổi trên trang web.`,
+    analysis: `Đối với mục tiêu ${goal} trong ngành ${industry} với ngân sách ${budget}, Gói Chuyên Nghiệp (Growth) là gói dịch vụ phổ biến nhất mang lại tỷ suất hoàn vốn ROI cao nhất. Gói này kết hợp đồng thời quảng cáo chuyển đổi đa kênh (Meta, Google, TikTok), sản xuất video ngắn viral và tối ưu tỷ lệ chuyển đổi trên trang web.`,
     keyDeliverables: [
       'Tối ưu chiến dịch quảng cáo đa nền tảng (Google, Meta, TikTok) tối đa hóa ROAS',
       'Sản xuất 4 video ngắn chuẩn định dạng Reels/TikTok và 1 TVC ngắn hàng tháng',

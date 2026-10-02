@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  SDIGITAL_SYSTEM_PROMPT,
-  getSmartFallbackResponse,
-} from '@/lib/ai/knowledgeBase';
+import { SDIGITAL_SYSTEM_PROMPT } from '@/lib/ai/knowledgeBase';
+import { callGeminiFailover } from '@/lib/ai/geminiEngine';
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
+
+const BOT_SYSTEM_PROMPT = `
+Bạn là Chuyên viên tư vấn giải pháp MarTech & Thể thao của S-Digital (S-Digital Consultant) - trực chiến tư vấn 24/7 cho khách hàng doanh nghiệp và đối tác.
+
+${SDIGITAL_SYSTEM_PROMPT}
+
+PHONG CÁCH VÀ NGUYÊN TẮC:
+- Định danh rõ ràng: Chuyên viên tư vấn giải pháp MarTech & Thể thao của S-Digital.
+- Trả lời tự nhiên, nhiệt tình, có điểm nhấn chuyên môn (tối ưu ROI, cam kết KPI, chuẩn thi đấu AIMS/AFC).
+- Luôn kêu gọi hành động: Mời khách để lại SĐT hoặc gọi Hotline 0826 868 979 để nhận đề xuất và bảng giá chi tiết trong 15-30 phút.
+`.trim();
+
+const NETWORK_ERROR_FALLBACK =
+  'Hệ thống AI đang tiếp nhận lượng câu hỏi lớn. Quý khách vui lòng để lại số điện thoại hoặc liên hệ trực tiếp hotline để được hỗ trợ tức thì.';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,102 +33,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Lấy tin nhắn người dùng gần nhất để xử lý fallback
-    const userMessages = messages.filter((m) => m.role === 'user');
-    const lastUserMessage = userMessages[userMessages.length - 1]?.content || '';
+    const validMessages = messages.filter(
+      (m) => m.role === 'user' || m.role === 'assistant'
+    );
 
-    // Lấy API Key
-    const geminiApiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.GOOGLE_API_KEY ||
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    // Gọi Gemini Failover Engine tập trung: gemini-3.5-flash-lite -> gemini-3.1-flash-lite
+    const geminiResult = await callGeminiFailover({
+      systemInstruction: BOT_SYSTEM_PROMPT,
+      contents: validMessages.map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      })),
+      temperature: 0.7,
+      maxOutputTokens: 600,
+      timeoutMs: 20000,
+    });
 
-    // 1. Thử kết nối Google Gemini API (gemini-3.7-flash)
-    if (geminiApiKey) {
-      const geminiResponse = await callGeminiChat(geminiApiKey, messages);
-      if (geminiResponse) {
-        return NextResponse.json({
-          success: true,
-          reply: geminiResponse,
-          source: 'gemini-3.7-flash',
-        });
-      }
+    if (geminiResult && geminiResult.text) {
+      return NextResponse.json({
+        success: true,
+        reply: geminiResult.text,
+        source: geminiResult.model,
+      });
     }
 
-    // 2. Chuyển thẳng vào Smart Fallback nội bộ để trả lời khách ngay mà không ném exception
-    const fallbackReply = getSmartFallbackResponse(lastUserMessage);
+    // Dự phòng khi lỗi mạng hoặc toàn bộ models bận
     return NextResponse.json({
       success: true,
-      reply: fallbackReply,
-      source: 'smart-fallback',
+      reply: NETWORK_ERROR_FALLBACK,
+      source: 'network-fallback',
     });
   } catch (error: any) {
-    console.warn('[CHAT_API] Xử lý an toàn với Smart Fallback:', error?.message || error);
-    const safeReply = getSmartFallbackResponse('');
+    console.warn('[CHAT_API] Xử lý an toàn với fallback:', error?.message || error);
     return NextResponse.json({
       success: true,
-      reply: safeReply,
-      source: 'smart-fallback',
+      reply: NETWORK_ERROR_FALLBACK,
+      source: 'network-fallback',
     });
-  }
-}
-
-/**
- * Gọi Google Gemini API bằng REST endpoint chuẩn duy nhất với model gemini-3.7-flash
- */
-async function callGeminiChat(apiKey: string, messages: ChatMessage[]): Promise<string | null> {
-  const model = 'gemini-3.7-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-  const contents = messages
-    .filter((m) => m.role === 'user' || m.role === 'assistant')
-    .map((m) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }));
-
-  const payload = {
-    system_instruction: {
-      parts: [{ text: SDIGITAL_SYSTEM_PROMPT }],
-    },
-    contents: contents,
-    generationConfig: {
-      temperature: 0.7,
-      topP: 0.9,
-      maxOutputTokens: 1000,
-    },
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      // Tăng timeout lên 20000ms (20 giây)
-      signal: AbortSignal.timeout(20000),
-    });
-
-    // Nếu gặp mã 503 (High demand) hoặc lỗi HTTP -> cảnh báo nhẹ và trả về null để kích hoạt Smart Fallback
-    if (response.status === 503) {
-      console.warn('[GEMINI_CHAT] Gemini API 503 Service Unavailable (High demand), kích hoạt Smart Fallback');
-      return null;
-    }
-
-    if (!response.ok) {
-      console.warn(`[GEMINI_CHAT] Gemini API trả mã lỗi: ${response.status}, kích hoạt Smart Fallback`);
-      return null;
-    }
-
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return text || null;
-  } catch (err: any) {
-    // Bắt lỗi timeout hoặc sự cố mạng -> ghi warn nhẹ, không throw exception làm đỏ console
-    console.warn(
-      `[GEMINI_CHAT] Kết nối Gemini gặp lỗi hoặc timeout (20s): ${err?.message || err}, kích hoạt Smart Fallback`
-    );
-    return null;
   }
 }
