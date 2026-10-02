@@ -85,7 +85,7 @@ function SortablePartnerRow({
           : 'hover:bg-white/[0.02]'
       }`}
     >
-      <td className="py-4 px-6 font-bold text-white">
+      <td className="py-4 px-6 font-bold text-white min-w-[180px]">
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -101,12 +101,12 @@ function SortablePartnerRow({
               p.type === 'CUSTOMER' ? 'bg-[#FF5722]' : 'bg-[#00E5FF]'
             }`}
           />
-          <span>{p.name}</span>
+          <span className="whitespace-nowrap">{p.name}</span>
         </div>
       </td>
-      <td className="py-4 px-6">
+      <td className="py-4 px-6 w-[150px] min-w-[150px] whitespace-nowrap">
         <span
-          className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase ${
+          className={`whitespace-nowrap shrink-0 inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase ${
             p.type === 'CUSTOMER'
               ? 'bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20'
               : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20'
@@ -115,21 +115,21 @@ function SortablePartnerRow({
           {p.type === 'CUSTOMER' ? 'Khách Hàng' : 'Đối Tác Chiến Lược'}
         </span>
       </td>
-      <td className="py-4 px-6 text-slate-300">{p.industry || '---'}</td>
-      <td className="py-4 px-6">
+      <td className="py-4 px-6 text-slate-300 min-w-[180px] whitespace-nowrap">{p.industry || '---'}</td>
+      <td className="py-4 px-6 w-[80px] min-w-[80px] text-center whitespace-nowrap">
         <span className="px-2.5 py-1 rounded-lg bg-orange-500/10 text-[#FF5722] font-mono font-bold border border-[#FF5722]/20 text-xs inline-block">
           #{realIdx + 1}
         </span>
       </td>
-      <td className="py-4 px-6 text-right">
-        <div className="flex items-center justify-end gap-1.5">
+      <td className="py-4 px-6 text-right w-[150px] min-w-[150px] whitespace-nowrap">
+        <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
           {/* CỤM NÚT ĐIỀU HƯỚNG LÊN / XUỐNG */}
-          <div className="flex items-center gap-1 mr-1">
+          <div className="flex items-center gap-1 mr-1 shrink-0">
             <button
               type="button"
               disabled={realIdx === 0}
               onClick={() => onMove(realIdx, 'UP')}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer"
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer shrink-0"
               title="Di chuyển lên trước"
             >
               <ArrowUp className="w-3.5 h-3.5" />
@@ -138,7 +138,7 @@ function SortablePartnerRow({
               type="button"
               disabled={realIdx === totalLength - 1}
               onClick={() => onMove(realIdx, 'DOWN')}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer"
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer shrink-0"
               title="Di chuyển xuống sau"
             >
               <ArrowDown className="w-3.5 h-3.5" />
@@ -147,7 +147,7 @@ function SortablePartnerRow({
 
           <button
             onClick={() => onEdit(p)}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer shrink-0"
             title="Sửa"
           >
             <Edit2 className="w-3.5 h-3.5" />
@@ -155,7 +155,7 @@ function SortablePartnerRow({
           {p.id && (
             <button
               onClick={() => onDelete(p.id)}
-              className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 cursor-pointer"
+              className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 cursor-pointer shrink-0"
               title="Xóa"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -379,89 +379,91 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
       </div>
 
       {/* TABLE */}
-      <div className="rounded-2xl bg-[#0B0F19] border border-white/10 overflow-x-auto shadow-xl">
-        {mounted ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <table className="w-full min-w-[650px] text-left text-xs">
+      <div className="rounded-2xl bg-[#0B0F19] border border-white/10 shadow-xl overflow-hidden">
+        <div className="w-full overflow-x-auto pb-4">
+          {mounted ? (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <table className="w-full min-w-[720px] text-left border-collapse text-xs">
+                <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th className="py-4 px-6 font-semibold min-w-[180px]">Tên Thương Hiệu</th>
+                    <th className="py-4 px-6 font-semibold w-[150px] min-w-[150px] whitespace-nowrap">Phân Loại</th>
+                    <th className="py-4 px-6 font-semibold min-w-[180px]">Ngành Nghề / Lĩnh Vực</th>
+                    <th className="py-4 px-6 font-semibold w-[80px] min-w-[80px] text-center">Thứ Tự</th>
+                    <th className="py-4 px-6 font-semibold text-right w-[150px] min-w-[150px] whitespace-nowrap">Thao Tác</th>
+                  </tr>
+                </thead>
+                <SortableContext
+                  items={filteredPartners.map((p, idx) => String(p.id || `partner-${idx}-${p.name}`))}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <tbody className="divide-y divide-white/5">
+                    {filteredPartners.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-12 text-center text-slate-400">
+                          Không tìm thấy đối tác / khách hàng nào.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredPartners.map((p, idx) => {
+                        const fullIdx = partners.findIndex((item) => item.id === p.id);
+                        const realIdx = fullIdx !== -1 ? fullIdx : idx;
+
+                        return (
+                          <SortablePartnerRow
+                            key={p.id || `partner-${idx}-${p.name}`}
+                            p={p}
+                            idx={idx}
+                            realIdx={realIdx}
+                            totalLength={partners.length}
+                            onEdit={setEditingPartner}
+                            onDelete={handleDelete}
+                            onMove={handleMove}
+                          />
+                        );
+                      })
+                    )}
+                  </tbody>
+                </SortableContext>
+              </table>
+            </DndContext>
+          ) : (
+            <table className="w-full min-w-[720px] text-left border-collapse text-xs">
               <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th className="py-4 px-6 font-semibold">Tên Thương Hiệu</th>
-                  <th className="py-4 px-6 font-semibold">Phân Loại</th>
-                  <th className="py-4 px-6 font-semibold">Ngành Nghề / Lĩnh Vực</th>
-                  <th className="py-4 px-6 font-semibold">Thứ Tự</th>
-                  <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
+                  <th className="py-4 px-6 font-semibold min-w-[180px]">Tên Thương Hiệu</th>
+                  <th className="py-4 px-6 font-semibold w-[150px] min-w-[150px] whitespace-nowrap">Phân Loại</th>
+                  <th className="py-4 px-6 font-semibold min-w-[180px]">Ngành Nghề / Lĩnh Vực</th>
+                  <th className="py-4 px-6 font-semibold w-[80px] min-w-[80px] text-center">Thứ Tự</th>
+                  <th className="py-4 px-6 font-semibold text-right w-[150px] min-w-[150px] whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <SortableContext
-                items={filteredPartners.map((p, idx) => String(p.id || `partner-${idx}-${p.name}`))}
-                strategy={verticalListSortingStrategy}
-              >
-                <tbody className="divide-y divide-white/5">
-                  {filteredPartners.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400">
-                        Không tìm thấy đối tác / khách hàng nào.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredPartners.map((p, idx) => {
-                      const fullIdx = partners.findIndex((item) => item.id === p.id);
-                      const realIdx = fullIdx !== -1 ? fullIdx : idx;
+              <tbody className="divide-y divide-white/5">
+                {filteredPartners.map((p, idx) => {
+                  const fullIdx = partners.findIndex((item) => item.id === p.id);
+                  const realIdx = fullIdx !== -1 ? fullIdx : idx;
 
-                      return (
-                        <SortablePartnerRow
-                          key={p.id || `partner-${idx}-${p.name}`}
-                          p={p}
-                          idx={idx}
-                          realIdx={realIdx}
-                          totalLength={partners.length}
-                          onEdit={setEditingPartner}
-                          onDelete={handleDelete}
-                          onMove={handleMove}
-                        />
-                      );
-                    })
-                  )}
-                </tbody>
-              </SortableContext>
+                  return (
+                    <SortablePartnerRow
+                      key={p.id || `partner-${idx}-${p.name}`}
+                      p={p}
+                      idx={idx}
+                      realIdx={realIdx}
+                      totalLength={partners.length}
+                      onEdit={setEditingPartner}
+                      onDelete={handleDelete}
+                      onMove={handleMove}
+                    />
+                  );
+                })}
+              </tbody>
             </table>
-          </DndContext>
-        ) : (
-          <table className="w-full min-w-[650px] text-left text-xs">
-            <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
-              <tr>
-                <th className="py-4 px-6 font-semibold">Tên Thương Hiệu</th>
-                <th className="py-4 px-6 font-semibold">Phân Loại</th>
-                <th className="py-4 px-6 font-semibold">Ngành Nghề / Lĩnh Vực</th>
-                <th className="py-4 px-6 font-semibold">Thứ Tự</th>
-                <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredPartners.map((p, idx) => {
-                const fullIdx = partners.findIndex((item) => item.id === p.id);
-                const realIdx = fullIdx !== -1 ? fullIdx : idx;
-
-                return (
-                  <SortablePartnerRow
-                    key={p.id || `partner-${idx}-${p.name}`}
-                    p={p}
-                    idx={idx}
-                    realIdx={realIdx}
-                    totalLength={partners.length}
-                    onEdit={setEditingPartner}
-                    onDelete={handleDelete}
-                    onMove={handleMove}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+          )}
+        </div>
       </div>
 
       {/* CREATE MODAL */}

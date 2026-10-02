@@ -81,14 +81,15 @@ function SortableCaseStudyCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`p-8 rounded-3xl bg-[#0B0F19] border flex flex-col justify-between space-y-6 ${
+      className={`p-6 md:p-7 rounded-3xl bg-[#0B0F19] border flex flex-col justify-between space-y-6 ${
         isDragging
           ? 'opacity-80 ring-2 ring-[#FF5722] shadow-2xl z-50 scale-[1.02] bg-[#0E1322]'
           : 'border-white/10 hover:border-white/20'
       }`}
     >
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        {/* DÒNG 1: DRAG HANDLE + BADGE THỨ TỰ BÊN TRÁI; BADGE TRẠNG THÁI BÊN PHẢI */}
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -102,16 +103,21 @@ function SortableCaseStudyCard({
             <span className="text-[10px] font-mono font-bold text-[#FF5722] uppercase px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
               #{idx + 1}
             </span>
-            <span className="text-[10px] font-mono font-bold text-[#FF5722] uppercase px-3 py-1 rounded-full bg-[#FF5722]/10 border border-[#FF5722]/20">
-              {s.client_name}
-            </span>
           </div>
           {s.is_featured && (
-            <span className="text-[10px] font-mono text-emerald-400 font-bold">★ Tiêu Biểu</span>
+            <span className="text-[10px] font-mono text-emerald-400 font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shrink-0">
+              ★ Tiêu Biểu
+            </span>
           )}
         </div>
 
-        <h3 className="text-xl font-black text-white">{s.title}</h3>
+        {/* DÒNG 2: TÊN KHÁCH HÀNG / ĐỐI TÁC */}
+        <div className="text-xs font-medium text-orange-400/90 tracking-wide uppercase">
+          {s.client_name}
+        </div>
+
+        {/* DÒNG 3: TIÊU ĐỀ DỰ ÁN */}
+        <h3 className="text-base font-bold text-white leading-snug">{s.title}</h3>
 
         <div className="space-y-2 text-xs text-slate-300">
           <p>
@@ -126,18 +132,16 @@ function SortableCaseStudyCard({
 
         {/* CỤM 3 CHỈ SỐ LINH HOẠT TỪ RESULTS */}
         <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5 text-center">
-          <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-            <div className="text-xs font-black text-[#FF5722] truncate">{metrics[0]?.value}</div>
-            <div className="text-[10px] text-slate-500 truncate" title={metrics[0]?.label}>{metrics[0]?.label}</div>
-          </div>
-          <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-            <div className="text-xs font-black text-[#00E5FF] truncate">{metrics[1]?.value}</div>
-            <div className="text-[10px] text-slate-500 truncate" title={metrics[1]?.label}>{metrics[1]?.label}</div>
-          </div>
-          <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-            <div className="text-xs font-black text-emerald-400 truncate">{metrics[2]?.value}</div>
-            <div className="text-[10px] text-slate-500 truncate" title={metrics[2]?.label}>{metrics[2]?.label}</div>
-          </div>
+          {metrics.slice(0, 3).map((metric, mIdx) => (
+            <div key={mIdx} className="text-center p-2 rounded-lg bg-white/[0.03] border border-white/5">
+              <div className="text-sm font-bold text-orange-400 leading-tight">
+                {metric?.value}
+              </div>
+              <div className="text-[11px] text-zinc-400 mt-1 leading-tight break-words">
+                {metric?.label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -376,7 +380,7 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
             items={studies.map((s, idx) => String(s.id || s.slug || `casestudy-${idx}-${s.title}`))}
             strategy={rectSortingStrategy}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {studies.map((s, idx) => (
                 <SortableCaseStudyCard
                   key={s.id || s.slug || `casestudy-${idx}-${s.title}`}
@@ -392,7 +396,7 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
           </SortableContext>
         </DndContext>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {studies.map((s, idx) => (
             <SortableCaseStudyCard
               key={s.id || s.slug || `casestudy-${idx}-${s.title}`}

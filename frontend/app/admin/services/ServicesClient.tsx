@@ -175,12 +175,12 @@ function SortableServiceRow({
       {/* CATEGORY */}
       <td className="py-4 px-6">
         {isDigital ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20">
+          <span className="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Digital Suite</span>
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20">
+          <span className="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20">
             <Trophy className="w-3.5 h-3.5" />
             <span>Sports Hub</span>
           </span>
@@ -638,22 +638,22 @@ export default function ServicesClient({
 
       {/* SERVICES TABLE */}
       <div className="rounded-2xl bg-[#0B0F19] border border-white/10 overflow-hidden shadow-xl">
-        <div className="overflow-x-auto">
+        <div className="w-full overflow-x-auto pb-4">
           {mounted ? (
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}
             >
-              <table className="w-full min-w-[850px] text-left text-xs">
+              <table className="w-full min-w-[850px] text-left border-collapse text-xs">
                 <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
                   <tr>
-                    <th className="py-4 px-6 font-semibold">Tên Dịch Vụ & Slug</th>
-                    <th className="py-4 px-6 font-semibold">Nhóm Dịch Vụ</th>
-                    <th className="py-4 px-6 font-semibold">Mô Tả Ngắn & Bullet Points</th>
-                    <th className="py-4 px-4 font-semibold text-center">Thứ Tự</th>
-                    <th className="py-4 px-4 font-semibold text-center">Hiển Thị</th>
-                    <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
+                    <th className="py-4 px-6 font-semibold min-w-[200px]">Tên Dịch Vụ & Slug</th>
+                    <th className="py-4 px-6 font-semibold min-w-[150px] whitespace-nowrap">Nhóm Dịch Vụ</th>
+                    <th className="py-4 px-6 font-semibold min-w-[220px]">Mô Tả Ngắn & Bullet Points</th>
+                    <th className="py-4 px-4 font-semibold text-center w-[80px] min-w-[80px]">Thứ Tự</th>
+                    <th className="py-4 px-4 font-semibold text-center w-[90px] min-w-[90px]">Hiển Thị</th>
+                    <th className="py-4 px-6 font-semibold text-right w-[150px] min-w-[150px] whitespace-nowrap">Thao Tác</th>
                   </tr>
                 </thead>
                 <SortableContext
@@ -697,15 +697,15 @@ export default function ServicesClient({
               </table>
             </DndContext>
           ) : (
-            <table className="w-full min-w-[850px] text-left text-xs">
+            <table className="w-full min-w-[850px] text-left border-collapse text-xs">
               <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th className="py-4 px-6 font-semibold">Tên Dịch Vụ & Slug</th>
-                  <th className="py-4 px-6 font-semibold">Nhóm Dịch Vụ</th>
-                  <th className="py-4 px-6 font-semibold">Mô Tả Ngắn & Bullet Points</th>
-                  <th className="py-4 px-4 font-semibold text-center">Thứ Tự</th>
-                  <th className="py-4 px-4 font-semibold text-center">Hiển Thị</th>
-                  <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
+                  <th className="py-4 px-6 font-semibold min-w-[200px]">Tên Dịch Vụ & Slug</th>
+                  <th className="py-4 px-6 font-semibold min-w-[150px] whitespace-nowrap">Nhóm Dịch Vụ</th>
+                  <th className="py-4 px-6 font-semibold min-w-[220px]">Mô Tả Ngắn & Bullet Points</th>
+                  <th className="py-4 px-4 font-semibold text-center w-[80px] min-w-[80px]">Thứ Tự</th>
+                  <th className="py-4 px-4 font-semibold text-center w-[90px] min-w-[90px]">Hiển Thị</th>
+                  <th className="py-4 px-6 font-semibold text-right w-[150px] min-w-[150px] whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
