@@ -33,12 +33,36 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [tierFilter, setTierFilter] = useState('ALL');
+  const [sortBy, setSortBy] = useState<'PRIORITY' | 'NEWEST' | 'OLDEST' | 'SCORE_DESC'>('PRIORITY');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [scoringId, setScoringId] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<any | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
+  // Helper sao chép thông tin Lead
+  async function handleCopyLeadInfo(lead: any, e?: React.MouseEvent) {
+    if (e) e.stopPropagation();
+    const content = `[HỒ SƠ KHÁCH HÀNG S-DIGITAL]
+Họ tên: ${lead.full_name || 'Khách hàng'}
+Điện thoại: ${lead.phone || 'Chưa cung cấp'}
+Email: ${lead.email || 'Chưa cung cấp'}
+Công ty: ${lead.company_name || 'Chưa cung cấp'}
+Trạng thái: ${STATUS_CONFIG[lead.status]?.label || lead.status || 'Mới'}
+Đánh giá AI: ${lead.ai_tier || lead.aiTier || 'Chưa thẩm định'} (${lead.ai_score ?? lead.aiScore ?? 'N/A'}/100)
+Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
+
+    try {
+      await navigator.clipboard.writeText(content);
+      setNotification({
+        type: 'success',
+        message: `Đã sao chép thông tin khách hàng "${lead.full_name}" vào bộ nhớ tạm!`,
+      });
+    } catch {
+      alert('Không thể sao chép thông tin');
+    }
+  }
 
   // Cập nhật trạng thái xử lý Lead qua NestJS Backend
   async function handleStatusChange(id: string, newStatus: string) {
@@ -103,7 +127,6 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
     setNotification(null);
 
     try {
-      // Gọi endpoint rescore nếu lead đã có ID trong DB, ngược lại gọi score
       const endpoint = lead.id
         ? `${backendUrl}/api/leads/${lead.id}/rescore`
         : `${backendUrl}/api/leads/score`;
@@ -187,6 +210,37 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
     return matchSearch && matchStatus && matchTier;
   });
 
+  // Logic sắp xếp đa tiêu chí thông minh
+  const sortedLeads = [...filteredLeads].sort((a, b) => {
+    if (sortBy === 'NEWEST') {
+      return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    }
+    if (sortBy === 'OLDEST') {
+      return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    }
+    if (sortBy === 'SCORE_DESC') {
+      const scoreA = a.ai_score ?? a.aiScore ?? -1;
+      const scoreB = b.ai_score ?? b.aiScore ?? -1;
+      return scoreB - scoreA;
+    }
+    // Mặc định 'PRIORITY': HOT (3) -> WARM (2) -> COLD (1) -> UNSCORED (0), sau đó Score cao -> mới nhất
+    const tierWeight = (tier?: string) => {
+      if (tier === 'HOT') return 3;
+      if (tier === 'WARM') return 2;
+      if (tier === 'COLD') return 1;
+      return 0;
+    };
+    const tierA = tierWeight(a.ai_tier || a.aiTier);
+    const tierB = tierWeight(b.ai_tier || b.aiTier);
+    if (tierB !== tierA) return tierB - tierA;
+
+    const scoreA = a.ai_score ?? a.aiScore ?? 0;
+    const scoreB = b.ai_score ?? b.aiScore ?? 0;
+    if (scoreB !== scoreA) return scoreB - scoreA;
+
+    return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+  });
+
   return (
     <div className="space-y-6">
       {/* THÔNG BÁO HOẠT ĐỘNG */}
@@ -215,8 +269,8 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
         </div>
       )}
 
-      {/* FILTER & SEARCH */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+      {/* FILTER, SEARCH & SORT BAR */}
+      <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
@@ -229,16 +283,29 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* 1. THAY THẾ DROPDOWN BỘ LỌC */}
+          {/* SẮP XẾP ƯU TIÊN */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="p-2.5 rounded-xl bg-[#0B0F19] border border-[#FF5722]/30 text-xs text-[#FF5722] font-bold cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            title="Thứ tự hiển thị danh sách"
+          >
+            <option value="PRIORITY">⚡ Ưu tiên: HOT / Score cao + Mới</option>
+            <option value="NEWEST">🕒 Mới nhất trước</option>
+            <option value="SCORE_DESC">⭐ Điểm thẩm định cao nhất</option>
+            <option value="OLDEST">⏳ Cũ nhất trước</option>
+          </select>
+
+          {/* TIER FILTER */}
           <select
             value={tierFilter}
             onChange={(e) => setTierFilter(e.target.value)}
             className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
           >
-            <option value="ALL">Tất cả mức tiềm năng</option>
-            <option value="HOT">Tiềm năng cao</option>
-            <option value="WARM">Tiềm năng</option>
-            <option value="COLD">Ít tiềm năng</option>
+            <option value="ALL">Tất cả tiềm năng</option>
+            <option value="HOT">Tiềm năng cao (HOT)</option>
+            <option value="WARM">Tiềm năng (WARM)</option>
+            <option value="COLD">Ít tiềm năng (COLD)</option>
             <option value="UNSCORED">Chưa thẩm định</option>
           </select>
 
@@ -274,48 +341,108 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
       ) : (
         /* TABLE */
         <div className="rounded-2xl bg-[#0B0F19] border border-slate-800 overflow-x-auto shadow-xl">
-          <table className="w-full text-left text-xs text-slate-300">
+          <table className="w-full min-w-[1050px] text-left text-xs text-slate-300">
             <thead className="bg-[#090D18] border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="py-4 px-6 font-semibold">Khách Hàng</th>
-                <th className="py-4 px-6 font-semibold">Liên Hệ</th>
+                <th className="py-4 px-6 font-semibold">Liên Hệ & Thao Tác Nhanh</th>
                 <th className="py-4 px-6 font-semibold">Công Ty</th>
                 <th className="py-4 px-6 font-semibold">Lời Nhắn</th>
                 <th className="py-4 px-6 font-semibold text-center">Thẩm Định Chất Lượng</th>
-                <th className="py-4 px-6 font-semibold">Trạng Thái</th>
+                <th className="py-4 px-6 font-semibold">Trạng Thái Xử Lý</th>
                 <th className="py-4 px-6 font-semibold">Ngày Gửi</th>
                 <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/80">
-              {filteredLeads.length === 0 ? (
+              {sortedLeads.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-500">
                     Không tìm thấy dữ liệu Lead phù hợp với bộ lọc tìm kiếm.
                   </td>
                 </tr>
               ) : (
-                filteredLeads.map((lead) => {
+                sortedLeads.map((lead, idx) => {
                   const isScoring = scoringId === lead.id;
                   const score = lead.ai_score ?? lead.aiScore;
                   const tier = lead.ai_tier ?? lead.aiTier;
                   const hasScore = score !== undefined;
+                  const rawPhone = lead.phone?.replace(/[^0-9]/g, '') || '';
 
                   return (
                     <tr
-                      key={lead.id}
+                      key={lead.id || `lead-${idx}-${lead.email}`}
                       onClick={() => setSelectedLead(lead)}
                       className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
                     >
                       {/* KHÁCH HÀNG */}
                       <td className="py-4 px-6 font-bold text-white whitespace-nowrap group-hover:text-[#FF5722] transition-colors">
-                        {lead.full_name}
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full shrink-0 ${
+                              tier === 'HOT'
+                                ? 'bg-[#FF5722]'
+                                : tier === 'WARM'
+                                ? 'bg-amber-400'
+                                : 'bg-slate-500'
+                            }`}
+                          />
+                          <span>{lead.full_name}</span>
+                        </div>
                       </td>
 
-                      {/* LIÊN HỆ */}
-                      <td className="py-4 px-6 text-slate-300">
-                        <p className="font-medium text-white">{lead.email}</p>
-                        <p className="text-slate-500 text-[11px] font-mono">{lead.phone || 'Chưa cung cấp SĐT'}</p>
+                      {/* LIÊN HỆ & QUICK ACTIONS */}
+                      <td className="py-4 px-6 text-slate-300" onClick={(e) => e.stopPropagation()}>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2 font-medium text-white">
+                            <span className="truncate max-w-[160px]">{lead.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-400 text-[11px] font-mono">
+                            <span>{lead.phone || 'Chưa có SĐT'}</span>
+                          </div>
+
+                          {/* QUICK CONTACT ACTION BUTTONS */}
+                          <div className="flex items-center gap-1.5 pt-1">
+                            {lead.phone && (
+                              <a
+                                href={`tel:${lead.phone}`}
+                                className="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
+                                title="Gọi điện thoại trực tiếp"
+                              >
+                                <Phone className="w-2.5 h-2.5" />
+                                <span>Gọi</span>
+                              </a>
+                            )}
+                            {rawPhone && (
+                              <a
+                                href={`https://zalo.me/${rawPhone}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-2 py-0.5 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
+                                title="Mở chat Zalo với khách hàng"
+                              >
+                                <span>Zalo</span>
+                              </a>
+                            )}
+                            {lead.email && (
+                              <a
+                                href={`mailto:${lead.email}?subject=S-Digital%20T%C6%B0%20v%E1%BA%A5n%20d%E1%BB%8Bch%20v%E1%BB%A5`}
+                                className="px-2 py-0.5 rounded-md bg-[#FF5722]/10 hover:bg-[#FF5722]/20 text-[#FF5722] border border-[#FF5722]/20 text-[10px] font-bold flex items-center gap-1 transition-all"
+                                title="Gửi email phản hồi"
+                              >
+                                <Mail className="w-2.5 h-2.5" />
+                                <span>Email</span>
+                              </a>
+                            )}
+                            <button
+                              onClick={(e) => handleCopyLeadInfo(lead, e)}
+                              className="px-1.5 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5 text-[10px] transition-all"
+                              title="Sao chép toàn bộ thông tin Lead"
+                            >
+                              Copy
+                            </button>
+                          </div>
+                        </div>
                       </td>
 
                       {/* CÔNG TY */}
@@ -328,7 +455,7 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
                         {lead.message || lead.notes || '---'}
                       </td>
 
-                      {/* 2. CỘT THẨM ĐỊNH CHẤT LƯỢNG (ĐỔI NHÃN BADGE) */}
+                      {/* 2. CỘT THẨM ĐỊNH CHẤT LƯỢNG */}
                       <td className="py-4 px-6 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                         {isScoring ? (
                           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FF5722]/10 border border-[#FF5722]/30 text-[#FF5722] text-[11px] font-bold">
@@ -489,22 +616,85 @@ export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
 
             {/* MODAL BODY (SCROLLABLE) */}
             <div className="p-6 md:p-7 overflow-y-auto space-y-6">
-              {/* LIÊN HỆ */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-[#070A10] border border-slate-800">
-                <div className="flex items-center gap-2.5 text-slate-300">
-                  <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />
-                  <div className="overflow-hidden">
-                    <p className="text-[10px] text-slate-500 uppercase font-mono">Email</p>
-                    <p className="font-semibold text-white truncate">{selectedLead.email}</p>
+              {/* LIÊN HỆ & QUICK ACTIONS */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-[#070A10] border border-slate-800">
+                  <div className="flex items-center gap-2.5 text-slate-300">
+                    <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />
+                    <div className="overflow-hidden">
+                      <p className="text-[10px] text-slate-500 uppercase font-mono">Email</p>
+                      <p className="font-semibold text-white truncate">{selectedLead.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 text-slate-300">
+                    <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-mono">Số điện thoại</p>
+                      <p className="font-semibold text-white font-mono">{selectedLead.phone || 'Chưa cung cấp'}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 text-slate-300">
-                  <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <div>
-                    <p className="text-[10px] text-slate-500 uppercase font-mono">Số điện thoại</p>
-                    <p className="font-semibold text-white font-mono">{selectedLead.phone || 'Chưa cung cấp'}</p>
-                  </div>
+                {/* MODAL QUICK CONTACT ACTIONS BAR */}
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold mr-1">Liên hệ nhanh:</span>
+                  {selectedLead.phone && (
+                    <a
+                      href={`tel:${selectedLead.phone}`}
+                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Gọi {selectedLead.phone}</span>
+                    </a>
+                  )}
+                  {selectedLead.phone && (
+                    <a
+                      href={`https://zalo.me/${selectedLead.phone.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 border border-blue-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+                    >
+                      <span>Chat Zalo</span>
+                    </a>
+                  )}
+                  {selectedLead.email && (
+                    <a
+                      href={`mailto:${selectedLead.email}?subject=S-Digital%20T%C6%B0%20v%E1%BA%A5n%20d%E1%BB%8Bch%20v%E1%BB%A5`}
+                      className="px-3 py-1.5 rounded-xl bg-[#FF5722]/15 hover:bg-[#FF5722]/25 text-[#FF5722] border border-[#FF5722]/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Gửi Email</span>
+                    </a>
+                  )}
+                  <button
+                    onClick={() => handleCopyLeadInfo(selectedLead)}
+                    className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs font-bold flex items-center gap-1.5 transition-all"
+                  >
+                    <span>Sao chép hồ sơ</span>
+                  </button>
+                </div>
+
+                {/* MODAL STATUS WORKFLOW */}
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold mr-1">Cập nhật tiến độ:</span>
+                  {Object.entries(STATUS_CONFIG).map(([k, v]) => {
+                    const isCurrent = selectedLead.status === k;
+                    return (
+                      <button
+                        key={k}
+                        disabled={updatingId === selectedLead.id}
+                        onClick={() => handleStatusChange(selectedLead.id, k)}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          isCurrent
+                            ? `${v.color} ring-2 ring-white/20 shadow-md`
+                            : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        {v.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

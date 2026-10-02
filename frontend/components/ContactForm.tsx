@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Send, Loader2, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
 
+const VN_PHONE_REGEX = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -16,11 +19,20 @@ export default function ContactForm() {
   const [companyName, setCompanyName] = useState('');
   const [message, setMessage] = useState('');
 
+  // Per-field validation errors
+  const [fieldErrors, setFieldErrors] = useState<{
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    message?: string;
+  }>({});
+
   // Lắng nghe gợi ý từ AI ServiceRecommendationWizard
   useEffect(() => {
     const handleApplyRecommendation = (e: any) => {
       if (e.detail?.message) {
         setMessage(e.detail.message);
+        setFieldErrors((prev) => ({ ...prev, message: undefined }));
       }
     };
     window.addEventListener('sdigital:apply-recommendation', handleApplyRecommendation);
@@ -29,21 +41,55 @@ export default function ContactForm() {
     };
   }, []);
 
+  function validateFullName(val: string): string | undefined {
+    if (!val.trim()) return 'Vui lòng nhập họ và tên của bạn.';
+    return undefined;
+  }
+
+  function validateEmail(val: string): string | undefined {
+    if (!val.trim()) return 'Vui lòng nhập địa chỉ email.';
+    if (!EMAIL_REGEX.test(val.trim())) {
+      return 'Email không đúng định dạng (VD: example@domain.com).';
+    }
+    return undefined;
+  }
+
+  function validatePhone(val: string): string | undefined {
+    if (!val.trim()) return undefined; // Tùy chọn, nhưng nếu nhập thì phải chuẩn
+    const cleanPhone = val.replace(/[\s.-]/g, '').replace(/^\+/, '');
+    if (!VN_PHONE_REGEX.test(cleanPhone)) {
+      return 'Số điện thoại không hợp lệ (yêu cầu số ĐT Việt Nam 10 chữ số: 09x, 08x, 03x, 05x, 07x hoặc +84).';
+    }
+    return undefined;
+  }
+
+  function validateMessage(val: string): string | undefined {
+    if (!val.trim()) return 'Vui lòng nhập nội dung yêu cầu tư vấn.';
+    if (val.trim().length < 5) return 'Nội dung yêu cầu tư vấn tối thiểu 5 ký tự.';
+    return undefined;
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrorMessage(null);
 
-    // Client-side quick checks
-    if (!fullName.trim()) {
-      setErrorMessage('Vui lòng nhập họ và tên.');
-      return;
-    }
-    if (!email.trim() || !email.includes('@')) {
-      setErrorMessage('Vui lòng nhập địa chỉ email hợp lệ.');
-      return;
-    }
-    if (!message.trim() || message.trim().length < 5) {
-      setErrorMessage('Vui lòng nhập nội dung lời nhắn (tối thiểu 5 ký tự).');
+    // Validate all fields
+    const nameErr = validateFullName(fullName);
+    const emailErr = validateEmail(email);
+    const phoneErr = validatePhone(phone);
+    const msgErr = validateMessage(message);
+
+    const errors = {
+      fullName: nameErr,
+      email: emailErr,
+      phone: phoneErr,
+      message: msgErr,
+    };
+
+    setFieldErrors(errors);
+
+    if (nameErr || emailErr || phoneErr || msgErr) {
+      setErrorMessage('Vui lòng kiểm tra và sửa các thông tin chưa chính xác bên dưới.');
       return;
     }
 
@@ -51,13 +97,15 @@ export default function ContactForm() {
 
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      const cleanPhone = phone.trim() ? phone.trim().replace(/[\s.-]/g, '').replace(/^\+/, '') : undefined;
+
       const res = await fetch(`${backendUrl}/api/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           full_name: fullName.trim(),
           email: email.trim(),
-          phone: phone.trim() || undefined,
+          phone: cleanPhone,
           company_name: companyName.trim() || undefined,
           message: message.trim(),
         }),
@@ -74,6 +122,7 @@ export default function ContactForm() {
         setPhone('');
         setCompanyName('');
         setMessage('');
+        setFieldErrors({});
       } else {
         setErrorMessage(
           Array.isArray(data?.message)
@@ -123,7 +172,7 @@ export default function ContactForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4 text-xs">
           {/* HỌ VÀ TÊN & DOANH NGHIỆP */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -135,10 +184,28 @@ export default function ContactForm() {
                 name="full_name"
                 required
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  if (fieldErrors.fullName) {
+                    setFieldErrors((prev) => ({ ...prev, fullName: validateFullName(e.target.value) }));
+                  }
+                }}
+                onBlur={(e) => {
+                  setFieldErrors((prev) => ({ ...prev, fullName: validateFullName(e.target.value) }));
+                }}
                 placeholder="Nguyễn Văn A"
-                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-[#FF5722] transition-colors"
+                className={`w-full p-3.5 rounded-xl bg-[#060913] border text-white placeholder-slate-600 focus:outline-none transition-colors ${
+                  fieldErrors.fullName
+                    ? 'border-red-500/70 focus:border-red-500 bg-red-500/[0.02]'
+                    : 'border-white/10 focus:border-[#FF5722]'
+                }`}
               />
+              {fieldErrors.fullName && (
+                <p className="text-red-400 text-[11px] mt-1.5 flex items-center gap-1 animate-in fade-in duration-150">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.fullName}</span>
+                </p>
+              )}
             </div>
 
             <div>
@@ -167,24 +234,60 @@ export default function ContactForm() {
                 name="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) {
+                    setFieldErrors((prev) => ({ ...prev, email: validateEmail(e.target.value) }));
+                  }
+                }}
+                onBlur={(e) => {
+                  setFieldErrors((prev) => ({ ...prev, email: validateEmail(e.target.value) }));
+                }}
                 placeholder="email@example.com"
-                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-[#FF5722] transition-colors"
+                className={`w-full p-3.5 rounded-xl bg-[#060913] border text-white placeholder-slate-600 focus:outline-none transition-colors ${
+                  fieldErrors.email
+                    ? 'border-red-500/70 focus:border-red-500 bg-red-500/[0.02]'
+                    : 'border-white/10 focus:border-[#FF5722]'
+                }`}
               />
+              {fieldErrors.email && (
+                <p className="text-red-400 text-[11px] mt-1.5 flex items-center gap-1 animate-in fade-in duration-150">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.email}</span>
+                </p>
+              )}
             </div>
 
             <div>
               <label className="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
-                Số điện thoại
+                Số điện thoại (Việt Nam)
               </label>
               <input
                 type="tel"
                 name="phone"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="0826 868 979"
-                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-[#FF5722] transition-colors"
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  if (fieldErrors.phone) {
+                    setFieldErrors((prev) => ({ ...prev, phone: validatePhone(e.target.value) }));
+                  }
+                }}
+                onBlur={(e) => {
+                  setFieldErrors((prev) => ({ ...prev, phone: validatePhone(e.target.value) }));
+                }}
+                placeholder="0826 868 979 hoặc +84..."
+                className={`w-full p-3.5 rounded-xl bg-[#060913] border text-white placeholder-slate-600 focus:outline-none transition-colors ${
+                  fieldErrors.phone
+                    ? 'border-red-500/70 focus:border-red-500 bg-red-500/[0.02]'
+                    : 'border-white/10 focus:border-[#FF5722]'
+                }`}
               />
+              {fieldErrors.phone && (
+                <p className="text-red-400 text-[11px] mt-1.5 flex items-center gap-1 animate-in fade-in duration-150">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.phone}</span>
+                </p>
+              )}
             </div>
           </div>
 
@@ -199,10 +302,28 @@ export default function ContactForm() {
               rows={4}
               required
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                if (fieldErrors.message) {
+                  setFieldErrors((prev) => ({ ...prev, message: validateMessage(e.target.value) }));
+                }
+              }}
+              onBlur={(e) => {
+                setFieldErrors((prev) => ({ ...prev, message: validateMessage(e.target.value) }));
+              }}
               placeholder="Tôi muốn nhận tư vấn chiến lược quảng cáo đa kênh, booking KOLs hoặc tổ chức giải chạy marathon doanh nghiệp..."
-              className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white placeholder-slate-600 focus:outline-none focus:border-[#FF5722] transition-colors resize-none"
+              className={`w-full p-3.5 rounded-xl bg-[#060913] border text-white placeholder-slate-600 focus:outline-none transition-colors resize-none ${
+                fieldErrors.message
+                  ? 'border-red-500/70 focus:border-red-500 bg-red-500/[0.02]'
+                  : 'border-white/10 focus:border-[#FF5722]'
+              }`}
             />
+            {fieldErrors.message && (
+              <p className="text-red-400 text-[11px] mt-1.5 flex items-center gap-1 animate-in fade-in duration-150">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{fieldErrors.message}</span>
+              </p>
+            )}
           </div>
 
           {/* SUBMIT BUTTON */}

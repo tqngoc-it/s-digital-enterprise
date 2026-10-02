@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -12,10 +13,16 @@ import {
 } from '@nestjs/common';
 import { PartnersService } from './partners.service';
 import { CreatePartnerDto, UpdatePartnerDto } from './dto/partner.dto';
+import { ReorderDto } from '../common/dto/reorder.dto';
 
 @Controller('partners')
 export class PartnersController {
   constructor(private readonly partnersService: PartnersService) {}
+
+  @Patch('reorder')
+  async reorderPartners(@Body() dto: ReorderDto) {
+    return await this.partnersService.reorder(dto.orderedIds);
+  }
 
   @Get()
   async getAllPartners(@Query('type') type?: string) {

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, ValidateIf } from 'class-validator';
 
 export class CreateLeadDto {
   @IsString()
@@ -13,12 +13,19 @@ export class CreateLeadDto {
   @IsOptional()
   full_name?: string;
 
-  @IsEmail({}, { message: 'Email không đúng định dạng' })
   @IsNotEmpty({ message: 'Email không được để trống' })
+  @IsEmail({}, { message: 'Địa chỉ email không đúng định dạng' })
+  @Matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+    message: 'Địa chỉ email không hợp lệ (VD: ten@congty.com)',
+  })
   email!: string;
 
   @IsString()
   @IsOptional()
+  @ValidateIf((o) => o.phone && String(o.phone).trim() !== '')
+  @Matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
+    message: 'Số điện thoại không đúng định dạng Việt Nam (VD: 0912345678 hoặc 84912345678)',
+  })
   phone?: string;
 
   @IsString()

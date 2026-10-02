@@ -9,8 +9,10 @@ export async function createBlogAction(formData: FormData) {
     const title = (formData.get('title') as string)?.trim();
     const excerpt = (formData.get('excerpt') as string)?.trim();
     const content = (formData.get('content') as string)?.trim() || excerpt;
-    const category = (formData.get('category') as string)?.trim() || 'Marketing';
-    const author = (formData.get('author') as string)?.trim() || 'S-Digital';
+    const category = (formData.get('category') as string)?.trim() || 'Digital Marketing';
+    const author = (formData.get('author') as string)?.trim() || 'S-Digital Strategy Team';
+    const read_time = (formData.get('read_time') as string)?.trim() || '5 phút đọc';
+    const external_url = (formData.get('external_url') as string)?.trim() || undefined;
     const slug =
       (formData.get('slug') as string)?.trim() ||
       title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -30,6 +32,8 @@ export async function createBlogAction(formData: FormData) {
         content,
         category,
         author,
+        read_time,
+        external_url,
         status,
         published_at: new Date().toISOString(),
       }),
@@ -54,8 +58,11 @@ export async function updateBlogAction(id: string, formData: FormData) {
     const title = (formData.get('title') as string)?.trim();
     const excerpt = (formData.get('excerpt') as string)?.trim();
     const content = (formData.get('content') as string)?.trim() || excerpt;
-    const category = (formData.get('category') as string)?.trim() || 'Marketing';
-    const author = (formData.get('author') as string)?.trim() || 'S-Digital';
+    const category = (formData.get('category') as string)?.trim() || 'Digital Marketing';
+    const author = (formData.get('author') as string)?.trim() || 'S-Digital Strategy Team';
+    const read_time = (formData.get('read_time') as string)?.trim() || '4 phút đọc';
+    const rawExternal = formData.get('external_url') as string;
+    const external_url = rawExternal !== null ? rawExternal.trim() : undefined;
     const slug =
       (formData.get('slug') as string)?.trim() ||
       title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -75,6 +82,8 @@ export async function updateBlogAction(id: string, formData: FormData) {
         content,
         category,
         author,
+        read_time,
+        external_url,
         status,
       }),
     });

@@ -71,7 +71,7 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
           const Icon = item.icon;
           return (
             <div
-              key={idx}
+              key={item.label || `milestone-${idx}`}
               className={`p-8 rounded-3xl bg-[#0B111E] border border-white/10 ${item.border} transition-all space-y-4 text-left group hover:-translate-y-1.5 duration-300 shadow-xl ${item.glow}`}
             >
               <div className="flex items-center justify-between">

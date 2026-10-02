@@ -191,3 +191,25 @@ export async function toggleServiceActiveAction(id: string, is_active: boolean) 
     return { success: false, error: err.message || 'Không thể cập nhật trạng thái hiển thị.' };
   }
 }
+
+export async function reorderServicesAction(orderedIds: string[]) {
+  try {
+    const res = await fetch(`${backendUrl}/api/services/reorder`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderedIds }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể sắp xếp lại thứ tự dịch vụ.' };
+    }
+
+    revalidatePath('/admin/services');
+    revalidatePath('/admin');
+    revalidatePath('/');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Lỗi kết nối khi sắp xếp dịch vụ.' };
+  }
+}

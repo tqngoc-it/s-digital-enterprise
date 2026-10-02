@@ -89,7 +89,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
           const Icon = iconsMap[pillar.iconName] || Users;
           return (
             <div
-              key={idx}
+              key={pillar.title || `pillar-${idx}`}
               className="p-8 rounded-3xl bg-[#0B111E] border border-white/10 hover:border-[#FF5722]/40 transition-all space-y-4 shadow-xl group hover:-translate-y-1.5 duration-300"
             >
               <div className="w-12 h-12 rounded-2xl bg-[#FF5722]/10 border border-[#FF5722]/20 flex items-center justify-center text-[#FF5722] group-hover:scale-110 transition-transform">
@@ -121,7 +121,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {data.five_steps_process.map((step, idx) => (
             <div
-              key={idx}
+              key={step.step || `step-${idx}`}
               className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#00E5FF]/40 transition-all space-y-3 flex flex-col justify-between group"
             >
               <div className="space-y-3">

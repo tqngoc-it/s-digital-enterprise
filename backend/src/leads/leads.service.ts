@@ -51,8 +51,8 @@ export class LeadsService {
   async create(dto: CreateLeadDto) {
     try {
       const full_name = dto.name || dto.fullName || dto.full_name || 'Khách hàng';
-      const email = dto.email;
-      const phone = dto.phone || null;
+      const email = dto.email?.trim();
+      const phone = dto.phone ? dto.phone.trim().replace(/[\s.-]/g, '').replace(/^\+/, '') : null;
       const company_name = dto.company || dto.company_name || null;
       const service = dto.service || 'Tư vấn chiến lược tổng thể';
       const budget = dto.budget || 'Chưa xác định';
@@ -138,13 +138,36 @@ export class LeadsService {
     const { data, error } = await this.supabase.client
       .from('leads')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true });
 
     if (error) {
       this.logger.error(`[FIND_ALL_LEADS_ERROR]: ${error.message}`);
       throw new InternalServerErrorException(error.message);
     }
-    return (data || []).map(normalizeLead);
+
+    const tierWeight: Record<string, number> = {
+      HOT: 3,
+      WARM: 2,
+      COLD: 1,
+    };
+
+    const normalized = (data || []).map(normalizeLead);
+    return normalized.sort((a: any, b: any) => {
+      const weightA = tierWeight[a.ai_tier] || 0;
+      const weightB = tierWeight[b.ai_tier] || 0;
+      if (weightA !== weightB) return weightB - weightA;
+
+      const scoreA = a.ai_score ?? 0;
+      const scoreB = b.ai_score ?? 0;
+      if (scoreA !== scoreB) return scoreB - scoreA;
+
+      const timeA = new Date(a.created_at || 0).getTime();
+      const timeB = new Date(b.created_at || 0).getTime();
+      if (timeA !== timeB) return timeB - timeA;
+
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
   }
 
   async findOne(id: string) {

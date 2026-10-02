@@ -19,7 +19,7 @@ export default function Footer({ companyInfo }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* COL 1: BRAND INFO (5 COLS) */}
           <div className="lg:col-span-5 space-y-4">
-            <Link href="#home" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF5722] to-orange-600 flex items-center justify-center font-black text-lg text-white shadow-lg shadow-[#FF5722]/30">
                 S
               </div>
@@ -46,42 +46,42 @@ export default function Footer({ companyInfo }: FooterProps) {
             <h4 className="font-bold text-white text-xs uppercase tracking-wider">Hệ Sinh Thái</h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <a href="#about" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#about" className="hover:text-[#FF5722] transition-colors">
                   Về chúng tôi
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#services" className="hover:text-[#FF5722] transition-colors">
                   Marketing Số (Digital Suite)
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#services" className="hover:text-[#FF5722] transition-colors">
                   Tiếp Thị Thể Thao (Sports Hub)
                 </a>
               </li>
               <li>
-                <a href="#why-us" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#why-us" className="hover:text-[#FF5722] transition-colors">
                   Xử lý khủng hoảng 30 phút
                 </a>
               </li>
               <li>
-                <a href="#customers" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#customers" className="hover:text-[#FF5722] transition-colors">
                   Khách hàng & Đối tác
                 </a>
               </li>
               <li>
-                <a href="#solutions" className="hover:text-[#FF5722] transition-colors">
-                  Dự án tiêu biểu
-                </a>
+                <Link href="/case-studies" className="hover:text-[#FF5722] transition-colors">
+                  Dự án tiêu biểu & Case Studies
+                </Link>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#pricing" className="hover:text-[#FF5722] transition-colors">
                   Bảng giá dịch vụ
                 </a>
               </li>
               <li>
-                <a href="#blog" className="hover:text-[#FF5722] transition-colors">
+                <a href="/#blog" className="hover:text-[#FF5722] transition-colors">
                   Tin tức & Xu hướng
                 </a>
               </li>

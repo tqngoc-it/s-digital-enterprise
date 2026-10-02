@@ -7,6 +7,7 @@ import {
   updateServiceAction,
   deleteServiceAction,
   toggleServiceActiveAction,
+  reorderServicesAction,
 } from '@/app/actions/services';
 import {
   Plus,
@@ -16,6 +17,7 @@ import {
   Loader2,
   Search,
   CheckCircle2,
+  AlertCircle,
   TrendingUp,
   Trophy,
   Eye,
@@ -23,8 +25,28 @@ import {
   Sparkles,
   ListPlus,
   Link as LinkIcon,
+  ArrowUp,
+  ArrowDown,
+  GripVertical,
 } from 'lucide-react';
 import { ServiceItem } from '@/lib/fallbackData';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Hàm tự động tạo slug chuẩn SEO từ Tiêu đề
 function generateSlug(text: string): string {
@@ -53,6 +75,226 @@ function getCategoryGroup(category?: string): 'DIGITAL' | 'SPORTS' {
   return 'DIGITAL';
 }
 
+function SortableServiceRow({
+  s,
+  idx,
+  realIdx,
+  isActive,
+  isDigital,
+  bulletPoints,
+  togglingId,
+  totalLength,
+  onToggleActive,
+  onEdit,
+  onDelete,
+  onMove,
+}: {
+  s: ServiceItem;
+  idx: number;
+  realIdx: number;
+  isActive: boolean;
+  isDigital: boolean;
+  bulletPoints: string[];
+  togglingId: string | null;
+  totalLength: number;
+  onToggleActive: (s: ServiceItem) => void;
+  onEdit: (s: ServiceItem) => void;
+  onDelete: (id?: string) => void;
+  onMove: (idx: number, dir: 'UP' | 'DOWN') => void;
+}) {
+  const sortableId = String(s.id || `service-${idx}`);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: sortableId });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition: isDragging ? undefined : transition,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className={`transition-colors ${
+        !isActive ? 'opacity-55' : ''
+      } ${
+        isDragging
+          ? 'opacity-80 ring-2 ring-[#FF5722] bg-[#0E1322] shadow-2xl relative z-30'
+          : 'hover:bg-white/[0.02]'
+      }`}
+    >
+      {/* TITLE & SLUG WITH DRAG HANDLE */}
+      <td className="py-4 px-6">
+        <div className="space-y-1.5 max-w-xs">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              {...attributes}
+              {...listeners}
+              className="p-1 -ml-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing touch-none select-none transition-colors shrink-0"
+              title="Kéo thả để sắp xếp vị trí"
+            >
+              <GripVertical className="w-4 h-4" />
+            </button>
+            <span
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                isDigital ? 'bg-[#FF5722]' : 'bg-[#00E5FF]'
+              }`}
+            />
+            <h4 className="font-bold text-white text-sm leading-snug">
+              {s.title}
+            </h4>
+          </div>
+          {(s.sub_title || s.subtitle || s.badge) && (
+            <span
+              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                isDigital
+                  ? 'bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20'
+                  : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20'
+              }`}
+            >
+              {s.sub_title || s.subtitle || s.badge}
+            </span>
+          )}
+          {s.slug && (
+            <p className="text-[10px] text-slate-500 font-mono truncate flex items-center gap-1">
+              <LinkIcon className="w-2.5 h-2.5 shrink-0" />
+              <span>{s.slug}</span>
+            </p>
+          )}
+        </div>
+      </td>
+
+      {/* CATEGORY */}
+      <td className="py-4 px-6">
+        {isDigital ? (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Digital Suite</span>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20">
+            <Trophy className="w-3.5 h-3.5" />
+            <span>Sports Hub</span>
+          </span>
+        )}
+      </td>
+
+      {/* DESCRIPTION & BULLET POINTS */}
+      <td className="py-4 px-6 max-w-md">
+        <p className="text-slate-300 line-clamp-2 leading-relaxed">
+          {s.short_description || s.desc || 'Chưa có mô tả ngắn'}
+        </p>
+        {bulletPoints.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {bulletPoints.slice(0, 2).map((point, pIdx) => (
+              <span
+                key={pIdx}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5"
+              >
+                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
+                <span className="truncate max-w-[180px]">{point}</span>
+              </span>
+            ))}
+            {bulletPoints.length > 2 && (
+              <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-500 font-mono">
+                +{bulletPoints.length - 2} điểm
+              </span>
+            )}
+          </div>
+        )}
+      </td>
+
+      {/* DISPLAY ORDER BADGE */}
+      <td className="py-4 px-4 text-center">
+        <span className="px-2.5 py-1 rounded-lg bg-orange-500/10 text-[#FF5722] font-mono font-bold border border-[#FF5722]/20 text-xs inline-block">
+          #{realIdx + 1}
+        </span>
+      </td>
+
+      {/* IS_ACTIVE TOGGLE */}
+      <td className="py-4 px-4 text-center">
+        <button
+          type="button"
+          onClick={() => onToggleActive(s)}
+          disabled={togglingId === s.id}
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold transition-all cursor-pointer ${
+            isActive
+              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
+              : 'bg-slate-700/30 text-slate-500 border border-slate-700/50 hover:bg-slate-700/50'
+          }`}
+          title="Click để Bật/Tắt hiển thị trên trang chủ"
+        >
+          {togglingId === s.id ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : isActive ? (
+            <>
+              <Eye className="w-3 h-3" />
+              <span>Hiển thị</span>
+            </>
+          ) : (
+            <>
+              <EyeOff className="w-3 h-3" />
+              <span>Đang ẩn</span>
+            </>
+          )}
+        </button>
+      </td>
+
+      {/* ACTIONS */}
+      <td className="py-4 px-6 text-right">
+        <div className="flex items-center justify-end gap-1.5">
+          {/* CỤM NÚT ĐIỀU HƯỚNG LÊN / XUỐNG */}
+          <div className="flex items-center gap-1 mr-1">
+            <button
+              type="button"
+              disabled={realIdx === 0}
+              onClick={() => onMove(realIdx, 'UP')}
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer"
+              title="Di chuyển lên trước"
+            >
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              disabled={realIdx === totalLength - 1}
+              onClick={() => onMove(realIdx, 'DOWN')}
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer"
+              title="Di chuyển xuống sau"
+            >
+              <ArrowDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <button
+            onClick={() => onEdit(s)}
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+            title="Chỉnh sửa dịch vụ"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+          {s.id && (
+            <button
+              onClick={() => onDelete(s.id)}
+              className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors cursor-pointer"
+              title="Xóa dịch vụ"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function ServicesClient({
   initialServices,
 }: {
@@ -60,10 +302,34 @@ export default function ServicesClient({
 }) {
   const router = useRouter();
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
+  const [mounted, setMounted] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setServices(initialServices);
   }, [initialServices]);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | 'DIGITAL' | 'SPORTS'>('ALL');
@@ -73,6 +339,57 @@ export default function ServicesClient({
   const [editingService, setEditingService] = useState<ServiceItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = services.findIndex(
+      (s, idx) => String(s.id || `service-${idx}`) === String(active.id)
+    );
+    const newIndex = services.findIndex(
+      (s, idx) => String(s.id || `service-${idx}`) === String(over.id)
+    );
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const originalServices = [...services];
+    const updated = arrayMove(services, oldIndex, newIndex);
+
+    // Optimistic UI update
+    setServices(updated);
+
+    const orderedIds = updated.map((s) => String(s.id)).filter(Boolean);
+    const res = await reorderServicesAction(orderedIds);
+    if (res.success) {
+      setToast({ message: 'Đã cập nhật thứ tự hiển thị thành công!', type: 'success' });
+    } else {
+      setServices(originalServices);
+      setToast({ message: res.error || 'Cập nhật thứ tự thất bại, đã khôi phục lại vị trí cũ', type: 'error' });
+    }
+  }
+
+  async function handleMove(index: number, direction: 'UP' | 'DOWN') {
+    const targetIndex = direction === 'UP' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= services.length) return;
+
+    const originalServices = [...services];
+    const updated = [...services];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(targetIndex, 0, moved);
+
+    // Optimistic UI update
+    setServices(updated);
+
+    const orderedIds = updated.map((s) => String(s.id)).filter(Boolean);
+    const res = await reorderServicesAction(orderedIds);
+    if (res.success) {
+      setToast({ message: 'Đã cập nhật thứ tự hiển thị thành công!', type: 'success' });
+    } else {
+      setServices(originalServices);
+      setToast({ message: res.error || 'Cập nhật thứ tự thất bại, đã khôi phục lại vị trí cũ', type: 'error' });
+    }
+  }
 
   // Form states
   const [formTitle, setFormTitle] = useState('');
@@ -231,6 +548,32 @@ export default function ServicesClient({
 
   return (
     <div className="space-y-6">
+      {/* TOAST NOTIFICATION */}
+      {toast && (
+        <div
+          className={`p-3.5 rounded-2xl border flex items-center justify-between text-xs font-semibold animate-in fade-in slide-in-from-top-2 duration-200 ${
+            toast.type === 'success'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              : 'bg-red-500/10 border-red-500/30 text-red-400'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {toast.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+            )}
+            <span>{toast.message}</span>
+          </div>
+          <button
+            onClick={() => setToast(null)}
+            className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* FILTER & ACTION BAR */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <div className="flex flex-wrap flex-1 gap-3 items-center">
@@ -296,177 +639,100 @@ export default function ServicesClient({
       {/* SERVICES TABLE */}
       <div className="rounded-2xl bg-[#0B0F19] border border-white/10 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
-              <tr>
-                <th className="py-4 px-6 font-semibold">Tên Dịch Vụ & Slug</th>
-                <th className="py-4 px-6 font-semibold">Nhóm Dịch Vụ</th>
-                <th className="py-4 px-6 font-semibold">Mô Tả Ngắn & Bullet Points</th>
-                <th className="py-4 px-4 font-semibold text-center">Thứ Tự</th>
-                <th className="py-4 px-4 font-semibold text-center">Hiển Thị</th>
-                <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredServices.length === 0 ? (
+          {mounted ? (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <table className="w-full min-w-[850px] text-left text-xs">
+                <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th className="py-4 px-6 font-semibold">Tên Dịch Vụ & Slug</th>
+                    <th className="py-4 px-6 font-semibold">Nhóm Dịch Vụ</th>
+                    <th className="py-4 px-6 font-semibold">Mô Tả Ngắn & Bullet Points</th>
+                    <th className="py-4 px-4 font-semibold text-center">Thứ Tự</th>
+                    <th className="py-4 px-4 font-semibold text-center">Hiển Thị</th>
+                    <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
+                  </tr>
+                </thead>
+                <SortableContext
+                  items={filteredServices.map((s, idx) => String(s.id || `service-${idx}`))}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <tbody className="divide-y divide-white/5">
+                    {filteredServices.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-slate-400">
+                          <p className="text-sm font-semibold">
+                            Không tìm thấy dịch vụ nào phù hợp.
+                          </p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredServices.map((s, idx) => {
+                        const fullIdx = services.findIndex((item) => item.id === s.id);
+                        const realIdx = fullIdx !== -1 ? fullIdx : idx;
+                        return (
+                          <SortableServiceRow
+                            key={s.id || `service-${idx}`}
+                            s={s}
+                            idx={idx}
+                            realIdx={realIdx}
+                            isActive={s.is_active !== false}
+                            isDigital={getCategoryGroup(s.category) === 'DIGITAL'}
+                            bulletPoints={s.bullet_points || s.features || s.points || []}
+                            togglingId={togglingId}
+                            totalLength={services.length}
+                            onToggleActive={handleToggleActive}
+                            onEdit={openEditModal}
+                            onDelete={handleDelete}
+                            onMove={handleMove}
+                          />
+                        );
+                      })
+                    )}
+                  </tbody>
+                </SortableContext>
+              </table>
+            </DndContext>
+          ) : (
+            <table className="w-full min-w-[850px] text-left text-xs">
+              <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
-                    <p className="text-sm font-semibold">
-                      Không tìm thấy dịch vụ nào phù hợp.
-                    </p>
-                  </td>
+                  <th className="py-4 px-6 font-semibold">Tên Dịch Vụ & Slug</th>
+                  <th className="py-4 px-6 font-semibold">Nhóm Dịch Vụ</th>
+                  <th className="py-4 px-6 font-semibold">Mô Tả Ngắn & Bullet Points</th>
+                  <th className="py-4 px-4 font-semibold text-center">Thứ Tự</th>
+                  <th className="py-4 px-4 font-semibold text-center">Hiển Thị</th>
+                  <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
                 </tr>
-              ) : (
-                filteredServices.map((s, idx) => {
-                  const isActive = s.is_active !== false;
-                  const itemGroup = getCategoryGroup(s.category);
-                  const isDigital = itemGroup === 'DIGITAL';
-                  const bulletPoints =
-                    s.bullet_points || s.features || s.points || [];
-
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {filteredServices.map((s, idx) => {
+                  const fullIdx = services.findIndex((item) => item.id === s.id);
+                  const realIdx = fullIdx !== -1 ? fullIdx : idx;
                   return (
-                    <tr
-                      key={s.id || idx}
-                      className={`hover:bg-white/[0.02] transition-colors ${
-                        !isActive ? 'opacity-55' : ''
-                      }`}
-                    >
-                      {/* TITLE & SLUG */}
-                      <td className="py-4 px-6">
-                        <div className="space-y-1.5 max-w-xs">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`w-2 h-2 rounded-full shrink-0 ${
-                                isDigital ? 'bg-[#FF5722]' : 'bg-[#00E5FF]'
-                              }`}
-                            />
-                            <h4 className="font-bold text-white text-sm leading-snug">
-                              {s.title}
-                            </h4>
-                          </div>
-                          {(s.sub_title || s.subtitle || s.badge) && (
-                            <span
-                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
-                                isDigital
-                                  ? 'bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20'
-                                  : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20'
-                              }`}
-                            >
-                              {s.sub_title || s.subtitle || s.badge}
-                            </span>
-                          )}
-                          {s.slug && (
-                            <p className="text-[10px] text-slate-500 font-mono truncate flex items-center gap-1">
-                              <LinkIcon className="w-2.5 h-2.5 shrink-0" />
-                              <span>{s.slug}</span>
-                            </p>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* CATEGORY */}
-                      <td className="py-4 px-6">
-                        {isDigital ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20">
-                            <TrendingUp className="w-3.5 h-3.5" />
-                            <span>Digital Suite</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20">
-                            <Trophy className="w-3.5 h-3.5" />
-                            <span>Sports Hub</span>
-                          </span>
-                        )}
-                      </td>
-
-                      {/* DESCRIPTION & BULLET POINTS */}
-                      <td className="py-4 px-6 max-w-md">
-                        <p className="text-slate-300 line-clamp-2 leading-relaxed">
-                          {s.short_description || s.desc || 'Chưa có mô tả ngắn'}
-                        </p>
-                        {bulletPoints.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {bulletPoints.slice(0, 2).map((point, pIdx) => (
-                              <span
-                                key={pIdx}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5"
-                              >
-                                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
-                                <span className="truncate max-w-[180px]">{point}</span>
-                              </span>
-                            ))}
-                            {bulletPoints.length > 2 && (
-                              <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-500 font-mono">
-                                +{bulletPoints.length - 2} điểm
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </td>
-
-                      {/* DISPLAY ORDER */}
-                      <td className="py-4 px-4 text-center">
-                        <span className="font-mono text-slate-300 font-semibold bg-white/5 px-2.5 py-1 rounded-lg">
-                          {s.display_order ?? idx + 1}
-                        </span>
-                      </td>
-
-                      {/* IS_ACTIVE TOGGLE */}
-                      <td className="py-4 px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleActive(s)}
-                          disabled={togglingId === s.id}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold transition-all cursor-pointer ${
-                            isActive
-                              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
-                              : 'bg-slate-700/30 text-slate-500 border border-slate-700/50 hover:bg-slate-700/50'
-                          }`}
-                          title="Click để Bật/Tắt hiển thị trên trang chủ"
-                        >
-                          {togglingId === s.id ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          ) : isActive ? (
-                            <>
-                              <Eye className="w-3 h-3" />
-                              <span>Hiển thị</span>
-                            </>
-                          ) : (
-                            <>
-                              <EyeOff className="w-3 h-3" />
-                              <span>Đang ẩn</span>
-                            </>
-                          )}
-                        </button>
-                      </td>
-
-                      {/* ACTIONS */}
-                      <td className="py-4 px-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openEditModal(s)}
-                            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                            title="Chỉnh sửa dịch vụ"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          {s.id && (
-                            <button
-                              onClick={() => handleDelete(s.id)}
-                              className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors cursor-pointer"
-                              title="Xóa dịch vụ"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
+                    <SortableServiceRow
+                      key={s.id || `service-${idx}`}
+                      s={s}
+                      idx={idx}
+                      realIdx={realIdx}
+                      isActive={s.is_active !== false}
+                      isDigital={getCategoryGroup(s.category) === 'DIGITAL'}
+                      bulletPoints={s.bullet_points || s.features || s.points || []}
+                      togglingId={togglingId}
+                      totalLength={services.length}
+                      onToggleActive={handleToggleActive}
+                      onEdit={openEditModal}
+                      onDelete={handleDelete}
+                      onMove={handleMove}
+                    />
                   );
-                })
-              )}
-            </tbody>
-          </table>
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -538,30 +804,16 @@ export default function ServicesClient({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1.5">
-                    Phụ Đề / Badge (Sub Title)
-                  </label>
-                  <input
-                    type="text"
-                    name="sub_title"
-                    placeholder="VD: Search, Display, YouTube & Meta Ads"
-                    className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1.5">
-                    Thứ Tự Hiển Thị
-                  </label>
-                  <input
-                    type="number"
-                    name="display_order"
-                    defaultValue={services.length + 1}
-                    className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]"
-                  />
-                </div>
+              <div>
+                <label className="block text-slate-400 font-bold mb-1.5">
+                  Phụ Đề / Badge (Sub Title)
+                </label>
+                <input
+                  type="text"
+                  name="sub_title"
+                  placeholder="VD: Search, Display, YouTube & Meta Ads"
+                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]"
+                />
               </div>
 
               <div>
@@ -713,36 +965,22 @@ export default function ServicesClient({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1.5">
-                    Phụ Đề / Badge (Sub Title)
-                  </label>
-                  <input
-                    type="text"
-                    name="sub_title"
-                    defaultValue={
-                      editingService.sub_title ||
-                      editingService.subtitle ||
-                      editingService.badge ||
-                      ''
-                    }
-                    placeholder="VD: Search, Display, YouTube & Meta Ads"
-                    className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#00E5FF]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1.5">
-                    Thứ Tự Hiển Thị
-                  </label>
-                  <input
-                    type="number"
-                    name="display_order"
-                    defaultValue={editingService.display_order || 1}
-                    className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#00E5FF]"
-                  />
-                </div>
+              <div>
+                <label className="block text-slate-400 font-bold mb-1.5">
+                  Phụ Đề / Badge (Sub Title)
+                </label>
+                <input
+                  type="text"
+                  name="sub_title"
+                  defaultValue={
+                    editingService.sub_title ||
+                    editingService.subtitle ||
+                    editingService.badge ||
+                    ''
+                  }
+                  placeholder="VD: Search, Display, YouTube & Meta Ads"
+                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#00E5FF]"
+                />
               </div>
 
               <div>

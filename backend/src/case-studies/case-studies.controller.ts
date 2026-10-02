@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -11,10 +12,16 @@ import {
 } from '@nestjs/common';
 import { CaseStudiesService } from './case-studies.service';
 import { CreateCaseStudyDto, UpdateCaseStudyDto } from './dto/case-study.dto';
+import { ReorderDto } from '../common/dto/reorder.dto';
 
 @Controller('case-studies')
 export class CaseStudiesController {
   constructor(private readonly caseStudiesService: CaseStudiesService) {}
+
+  @Patch('reorder')
+  async reorderCaseStudies(@Body() dto: ReorderDto) {
+    return await this.caseStudiesService.reorder(dto.orderedIds);
+  }
 
   @Get()
   async getAllCaseStudies() {

@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -11,10 +12,16 @@ import {
 } from '@nestjs/common';
 import { PricingService } from './pricing.service';
 import { CreatePricingDto, UpdatePricingDto } from './dto/pricing.dto';
+import { ReorderDto } from '../common/dto/reorder.dto';
 
 @Controller('pricing')
 export class PricingController {
   constructor(private readonly pricingService: PricingService) {}
+
+  @Patch('reorder')
+  async reorderPricing(@Body() dto: ReorderDto) {
+    return await this.pricingService.reorder(dto.orderedIds);
+  }
 
   @Get()
   async getAllPricing() {

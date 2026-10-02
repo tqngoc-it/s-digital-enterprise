@@ -42,10 +42,17 @@ export class ServicesService {
     let query = this.supabase.client
       .from('services')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true });
 
     if (category) {
-      query = query.eq('category', category.toUpperCase());
+      const catUpper = category.toUpperCase().trim();
+      if (catUpper === 'DIGITAL' || catUpper === 'DIGITAL_MARKETING') {
+        query = query.in('category', ['DIGITAL', 'DIGITAL_MARKETING']);
+      } else {
+        query = query.eq('category', catUpper);
+      }
     }
 
     const { data, error } = await query;
@@ -69,11 +76,41 @@ export class ServicesService {
     return data;
   }
 
+  async reorder(orderedIds: (string | number)[]) {
+    if (!orderedIds || !orderedIds.length) {
+      return { success: true };
+    }
+    const updatePromises = orderedIds.map((id, index) =>
+      this.supabase.client
+        .from('services')
+        .update({ display_order: index + 1 })
+        .eq('id', id)
+    );
+    const results = await Promise.all(updatePromises);
+    const hasError = results.some((r) => r.error);
+    if (hasError) {
+      this.logger.error('[REORDER_SERVICES_ERROR]: Một số bản ghi không thể cập nhật');
+      throw new InternalServerErrorException('Lỗi khi sắp xếp lại thứ tự dịch vụ');
+    }
+    return { success: true, message: 'Đã cập nhật thứ tự dịch vụ thành công' };
+  }
+
   async create(dto: CreateServiceDto) {
     const slug = dto.slug || generateSlug(dto.title);
     const bullet_points = normalizeBulletPoints(dto.bullet_points);
     const category = dto.category === 'SPORTS' ? 'SPORTS' : 'DIGITAL';
-    const display_order = dto.display_order ?? 0;
+
+    let display_order = dto.display_order;
+    if (display_order === undefined || display_order === null || Number(display_order) <= 0) {
+      const { data: maxRow } = await this.supabase.client
+        .from('services')
+        .select('display_order')
+        .order('display_order', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      display_order = (maxRow?.display_order ?? 0) + 1;
+    }
+
     const is_active = dto.is_active !== undefined ? dto.is_active : true;
 
     const { data, error } = await this.supabase.client
@@ -135,12 +172,42 @@ export class ServicesService {
   }
 
   async remove(id: string) {
+    // 1. Lấy thứ tự hiện tại của dịch vụ sắp xóa
+    const { data: current } = await this.supabase.client
+      .from('services')
+      .select('display_order')
+      .eq('id', id)
+      .maybeSingle();
+
+    // 2. Xóa bản ghi
     const { error } = await this.supabase.client.from('services').delete().eq('id', id);
 
     if (error) {
       this.logger.error(`[DELETE_SERVICE_ERROR]: ${error.message}`);
       throw new InternalServerErrorException('Không thể xóa dịch vụ');
     }
+
+    // 3. Tự động dồn các bản ghi phía sau lên để giữ thứ tự liên tục (K -> K-1)
+    if (current && typeof current.display_order === 'number') {
+      const deletedOrder = current.display_order;
+      const { data: remaining } = await this.supabase.client
+        .from('services')
+        .select('id, display_order')
+        .gt('display_order', deletedOrder)
+        .order('display_order', { ascending: true });
+
+      if (remaining && remaining.length > 0) {
+        await Promise.all(
+          remaining.map((item) =>
+            this.supabase.client
+              .from('services')
+              .update({ display_order: item.display_order - 1 })
+              .eq('id', item.id)
+          )
+        );
+      }
+    }
+
     return { success: true };
   }
 }

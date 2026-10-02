@@ -10,11 +10,23 @@ export async function submitLeadAction(formData: FormData) {
     const company_name = (formData.get('company_name') as string)?.trim();
     const message = (formData.get('message') as string)?.trim();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+
     if (!full_name) {
       return { success: false, error: 'Vui lòng nhập họ và tên của bạn.' };
     }
-    if (!email || !email.includes('@')) {
-      return { success: false, error: 'Vui lòng cung cấp địa chỉ email hợp lệ.' };
+    if (!email || !emailRegex.test(email)) {
+      return { success: false, error: 'Địa chỉ email không đúng định dạng (VD: example@domain.com).' };
+    }
+    if (phone) {
+      const cleanPhone = phone.replace(/[\s.-]/g, '').replace(/^\+/, '');
+      if (!phoneRegex.test(cleanPhone)) {
+        return {
+          success: false,
+          error: 'Số điện thoại không đúng định dạng Việt Nam (VD: 0912345678 hoặc 84912345678).',
+        };
+      }
     }
     if (!message || message.length < 5) {
       return { success: false, error: 'Nội dung yêu cầu tư vấn tối thiểu 5 ký tự.' };

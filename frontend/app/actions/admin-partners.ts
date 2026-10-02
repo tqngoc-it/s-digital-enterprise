@@ -7,7 +7,8 @@ const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000
 export async function createPartnerAction(formData: FormData) {
   try {
     const name = (formData.get('name') as string)?.trim();
-    const type = (formData.get('type') as string) || 'CUSTOMER';
+    let type = (formData.get('type') as string) || 'CUSTOMER';
+    if (type === 'PARTNER') type = 'STRATEGIC_PARTNER';
     const industry = (formData.get('industry') as string)?.trim() || null;
     const logo_url = (formData.get('logo_url') as string)?.trim() || null;
     const website_url = (formData.get('website_url') as string)?.trim() || null;
@@ -47,7 +48,8 @@ export async function createPartnerAction(formData: FormData) {
 export async function updatePartnerAction(id: string, formData: FormData) {
   try {
     const name = (formData.get('name') as string)?.trim();
-    const type = (formData.get('type') as string) || 'CUSTOMER';
+    let type = (formData.get('type') as string) || 'CUSTOMER';
+    if (type === 'PARTNER') type = 'STRATEGIC_PARTNER';
     const industry = (formData.get('industry') as string)?.trim() || null;
     const logo_url = (formData.get('logo_url') as string)?.trim() || null;
     const website_url = (formData.get('website_url') as string)?.trim() || null;
@@ -101,5 +103,27 @@ export async function deletePartnerAction(id: string) {
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể xóa đối tác.' };
+  }
+}
+
+export async function reorderPartnersAction(orderedIds: string[]) {
+  try {
+    const res = await fetch(`${backendUrl}/api/partners/reorder`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderedIds }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data?.success) {
+      return { success: false, error: data?.message || 'Không thể sắp xếp lại thứ tự đối tác.' };
+    }
+
+    revalidatePath('/admin/partners');
+    revalidatePath('/admin');
+    revalidatePath('/');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Lỗi kết nối khi sắp xếp đối tác.' };
   }
 }

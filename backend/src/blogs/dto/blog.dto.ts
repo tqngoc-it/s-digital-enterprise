@@ -32,6 +32,14 @@ export class CreateBlogDto {
   @IsString()
   @IsOptional()
   published_at?: string;
+
+  @IsString()
+  @IsOptional()
+  read_time?: string;
+
+  @IsString()
+  @IsOptional()
+  external_url?: string;
 }
 
 export class UpdateBlogDto {
@@ -66,4 +74,12 @@ export class UpdateBlogDto {
   @IsString()
   @IsOptional()
   published_at?: string;
+
+  @IsString()
+  @IsOptional()
+  read_time?: string;
+
+  @IsString()
+  @IsOptional()
+  external_url?: string;
 }

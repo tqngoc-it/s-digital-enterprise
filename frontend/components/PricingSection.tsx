@@ -8,6 +8,8 @@ import {
   QualityCommitment,
 } from '@/lib/fallbackData';
 
+import { parseVietnameseCurrency } from '@/lib/currency';
+
 interface PricingSectionProps {
   plans?: PricingPlanItem[];
   commitments?: QualityCommitment[];
@@ -19,6 +21,19 @@ export default function PricingSection({
 }: PricingSectionProps) {
   const planList = plans && plans.length > 0 ? plans : FALLBACK_PRICING;
   const commitmentList = commitments && commitments.length > 0 ? commitments : FALLBACK_COMMITMENTS;
+
+  // Sắp xếp tự động theo thứ tự hiển thị và mức giá tăng dần (price ASC)
+  const sortedPlans = [...planList].sort((a, b) => {
+    const orderA = (a as any).display_order ?? 0;
+    const orderB = (b as any).display_order ?? 0;
+    if (orderA !== orderB && orderA !== 0 && orderB !== 0) return orderA - orderB;
+
+    const priceA = parseVietnameseCurrency(a.price_display).numericValue;
+    const priceB = parseVietnameseCurrency(b.price_display).numericValue;
+    if (priceA !== priceB) return priceA - priceB;
+
+    return (a.tier_name || '').localeCompare(b.tier_name || '');
+  });
 
   const commitmentIcons: Record<string, any> = {
     ShieldCheck,
@@ -69,11 +84,14 @@ export default function PricingSection({
 
       {/* 3 PRICING TIERS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        {planList.map((plan, idx) => {
-          const isPopular = plan.popular || plan.tier_name.includes('Chuyên Nghiệp');
+        {sortedPlans.map((plan, idx) => {
+          const isPopular =
+            plan.popular ||
+            Boolean((plan as any).is_popular) ||
+            plan.tier_name.includes('Chuyên Nghiệp');
           return (
             <div
-              key={idx}
+              key={plan.id || `pricing-plan-${plan.tier_name}-${idx}`}
               className={`p-8 md:p-10 rounded-3xl bg-[#0B111E] flex flex-col justify-between space-y-8 relative transition-all duration-300 ${
                 isPopular
                   ? 'border-2 border-[#FF5722] shadow-2xl shadow-[#FF5722]/15 lg:-translate-y-3'
@@ -114,8 +132,8 @@ export default function PricingSection({
                     Quyền lợi chi tiết bao gồm:
                   </span>
                   <ul className="space-y-3 pt-1 text-xs text-slate-300">
-                    {plan.features.map((f, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2.5">
+                    {plan.features?.map((f, fIdx) => (
+                      <li key={`plan-${idx}-feat-${fIdx}`} className="flex items-start gap-2.5">
                         <CheckCircle2
                           className={`w-4 h-4 shrink-0 mt-0.5 ${
                             isPopular ? 'text-[#FF5722]' : 'text-emerald-400'
@@ -158,7 +176,7 @@ export default function PricingSection({
             const Icon = commitmentIcons[c.iconName] || ShieldCheck;
             return (
               <div
-                key={cIdx}
+                key={c.title || `commitment-${cIdx}`}
                 className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#00E5FF]/40 transition-all space-y-3 group"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF] group-hover:scale-110 transition-transform">

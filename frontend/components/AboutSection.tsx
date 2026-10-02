@@ -48,7 +48,7 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
           const Icon = iconsMap[item.iconName] || Compass;
           return (
             <div
-              key={idx}
+              key={item.title || `capability-${idx}`}
               className="p-8 rounded-3xl bg-[#0B111E] border border-white/10 hover:border-[#FF5722]/40 transition-all space-y-5 text-left group hover:-translate-y-1.5 duration-300 shadow-xl flex flex-col justify-between"
             >
               <div className="space-y-4">

@@ -80,7 +80,7 @@ export interface PartnerItem {
   id?: string;
   name: string;
   logo_url?: string;
-  type: 'CUSTOMER' | 'PARTNER';
+  type: 'CUSTOMER' | 'PARTNER' | 'STRATEGIC_PARTNER';
   industry?: string;
   website_url?: string;
   display_order?: number;
@@ -645,37 +645,110 @@ export interface CaseStudyItem {
   challenge: string;
   solution: string;
   results: {
-    athletes: string;
-    articles: string;
-    views: string;
+    metrics?: { label: string; value: string; sub?: string }[];
+    metric_1?: { label: string; value: string };
+    metric_2?: { label: string; value: string };
+    metric_3?: { label: string; value: string };
+    athletes?: string;
+    articles?: string;
+    views?: string;
     roi?: string;
+    display_order?: number;
+    [key: string]: any;
   };
   scope_items?: string[];
   is_featured?: boolean;
+  display_order?: number;
 }
 
 export const FALLBACK_CASE_STUDIES: CaseStudyItem[] = [
   {
+    id: 'cs-1',
     title: 'Giải Marathon Quốc Tế Thành Phố 2025',
     slug: 'giai-marathon-quoc-te-thanh-pho',
-    client_name: 'Ủy Ban TDTT & Liên Đoàn Thể Thao',
+    client_name: 'Ủy Ban TDTT & Revive',
     challenge:
       'Tổ chức giải marathon quy mô trên 5.000 vận động viên tham gia, đảm bảo tuyệt đối an toàn đường chạy, chính xác thời gian thi đấu và thu hút truyền thông đa kênh lan tỏa toàn quốc.',
     solution:
       'Lập kế hoạch tổng thể 6 tháng, quy chuẩn cung đường đạt chuẩn AIMS, huy động 100+ trọng tài quốc tế và tình nguyện viên, tích hợp hệ thống timing chip điện tử, bảo trợ y tế khẩn cấp và triển khai chiến dịch truyền thông đa nền tảng kết hợp 20+ KOLs thể thao.',
     results: {
+      metrics: [
+        { label: 'Quy mô VĐV', value: '5.2K VĐV', sub: 'Tham gia thi đấu' },
+        { label: 'Báo chí PR', value: '50+ Bài', sub: 'Độ phủ truyền thông' },
+        { label: 'Lượt xem MXH', value: '2M Lượt', sub: 'Lan tỏa đa kênh' },
+      ],
       athletes: '5.2K Vận Động Viên',
       articles: '50+ Bài Báo Uy Tín',
-      views: '2M Lượt Xem Trực Tiếp & Lan Tỏa'
+      views: '2M Lượt Xem Trực Tiếp & Lan Tỏa',
+      display_order: 1,
     },
     scope_items: [
       'Thiết kế bộ nhận diện thương hiệu độc quyền và ấn phẩm thi đấu',
       'Booking 20+ KOLs, VĐV nổi tiếng tham gia thi đấu và lan tỏa thông điệp',
       'Livestream trực tiếp toàn bộ giải chạy với 8 góc máy 4K hiện đại',
-      'Cung cấp đội ngũ 60+ Trọng tài quốc tế & Điều phối an ninh đường chạy'
+      'Cung cấp đội ngũ 60+ Trọng tài quốc tế & Điều phối an ninh đường chạy',
     ],
-    is_featured: true
-  }
+    is_featured: true,
+    display_order: 1,
+  },
+  {
+    id: 'cs-2',
+    title: 'Chiến Dịch Ra Mắt Dòng Sữa Hạt Hữu Cơ & Mega Live Bán Hàng',
+    slug: 'chien-dich-ra-mat-dong-sua-hat-organic',
+    client_name: 'Tập đoàn Thực Phẩm & Tiêu Dùng Quốc Tế',
+    challenge:
+      'Thâm nhập phân khúc sữa thực vật cao cấp trong bối cảnh thị trường cạnh tranh gay gắt, người tiêu dùng hoài nghi về chất lượng hữu cơ và chi phí chuyển đổi khách hàng mới rất cao.',
+    solution:
+      'Xây dựng chiến dịch Performance đa kênh kết hợp 40+ KOL/KOC lối sống lành mạnh, tổ chức chuỗi Mega Live trên TikTok Shop & Shopee với trường quay chuẩn 4K, kết hợp chính sách dùng thử độc quyền.',
+    results: {
+      metrics: [
+        { label: 'Sản lượng bán ra', value: '350K Hộp', sub: 'Tiêu thụ trong chiến dịch' },
+        { label: 'Báo chí & Tin tức', value: '85+ Bài', sub: 'Nhận diện thương hiệu' },
+        { label: 'Lượt tiếp cận', value: '15M Views', sub: 'Impressions đa kênh' },
+      ],
+      athletes: '350K Hộp Bán Ra',
+      articles: '85+ Bài Báo & Tin Tức',
+      views: '15M Impressions Đa Kênh',
+      display_order: 2,
+    },
+    scope_items: [
+      'Sản xuất 12 TVC & Viral video ngắn định dạng 4K chuyên nghiệp',
+      'Vận hành trọn gói hệ thống quảng cáo Meta Ads & TikTok Performance',
+      'Setup và điều phối 5 phiên Mega Live chốt đơn doanh thu kỷ lục',
+      'Booking mạng lưới chuyên gia dinh dưỡng và Fitness Influencers',
+    ],
+    is_featured: false,
+    display_order: 2,
+  },
+  {
+    id: 'cs-3',
+    title: 'Giải Quần Vợt Doanh Nhân Toàn Quốc & Kết Nối Đầu Tư 2025',
+    slug: 'giai-quan-vot-doanh-nhan-toan-quoc',
+    client_name: 'Hiệp Hội Doanh Nghiệp Trẻ & Đối Tác Tài Trợ',
+    challenge:
+      'Kết nối hơn 200 lãnh đạo doanh nghiệp tham gia thi đấu thể thao kết hợp xúc tiến thương mại, đòi hỏi tiêu chuẩn khắt khe về địa điểm, điều hành chuyên môn và bảo mật thông tin.',
+    solution:
+      'Điều phối toàn diện từ khâu cấp phép, mời tài trợ, chuẩn hóa sân bãi tiêu chuẩn ITF, cung cấp đội ngũ trọng tài quốc gia và thiết lập không gian Business Lounge kết nối đầu tư chuyên biệt.',
+    results: {
+      metrics: [
+        { label: 'Lãnh đạo tham gia', value: '240 Doanh Nhân', sub: 'Quy tụ CEO & Founder' },
+        { label: 'Cơ quan truyền thông', value: '35+ Báo chí', sub: 'Độ phủ uy tín' },
+        { label: 'Kết nối mạng lưới', value: '1.2M Lượt Tiếp Cận', sub: 'Doanh nghiệp toàn quốc' },
+      ],
+      athletes: '240 Doanh Nhân VĐV',
+      articles: '35+ Cơ Quan Báo Chí',
+      views: '1.2M Lượt Tiếp Cận Doanh Nghiệp',
+      display_order: 3,
+    },
+    scope_items: [
+      'Điều hành chuyên môn và trọng tài tiêu chuẩn Liên đoàn Quần vợt',
+      'Hệ thống ấn phẩm quà tặng, cúp vinh danh và race-kit cao cấp',
+      'Ghi hình, phát sóng trực tiếp các trận chung kết với bình luận viên VTV',
+      'Tổ chức đêm Gala Dinner vinh danh và kết nối hợp tác kinh doanh',
+    ],
+    is_featured: false,
+    display_order: 3,
+  },
 ];
 
 export const FALLBACK_CASE_STUDY = FALLBACK_CASE_STUDIES[0];
@@ -781,34 +854,75 @@ export interface BlogPostItem {
   author?: string;
   published_at?: string;
   read_time?: string;
+  external_url?: string;
 }
 
 export const FALLBACK_BLOGS: BlogPostItem[] = [
   {
+    id: 'blog-1',
     title: 'Chiến Lược Marketing Đa Kênh Tối Ưu ROI Cho Doanh Nghiệp 2026',
     slug: 'chien-luoc-marketing-da-kenh-toi-uu-roi-2026',
     excerpt: 'Khám phá phương pháp phối hợp nhịp nhàng giữa Google Ads, Meta Ads và TikTok Ads nhằm hạ thấp chi phí CPA và tăng tỷ lệ chuyển đổi đơn hàng vượt bậc.',
     category: 'Digital Marketing',
     author: 'S-Digital Strategy Team',
     published_at: '15/02/2026',
-    read_time: '5 phút đọc'
+    read_time: '5 phút đọc',
+    content: `Trong bối cảnh cạnh tranh quảng cáo trực tuyến ngày càng khốc liệt và chi phí trên mỗi lượt click (CPC) không ngừng gia tăng, việc doanh nghiệp chỉ dựa vào một kênh truyền thông duy nhất là một rủi ro chí mạng.
+
+### 1. Phễu Tiếp Cận Đa Điểm Chạm (Omnichannel Funnel)
+Một chiến dịch hiệu quả không bắt đầu từ việc đổ ngân sách chạy Performance ngay lập tức, mà phải xây dựng nhận diện thương hiệu tự nhiên qua video ngắn (TikTok, Reels, Shorts), sau đó thu hút khách hàng tiềm năng qua Google Search Intent và retargeting liên tục qua Meta Ads.
+
+### 2. Tối Ưu Tỷ Suất Hoàn Vốn (ROAS)
+- **Tập trung vào LTV (Giá trị vòng đời khách hàng):** Đừng chỉ đo lường chi phí mua khách hàng ban đầu (CAC), hãy xây dựng phễu email marketing và chăm sóc Zalo OA để gia tăng tỷ lệ mua lại.
+- **A/B Testing Creative liên tục:** Mỗi tuần sản xuất tối thiểu 5-10 biến thể video ngắn để tránh bão hòa mẫu quảng cáo.
+- **Tích hợp First-party Data:** Tận dụng dữ liệu CRM nội bộ kết hợp AI Gemini để phân nhóm khách hàng mục tiêu chính xác 95%.
+
+S-Digital cam kết đồng hành cùng doanh nghiệp xây dựng hệ thống báo cáo minh bạch theo thời gian thực (Real-time Dashboard), giúp lãnh đạo nắm rõ từng đồng chi phí quảng cáo sinh lời ra sao.`
   },
   {
+    id: 'blog-2',
     title: 'Xu Hướng Thể Thao Doanh Nghiệp: Gắn Kết Đội Ngũ & Nâng Tầm Thương Hiệu',
     slug: 'xu-huong-the-thao-doanh-nghiep-2026',
     excerpt: 'Tại sao ngày càng nhiều tập đoàn hàng đầu lựa chọn tổ chức giải chạy marathon và giải bóng đá nội bộ làm công cụ xây dựng văn hóa doanh nghiệp và PR thương hiệu.',
     category: 'Sports Marketing',
     author: 'Ban Thể Thao S-Digital',
     published_at: '20/02/2026',
-    read_time: '6 phút đọc'
+    read_time: '6 phút đọc',
+    content: `Thể thao không chỉ là rèn luyện thể chất, mà đang trở thành một trong những công cụ truyền thông nội bộ và kích hoạt thương hiệu (Brand Activation) quyền lực nhất hiện nay.
+
+### 1. Sức Mạnh Gắn Kết Đội Ngũ (Internal Culture)
+Các hoạt động team building truyền thống dần trở nên nhàm chán. Ngược lại, một giải chạy Marathon doanh nghiệp kéo dài 3-6 tháng tạo động lực tập luyện mỗi ngày, kết nối các phòng ban và xây dựng tinh thần đồng đội bền vững.
+
+### 2. Tác Động PR Lan Tỏa Tự Nhiên
+- Mỗi cán bộ nhân viên trở thành một đại sứ thương hiệu tự hào chia sẻ hình ảnh bib thi đấu, huy chương lên mạng xã hội cá nhân.
+- Tạo ra nguồn nội dung chân thực (UGC - User Generated Content) có độ tin cậy cao gấp 5 lần so với bài viết quảng cáo trả phí.
+- Thu hút sự quan tâm của báo chí chính thống và đối tác kinh doanh thông qua các thông điệp thể thao gắn với trách nhiệm xã hội (CSR).
+
+S-Digital sở hữu đội ngũ chuyên gia điều hành giải đấu chuyên nghiệp, đảm bảo chuẩn hóa quy trình an ninh, y tế và ứng dụng công nghệ timing chip tiêu chuẩn quốc tế.`
   },
   {
+    id: 'blog-3',
     title: 'Cẩm Nang Xử Lý Khủng Hoảng Truyền Thông Trong Kỷ Nguyên Số',
     slug: 'cam-nang-xu-ly-khung-hoang-truyen-thong-ky-nguyen-so',
     excerpt: 'Quy trình chuẩn 5 bước và nguyên tắc vàng "Phản ứng 30 phút" giúp doanh nghiệp dập tắt tin đồn thất thiệt và bảo vệ hình ảnh thương hiệu trong thời khắc sinh tử.',
     category: 'Crisis Management',
     author: 'Chuyên gia PR S-Digital',
     published_at: '25/02/2026',
-    read_time: '7 phút đọc'
+    read_time: '7 phút đọc',
+    external_url: 'https://vietnamnet.vn/kinh-doanh',
+    content: `Trong thời đại mạng xã hội và video ngắn bùng nổ, một cuộc khủng hoảng truyền thông có thể nhấn chìm uy tín xây dựng hàng chục năm của một doanh nghiệp chỉ sau một đêm.
+
+### 1. Nguyên Tắc Vàng: "Phản Ứng Trong 30 Phút Đầu Tiên"
+- **Không im lặng, không chối bỏ:** Đưa ra thông cáo xác nhận doanh nghiệp đã nắm được thông tin và đang tích cực xác minh nguyên nhân.
+- **Thành lập phòng tác chiến khẩn cấp:** Quy tụ ban lãnh đạo, chuyên gia pháp lý và giám đốc truyền thông để đồng nhất phát ngôn.
+
+### 2. Quy Trình 5 Bước Dập Tắt Khủng Hoảng
+1. **Lắng nghe & Giám sát dữ liệu (Social Listening):** Đo lường sắc thái dư luận và xác định nguồn phát tán tin đồn tiêu cực.
+2. **Khoanh vùng ảnh hưởng:** Ngăn chặn khủng hoảng lan truyền sang các kênh phân phối và đối tác bán lẻ.
+3. **Đối thoại minh bạch & Nhận trách nhiệm chân thành:** Tuyệt đối không đổ lỗi cho khách hàng hay hoàn cảnh.
+4. **Hành động khắc phục thực chất:** Bồi thường thỏa đáng, thu hồi sản phẩm lỗi hoặc cam kết cải tiến quy trình.
+5. **Tái thiết lập niềm tin thương hiệu:** Triển khai các chiến dịch truyền thông tích cực và các hoạt động cộng đồng sau khủng hoảng.
+
+Bài viết được cố vấn chuyên môn bởi các chuyên gia truyền thông kỳ cựu tại S-Digital Enterprise.`
   }
 ];

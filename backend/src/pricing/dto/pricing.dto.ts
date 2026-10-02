@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreatePricingDto {
   @IsString()
@@ -12,6 +12,14 @@ export class CreatePricingDto {
   @IsString()
   @IsNotEmpty({ message: 'Mức giá hiển thị là bắt buộc' })
   price_display!: string;
+
+  @IsNumber()
+  @IsOptional()
+  display_order?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  is_popular?: boolean;
 
   @IsOptional()
   features?: string[] | string;
@@ -30,6 +38,15 @@ export class UpdatePricingDto {
   @IsOptional()
   price_display?: string;
 
+  @IsNumber()
+  @IsOptional()
+  display_order?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  is_popular?: boolean;
+
   @IsOptional()
   features?: string[] | string;
 }
+

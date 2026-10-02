@@ -17,15 +17,15 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: 'Trang chủ', href: '#home' },
-    { label: 'Về chúng tôi', href: '#about' },
-    { label: 'Dịch vụ', href: '#services' },
-    { label: 'Tại sao chọn S-Digital', href: '#why-us' },
-    { label: 'Đối tác', href: '#customers' },
-    { label: 'Case Study', href: '#solutions' },
-    { label: 'Bảng giá', href: '#pricing' },
-    { label: 'Tin tức', href: '#blog' },
-    { label: 'Liên hệ', href: '#contact' },
+    { label: 'Trang chủ', href: '/' },
+    { label: 'Về chúng tôi', href: '/#about' },
+    { label: 'Dịch vụ', href: '/#services' },
+    { label: 'Tại sao chọn S-Digital', href: '/#why-us' },
+    { label: 'Đối tác', href: '/#customers' },
+    { label: 'Case Study', href: '/case-studies' },
+    { label: 'Bảng giá', href: '/#pricing' },
+    { label: 'Tin tức', href: '/#blog' },
+    { label: 'Liên hệ', href: '/#contact' },
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* LOGO */}
-        <Link href="#home" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF5722] to-orange-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-[#FF5722]/30 group-hover:scale-105 group-hover:shadow-[#FF5722]/50 transition-all">
             S
           </div>
