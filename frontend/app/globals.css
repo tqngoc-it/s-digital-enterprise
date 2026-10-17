@@ -1,9 +1,37 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Configure class-based dark mode variant for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --primary: #FF5722;
+  --primary-foreground: #ffffff;
+  --accent-cyan: #00E5FF;
+}
+
+.dark {
   --background: #060913;
   --foreground: #f8fafc;
+  --card: #0B111E;
+  --card-foreground: #f8fafc;
+  --popover: #0B111E;
+  --popover-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --primary: #FF5722;
+  --primary-foreground: #ffffff;
+  --accent-cyan: #00E5FF;
 }
 
 @theme inline {
@@ -18,10 +46,11 @@ html {
 }
 
 body {
-  background-color: #060913;
-  color: #f8fafc;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Infinite Marquee Keyframes & Utilities */

@@ -32,7 +32,7 @@ export default async function CaseStudiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060913] text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#060913] text-slate-900 dark:text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased transition-colors duration-200">
       <Navbar />
 
       <main className="flex-1 py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 w-full space-y-12">
@@ -40,7 +40,7 @@ export default async function CaseStudiesPage() {
         <div className="space-y-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-[#00E5FF] transition-colors font-mono"
+            className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-[#00E5FF] transition-colors font-mono"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Trở về Trang chủ S-Digital</span>
@@ -52,11 +52,11 @@ export default async function CaseStudiesPage() {
               <span>PORTFOLIO & RESULTS</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               Dự Án & Chiến Dịch Tiêu Biểu
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
               Minh chứng thực tế cho năng lực tổ chức giải thể thao quy mô lớn và triển khai giải pháp Digital Marketing tăng trưởng doanh số vượt bậc của S-Digital.
             </p>
           </div>

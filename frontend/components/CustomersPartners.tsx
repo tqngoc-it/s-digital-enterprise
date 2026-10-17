@@ -46,30 +46,30 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
   return (
     <section
       id="customers"
-      className="py-20 border-y border-white/5 bg-[#060913] overflow-hidden relative space-y-12"
+      className="py-20 border-y border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-[#060913] overflow-hidden relative space-y-12 transition-colors"
     >
       {/* SECTION HEADER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-orange-400 text-xs font-mono font-bold">
-          <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-[#FF5722] text-xs font-mono font-bold">
+          <Sparkles className="w-3.5 h-3.5 text-[#FF5722]" />
           <span>TRUSTED NETWORK & ALLIANCES</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">
+        <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white">
           Khách Hàng & Đối Tác Chiến Lược
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
           Đồng hành cùng các tập đoàn, thương hiệu lớn và các tổ chức, học viện thể thao hàng đầu Việt Nam.
         </p>
 
         {/* STATS SUMMARY BAR */}
         <div className="flex justify-center gap-8 pt-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
-            <Building2 className="w-4 h-4 text-orange-400" />
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-200">
+            <Building2 className="w-4 h-4 text-[#FF5722]" />
             <span>{customers.length}+ Khách Hàng Tiêu Biểu</span>
           </div>
-          <div className="w-px h-4 bg-white/10 self-center" />
-          <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
-            <Handshake className="w-4 h-4 text-orange-400" />
+          <div className="w-px h-4 bg-slate-300 dark:bg-white/10 self-center" />
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-200">
+            <Handshake className="w-4 h-4 text-[#FF5722]" />
             <span>{strategicPartners.length}+ Đối Tác Chiến Lược</span>
           </div>
         </div>
@@ -84,8 +84,8 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
         }}
       >
         {/* GRADIENT EDGES OVERLAY (BACKUP DEPTH) */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 md:w-48 bg-gradient-to-r from-[#060913] via-[#060913]/70 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 md:w-48 bg-gradient-to-l from-[#060913] via-[#060913]/70 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-20 md:w-48 bg-gradient-to-r from-slate-50 dark:from-[#060913] via-slate-50/70 dark:via-[#060913]/70 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 md:w-48 bg-gradient-to-l from-slate-50 dark:from-[#060913] via-slate-50/70 dark:via-[#060913]/70 to-transparent z-10 pointer-events-none" />
 
         {/* ROW 1: ENTERPRISE CLIENTS (LEFT TO RIGHT) */}
         <div className="flex overflow-hidden py-1">
@@ -93,14 +93,14 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
             {row1Customers.map((item, idx) => (
               <div
                 key={item.id ? `customer-${item.id}-${idx}` : `customer-${idx}-${item.name}`}
-                className="rounded-xl bg-white/[0.04] border border-white/10 hover:border-orange-500/60 hover:bg-orange-500/[0.06] px-5 py-2.5 flex items-center gap-2.5 transition-all duration-300 shadow-sm cursor-default group shrink-0 whitespace-nowrap"
+                className="rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-orange-500/60 hover:bg-orange-500/[0.06] px-5 py-2.5 flex items-center gap-2.5 transition-all duration-300 shadow-sm cursor-default group shrink-0 whitespace-nowrap"
               >
-                <Building2 className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform shrink-0" />
-                <span className="text-white font-medium text-sm tracking-wide">
+                <Building2 className="w-4 h-4 text-[#FF5722] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="text-slate-900 dark:text-white font-medium text-sm tracking-wide">
                   {item.name}
                 </span>
                 {item.industry && (
-                  <span className="text-xs text-zinc-400 font-normal tracking-normal group-hover:text-zinc-300 transition-colors">
+                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-normal tracking-normal group-hover:text-slate-700 dark:group-hover:text-zinc-300 transition-colors">
                     · {item.industry}
                   </span>
                 )}
@@ -115,14 +115,14 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
             {row2Partners.map((item, idx) => (
               <div
                 key={item.id ? `partner-${item.id}-${idx}` : `partner-${idx}-${item.name}`}
-                className="rounded-xl bg-white/[0.04] border border-white/10 hover:border-orange-500/60 hover:bg-orange-500/[0.06] px-5 py-2.5 flex items-center gap-2.5 transition-all duration-300 shadow-sm cursor-default group shrink-0 whitespace-nowrap"
+                className="rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 hover:border-orange-500/60 hover:bg-orange-500/[0.06] px-5 py-2.5 flex items-center gap-2.5 transition-all duration-300 shadow-sm cursor-default group shrink-0 whitespace-nowrap"
               >
-                <Handshake className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform shrink-0" />
-                <span className="text-white font-medium text-sm tracking-wide">
+                <Handshake className="w-4 h-4 text-[#FF5722] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="text-slate-900 dark:text-white font-medium text-sm tracking-wide">
                   {item.name}
                 </span>
                 {item.industry && (
-                  <span className="text-xs text-zinc-400 font-normal tracking-normal group-hover:text-zinc-300 transition-colors">
+                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-normal tracking-normal group-hover:text-slate-700 dark:group-hover:text-zinc-300 transition-colors">
                     · {item.industry}
                   </span>
                 )}

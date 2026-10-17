@@ -44,27 +44,27 @@ export default function PricingSection({
   };
 
   return (
-    <section id="pricing" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-12 border-t border-white/5">
+    <section id="pricing" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-12 border-t border-slate-200 dark:border-white/5">
       {/* HEADER */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-[#FF5722] text-xs font-mono tracking-widest uppercase font-bold">
           TRANSPARENT & FLEXIBLE TIERS
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
           Bảng Giá Dịch Vụ Linh Hoạt
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
           Lựa chọn phương án đầu tư tối ưu phù hợp với quy mô và mục tiêu tăng trưởng của doanh nghiệp bạn.
         </p>
       </div>
 
       {/* STRATEGIC RECOMMENDATION BANNER */}
-      <div className="max-w-3xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FF5722]/10 via-[#00E5FF]/10 to-[#FF5722]/10 border border-[#00E5FF]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_0_25px_rgba(0,229,255,0.08)]">
+      <div className="max-w-3xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FF5722]/10 via-[#00E5FF]/10 to-[#FF5722]/10 border border-[#00E5FF]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm dark:shadow-[0_0_25px_rgba(0,229,255,0.08)]">
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-sm sm:text-base font-bold text-white">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
             Chưa chắc chắn gói nào phù hợp với doanh nghiệp?
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Hệ thống sẽ đối chiếu lĩnh vực, mục tiêu và mức đầu tư để gợi ý phương án tối ưu ROI cho doanh nghiệp trong 30 giây.
           </p>
         </div>
@@ -98,10 +98,10 @@ export default function PricingSection({
               return (
                 <div
                   key={plan.id || `pricing-plan-${plan.tier_name}-${idx}`}
-                  className={`p-8 md:p-10 rounded-3xl bg-[#0B111E] flex flex-col justify-between space-y-8 relative transition-all duration-300 ${
+                  className={`p-8 md:p-10 rounded-3xl bg-white dark:bg-[#0B111E] flex flex-col justify-between space-y-8 relative transition-all duration-300 ${
                     isPopular
                       ? 'border-2 border-[#FF5722] shadow-2xl shadow-[#FF5722]/15 lg:-translate-y-3'
-                      : 'border border-white/10 hover:border-white/25'
+                      : 'border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/25 shadow-md shadow-slate-200/50 dark:shadow-none'
                   }`}
                 >
                   {isPopular && (
@@ -114,35 +114,35 @@ export default function PricingSection({
                   <div className="space-y-6">
                     <div className="space-y-2">
                       {!isPopular && (
-                        <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
+                        <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 dark:bg-white/5 dark:text-slate-400 dark:border-white/10">
                           {plan.badge || 'Lựa Chọn'}
                         </span>
                       )}
-                      <h3 className="text-2xl font-black text-white pt-2">{plan.tier_name}</h3>
-                      <p className="text-xs text-slate-400 leading-relaxed min-h-[36px]">
+                      <h3 className="text-2xl font-black text-slate-900 dark:text-white pt-2">{plan.tier_name}</h3>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed min-h-[36px]">
                         {plan.target_audience}
                       </p>
                     </div>
 
-                    <div className="flex items-baseline gap-1.5 pt-2 pb-4 border-b border-white/10">
-                      <span className={`text-4xl font-black ${isPopular ? 'text-[#FF5722]' : 'text-white'}`}>
+                    <div className="flex items-baseline gap-1.5 pt-2 pb-4 border-b border-slate-200 dark:border-white/10">
+                      <span className={`text-4xl font-black ${isPopular ? 'text-[#FF5722]' : 'text-slate-900 dark:text-white'}`}>
                         {plan.price_display}
                       </span>
                       {plan.period && (
-                        <span className="text-xs font-normal text-slate-400">{plan.period}</span>
+                        <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{plan.period}</span>
                       )}
                     </div>
 
                     <div className="space-y-3">
-                      <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider">
                         Quyền lợi chi tiết bao gồm:
                       </span>
-                      <ul className="space-y-3 pt-1 text-xs text-slate-300">
+                      <ul className="space-y-3 pt-1 text-xs text-slate-700 dark:text-slate-300">
                         {plan.features?.map((f, fIdx) => (
                           <li key={`plan-${idx}-feat-${fIdx}`} className="flex items-start gap-2.5">
                             <CheckCircle2
                               className={`w-4 h-4 shrink-0 mt-0.5 ${
-                                isPopular ? 'text-[#FF5722]' : 'text-emerald-400'
+                                isPopular ? 'text-[#FF5722]' : 'text-emerald-500 dark:text-emerald-400'
                               }`}
                             />
                             <span className="leading-relaxed">{f}</span>
@@ -157,7 +157,7 @@ export default function PricingSection({
                     className={`w-full py-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                       isPopular
                         ? 'bg-[#FF5722] hover:bg-orange-600 text-white shadow-xl shadow-[#FF5722]/30 hover:scale-[1.02]'
-                        : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white dark:border-white/10 dark:hover:border-white/20'
                     }`}
                   >
                     <span>{isPopular ? `Đăng Ký ${plan.tier_name}` : 'Đăng Ký Tư Vấn'}</span>
@@ -171,12 +171,12 @@ export default function PricingSection({
       })()}
 
       {/* 4 QUALITY COMMITMENTS */}
-      <div className="p-8 md:p-10 rounded-3xl bg-[#0B111E] border border-white/10 space-y-6 shadow-2xl">
+      <div className="p-8 md:p-10 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 space-y-6 shadow-lg dark:shadow-2xl">
         <div className="text-center space-y-1">
-          <span className="text-[#00E5FF] text-xs font-mono font-bold uppercase tracking-wider">
+          <span className="text-[#0097a7] dark:text-[#00E5FF] text-xs font-mono font-bold uppercase tracking-wider">
             QUALITY GUARANTEE
           </span>
-          <h3 className="text-xl sm:text-2xl font-black text-white">4 Cam Kết Chất Lượng S-Digital</h3>
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">4 Cam Kết Chất Lượng S-Digital</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
@@ -185,15 +185,15 @@ export default function PricingSection({
             return (
               <div
                 key={c.title || `commitment-${cIdx}`}
-                className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-[#00E5FF]/40 transition-all space-y-3 group"
+                className="p-6 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 hover:border-[#00E5FF]/40 transition-all space-y-3 group"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF] group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 dark:bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#0097a7] dark:text-[#00E5FF] group-hover:scale-110 transition-transform">
                   <Icon className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#0097a7] dark:group-hover:text-[#00E5FF] transition-colors">
                   {c.title}
                 </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">{c.desc}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{c.desc}</p>
               </div>
             );
           })}

@@ -21,7 +21,7 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
   };
 
   return (
-    <section id="about" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-16 border-t border-white/5">
+    <section id="about" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-16 border-t border-slate-200 dark:border-white/5">
       {/* HEADER WITH H1 & H2 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
         <div className="lg:col-span-6 space-y-4">
@@ -31,14 +31,14 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
           <h1 className="text-xs uppercase tracking-widest text-slate-500 font-mono font-semibold">
             Về Chúng Tôi
           </h1>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
             {data.about_heading}
           </h2>
         </div>
 
-        <div className="lg:col-span-6 space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+        <div className="lg:col-span-6 space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           <p>{data.about_text}</p>
-          <p className="text-slate-400">{data.about_description_2}</p>
+          <p className="text-slate-500 dark:text-slate-400">{data.about_description_2}</p>
         </div>
       </div>
 
@@ -49,21 +49,21 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
           return (
             <div
               key={item.title || `capability-${idx}`}
-              className="p-8 rounded-3xl bg-[#0B111E] border border-white/10 hover:border-[#FF5722]/40 transition-all space-y-5 text-left group hover:-translate-y-1.5 duration-300 shadow-xl flex flex-col justify-between"
+              className="p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 hover:border-[#FF5722]/50 dark:hover:border-[#FF5722]/40 transition-all space-y-5 text-left group hover:-translate-y-1.5 duration-300 shadow-sm hover:shadow-xl dark:shadow-xl flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#FF5722]/10 border border-[#FF5722]/20 flex items-center justify-center text-[#FF5722] group-hover:scale-110 transition-transform">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-black text-white group-hover:text-[#FF5722] transition-colors">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-[#FF5722] transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   {item.desc}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-bold text-[#FF5722] opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex items-center gap-1.5 text-[11px] font-bold text-[#FF5722] opacity-0 group-hover:opacity-100 transition-opacity">
                 <span>Khám phá năng lực</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>

@@ -63,7 +63,7 @@ export default async function HomePage() {
       : FALLBACK_BLOGS;
 
   return (
-    <div className="min-h-screen bg-[#060913] text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#060913] text-slate-900 dark:text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased transition-colors">
       {/* 1. NAVBAR */}
       <Navbar />
 

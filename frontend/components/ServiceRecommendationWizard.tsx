@@ -202,33 +202,33 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="wizard-title"
     >
-      <div className="relative w-full max-w-2xl bg-[#090d18] border border-slate-700/80 rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-[#090d18] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl dark:shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[92vh]">
         {/* Neon Top Accent Line */}
         <div className="h-1 w-full bg-gradient-to-r from-[#FF5722] via-[#00E5FF] to-[#FF5722]" />
 
         {/* MODAL HEADER */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-[#0c1222]">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0c1222]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF5722] to-[#00E5FF] p-[1px]">
-              <div className="w-full h-full bg-[#090d18] rounded-[11px] flex items-center justify-center">
+              <div className="w-full h-full bg-white dark:bg-[#090d18] rounded-[11px] flex items-center justify-center">
                 <Compass className="w-4 h-4 text-[#00E5FF]" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 id="wizard-title" className="font-bold text-white text-sm sm:text-base tracking-wide">
+                <h2 id="wizard-title" className="font-bold text-slate-900 dark:text-white text-sm sm:text-base tracking-wide">
                   Khảo sát & Hoạch định giải pháp tối ưu
                 </h2>
                 <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#FF5722]/15 text-[#FF5722] border border-[#FF5722]/30">
                   HOẠCH ĐỊNH CHIẾN LƯỢC
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Dựa trên mô hình phân tích dữ liệu giải pháp thực tế từ S-Digital Media & Sports
               </p>
             </div>
@@ -236,7 +236,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
             title="Đóng cửa sổ"
           >
             <X className="w-5 h-5" />
@@ -245,13 +245,13 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
         {/* PROGRESS BAR (3 BƯỚC) */}
         {step !== 'loading' && step !== 'result' && (
-          <div className="px-6 pt-4 pb-2 bg-[#090d18]">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-400 mb-2">
-              <span className={step >= 1 ? 'text-[#00E5FF]' : ''}>Bước 1: Ngành nghề</span>
-              <span className={step >= 2 ? 'text-[#00E5FF]' : ''}>Bước 2: Mục tiêu</span>
+          <div className="px-6 pt-4 pb-2 bg-slate-100 dark:bg-[#090d18]">
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+              <span className={step >= 1 ? 'text-cyan-600 dark:text-[#00E5FF]' : ''}>Bước 1: Ngành nghề</span>
+              <span className={step >= 2 ? 'text-cyan-600 dark:text-[#00E5FF]' : ''}>Bước 2: Mục tiêu</span>
               <span className={step === 3 ? 'text-[#FF5722]' : ''}>Bước 3: Ngân sách</span>
             </div>
-            <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#00E5FF] to-[#FF5722] transition-all duration-300 rounded-full"
                 style={{
@@ -263,15 +263,15 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
         )}
 
         {/* MODAL BODY */}
-        <div className="p-5 sm:p-6 overflow-y-auto flex-1 text-slate-200">
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 text-slate-700 dark:text-slate-200">
           {/* BƯỚC 1: CHỌN NGÀNH NGHỀ */}
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
                   1. Doanh nghiệp của bạn hoạt động trong lĩnh vực nào?
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Hệ thống AI sẽ đối chiếu dữ liệu chiến dịch tương ứng để may đo giải pháp phù hợp nhất.
                 </p>
               </div>
@@ -286,15 +286,15 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                       onClick={() => setSelectedIndustry(item.label)}
                       className={`p-3.5 rounded-xl text-left border transition-all flex flex-col justify-between ${
                         isSelected
-                          ? 'bg-[#121c32] border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.15)] text-white'
-                          : 'bg-[#0c1222]/80 border-slate-800 hover:border-slate-700 text-slate-300'
+                          ? 'bg-cyan-50/80 dark:bg-[#121c32] border-cyan-500 dark:border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.15)] text-slate-900 dark:text-white'
+                          : 'bg-slate-50 dark:bg-[#0c1222]/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full mb-1">
-                        <span className="font-semibold text-xs text-white">{item.label}</span>
-                        {isSelected && <Check className="w-4 h-4 text-[#00E5FF]" />}
+                        <span className="font-semibold text-xs text-slate-900 dark:text-white">{item.label}</span>
+                        {isSelected && <Check className="w-4 h-4 text-cyan-600 dark:text-[#00E5FF]" />}
                       </div>
-                      <span className="text-[11px] text-slate-400">{item.desc}</span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">{item.desc}</span>
                     </button>
                   );
                 })}
@@ -306,10 +306,10 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
                   2. Mục tiêu trọng tâm của bạn trong giai đoạn này là gì?
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Xác định đúng mục tiêu giúp phân bổ nguồn lực chuẩn xác giữa Performance Ads, PR hay Sự kiện thể thao.
                 </p>
               </div>
@@ -324,20 +324,20 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                       onClick={() => setSelectedGoal(item.label)}
                       className={`w-full p-3.5 rounded-xl text-left border transition-all flex items-center justify-between ${
                         isSelected
-                          ? 'bg-[#121c32] border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.15)] text-white'
-                          : 'bg-[#0c1222]/80 border-slate-800 hover:border-slate-700 text-slate-300'
+                          ? 'bg-cyan-50/80 dark:bg-[#121c32] border-cyan-500 dark:border-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.15)] text-slate-900 dark:text-white'
+                          : 'bg-slate-50 dark:bg-[#0c1222]/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <div className="space-y-0.5">
-                        <span className="font-semibold text-xs text-white block">{item.label}</span>
-                        <span className="text-[11px] text-slate-400 block">{item.desc}</span>
+                        <span className="font-semibold text-xs text-slate-900 dark:text-white block">{item.label}</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block">{item.desc}</span>
                       </div>
                       <div className="shrink-0 ml-3">
                         <div
                           className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                             isSelected
-                              ? 'border-[#00E5FF] bg-[#00E5FF]/20 text-[#00E5FF]'
-                              : 'border-slate-700'
+                              ? 'border-cyan-500 dark:border-[#00E5FF] bg-cyan-100 dark:bg-[#00E5FF]/20 text-cyan-600 dark:text-[#00E5FF]'
+                              : 'border-slate-300 dark:border-slate-700'
                           }`}
                         >
                           {isSelected && <Check className="w-3.5 h-3.5" />}
@@ -354,10 +354,10 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
                   3. Mức ngân sách dự kiến đầu tư hàng tháng hoặc theo chiến dịch?
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   S-Digital cam kết minh bạch 100% chi phí và tối ưu hóa tỷ suất hoàn vốn ROI trên từng mức ngân sách.
                 </p>
               </div>
@@ -372,15 +372,15 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                       onClick={() => setSelectedBudget(item.id)}
                       className={`p-3.5 rounded-xl text-left border transition-all ${
                         isSelected
-                          ? 'bg-[#1a141f] border-[#FF5722] shadow-[0_0_15px_rgba(255,87,34,0.15)] text-white'
-                          : 'bg-[#0c1222]/80 border-slate-800 hover:border-slate-700 text-slate-300'
+                          ? 'bg-orange-50/80 dark:bg-[#1a141f] border-[#FF5722] shadow-[0_0_15px_rgba(255,87,34,0.15)] text-slate-900 dark:text-white'
+                          : 'bg-slate-50 dark:bg-[#0c1222]/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-xs text-white">{item.label}</span>
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">{item.label}</span>
                         {isSelected && <Check className="w-4 h-4 text-[#FF5722]" />}
                       </div>
-                      <span className="text-[11px] text-slate-400">{item.desc}</span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">{item.desc}</span>
                     </button>
                   );
                 })}
@@ -388,7 +388,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
               {/* Ô ghi chú ngắn tùy chọn */}
               <div className="pt-2">
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Ghi chú thêm về yêu cầu cụ thể (tùy chọn):
                 </label>
                 <input
@@ -396,7 +396,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Ví dụ: Cần chạy chiến dịch trong tháng tới, đã có fanpage nhưng chưa có website..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#060913] border border-slate-700 focus:border-[#00E5FF] text-white text-xs placeholder-slate-500 focus:outline-none transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#060913] border border-slate-300 dark:border-slate-700 focus:border-[#00E5FF] text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -415,13 +415,13 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-bold text-white text-sm tracking-wide">
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide">
                   HỆ THỐNG ĐANG PHÂN TÍCH
                 </h4>
-                <p className="text-xs text-[#00E5FF] font-mono h-5 transition-all">
+                <p className="text-xs text-cyan-600 dark:text-[#00E5FF] font-mono h-5 transition-all">
                   {scannerPhrases[scannerTextIndex]}
                 </p>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Dữ liệu: {selectedIndustry} • {selectedGoal}
                 </p>
               </div>
@@ -432,18 +432,18 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
           {step === 'result' && result && (
             <div className="space-y-5">
               {/* Result Header Badge */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#FF5722]/15 via-[#00E5FF]/10 to-transparent border border-slate-700/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#FF5722]/15 via-[#00E5FF]/10 to-transparent border border-slate-200 dark:border-slate-700/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#00E5FF]">
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-cyan-600 dark:text-[#00E5FF]">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>PHƯƠNG ÁN TỐI ƯU TỪ S-DIGITAL</span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-white">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
                     {result.recommendedPlan}
                   </h3>
                 </div>
                 <div className="text-left sm:text-right shrink-0">
-                  <span className="text-[11px] text-slate-400 block">Dự toán ngân sách</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Dự toán ngân sách</span>
                   <span className="text-sm sm:text-base font-bold text-[#FF5722]">
                     {result.estimatedBudget}
                   </span>
@@ -451,23 +451,23 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
               </div>
 
               {/* Analysis Text */}
-              <div className="p-3.5 rounded-xl bg-[#0c1222] border border-slate-800 text-xs text-slate-300 leading-relaxed">
-                <span className="font-semibold text-white block mb-1">Đánh giá chiến lược:</span>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0c1222] border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                <span className="font-semibold text-slate-900 dark:text-white block mb-1">Đánh giá chiến lược:</span>
                 {result.analysis}
               </div>
 
               {/* Key Deliverables */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
                   Đầu việc và cam kết thực thi trọng tâm:
                 </span>
                 <div className="grid grid-cols-1 gap-2">
                   {result.keyDeliverables.map((item, idx) => (
                     <div
                       key={idx}
-                      className="p-2.5 rounded-xl bg-[#0c1222]/80 border border-slate-800/80 flex items-start gap-2.5 text-xs text-slate-200"
+                      className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#0c1222]/80 border border-slate-200 dark:border-slate-800/80 flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-200"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-[#00E5FF] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-[#00E5FF] shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -476,24 +476,24 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
               {/* Suggested Services & Timeline */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div className="p-3 rounded-xl bg-[#060913] border border-slate-800">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 mb-2">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-2">
                     <Clock className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Thời gian triển khai:</span>
                   </div>
-                  <span className="font-bold text-xs text-white">{result.timeline}</span>
+                  <span className="font-bold text-xs text-slate-900 dark:text-white">{result.timeline}</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#060913] border border-slate-800">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 mb-2">
-                    <Layers className="w-3.5 h-3.5 text-[#00E5FF]" />
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                    <Layers className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />
                     <span>Dịch vụ tích hợp:</span>
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {result.suggestedServices.map((srv, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700"
+                        className="text-[10px] px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"
                       >
                         {srv}
                       </span>
@@ -506,7 +506,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
         </div>
 
         {/* MODAL FOOTER / ACTIONS */}
-        <div className="px-5 py-4 border-t border-slate-800 bg-[#0c1222] flex items-center justify-between">
+        <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c1222] flex items-center justify-between">
           {step !== 'loading' && step !== 'result' && (
             <>
               {step > 1 ? (
@@ -516,7 +516,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                     if (step === 2) setStep(1);
                     else if (step === 3) setStep(2);
                   }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Quay lại</span>
@@ -532,7 +532,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                     if (step === 1) setStep(2);
                     else if (step === 2) setStep(3);
                   }}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#FF5722] to-orange-600 hover:brightness-110 shadow-lg shadow-[#FF5722]/30 transition-all flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#FF5722] to-orange-600 hover:brightness-110 shadow-lg shadow-[#FF5722]/30 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Tiếp tục</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -541,7 +541,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
                 <button
                   type="button"
                   onClick={handleStartAnalysis}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#00E5FF] to-[#0099FF] text-slate-950 font-black hover:brightness-110 shadow-lg shadow-[#00E5FF]/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#00E5FF] to-[#0099FF] text-slate-950 font-black hover:brightness-110 shadow-lg shadow-[#00E5FF]/30 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Hoạch định phương án</span>
@@ -555,7 +555,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
               <button
                 type="button"
                 onClick={handleReset}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white bg-slate-200 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Chọn lại thông số</span>

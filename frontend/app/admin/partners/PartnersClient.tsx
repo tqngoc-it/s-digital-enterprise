@@ -81,17 +81,17 @@ function SortablePartnerRow({
       style={style}
       className={`transition-colors ${
         isDragging
-          ? 'opacity-80 ring-2 ring-[#FF5722] bg-[#0E1322] shadow-2xl relative z-30'
-          : 'hover:bg-white/[0.02]'
+          ? 'opacity-80 ring-2 ring-[#FF5722] bg-slate-100 dark:bg-[#0E1322] shadow-2xl relative z-30'
+          : 'hover:bg-slate-50 dark:hover:bg-white/[0.02]'
       }`}
     >
-      <td className="py-4 px-6 font-bold text-white min-w-[180px]">
+      <td className="py-4 px-6 font-bold text-slate-900 dark:text-white min-w-[180px]">
         <div className="flex items-center gap-2">
           <button
             type="button"
             {...attributes}
             {...listeners}
-            className="p-1 -ml-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing touch-none select-none transition-colors shrink-0"
+            className="p-1 -ml-1 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 cursor-grab active:cursor-grabbing touch-none select-none transition-colors shrink-0"
             title="Kéo thả để sắp xếp vị trí"
           >
             <GripVertical className="w-4 h-4" />
@@ -109,13 +109,13 @@ function SortablePartnerRow({
           className={`whitespace-nowrap shrink-0 inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase ${
             p.type === 'CUSTOMER'
               ? 'bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20'
-              : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20'
+              : 'bg-[#00E5FF]/10 text-cyan-600 dark:text-[#00E5FF] border border-[#00E5FF]/20'
           }`}
         >
           {p.type === 'CUSTOMER' ? 'Khách Hàng' : 'Đối Tác Chiến Lược'}
         </span>
       </td>
-      <td className="py-4 px-6 text-slate-300 min-w-[180px] whitespace-nowrap">{p.industry || '---'}</td>
+      <td className="py-4 px-6 text-slate-600 dark:text-slate-300 min-w-[180px] whitespace-nowrap">{p.industry || '---'}</td>
       <td className="py-4 px-6 w-[80px] min-w-[80px] text-center whitespace-nowrap">
         <span className="px-2.5 py-1 rounded-lg bg-orange-500/10 text-[#FF5722] font-mono font-bold border border-[#FF5722]/20 text-xs inline-block">
           #{realIdx + 1}
@@ -129,7 +129,7 @@ function SortablePartnerRow({
               type="button"
               disabled={realIdx === 0}
               onClick={() => onMove(realIdx, 'UP')}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer shrink-0"
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer shrink-0"
               title="Di chuyển lên trước"
             >
               <ArrowUp className="w-3.5 h-3.5" />
@@ -138,7 +138,7 @@ function SortablePartnerRow({
               type="button"
               disabled={realIdx === totalLength - 1}
               onClick={() => onMove(realIdx, 'DOWN')}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-white/5 cursor-pointer shrink-0"
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer shrink-0"
               title="Di chuyển xuống sau"
             >
               <ArrowDown className="w-3.5 h-3.5" />
@@ -147,7 +147,7 @@ function SortablePartnerRow({
 
           <button
             onClick={() => onEdit(p)}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer shrink-0"
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0"
             title="Sửa"
           >
             <Edit2 className="w-3.5 h-3.5" />
@@ -155,7 +155,7 @@ function SortablePartnerRow({
           {p.id && (
             <button
               onClick={() => onDelete(p.id)}
-              className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 cursor-pointer shrink-0"
+              className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 cursor-pointer shrink-0"
               title="Xóa"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -346,20 +346,20 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div className="flex flex-1 gap-3 w-full sm:w-auto max-w-md">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Tìm theo tên thương hiệu, ngành nghề..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-[#0B0F19] border border-white/10 text-white text-xs focus:outline-none focus:border-[#00E5FF]"
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-[#FF5722] placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
 
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-white/10 text-xs text-white cursor-pointer"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white cursor-pointer focus:outline-none focus:border-[#FF5722]"
           >
             <option value="ALL">Tất cả ({partners.length})</option>
             <option value="CUSTOMER">Khách hàng ({partners.filter((p) => p.type === 'CUSTOMER').length})</option>
@@ -379,7 +379,7 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
       </div>
 
       {/* TABLE */}
-      <div className="rounded-2xl bg-[#0B0F19] border border-white/10 shadow-xl overflow-hidden">
+      <div className="rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 shadow-xl overflow-hidden">
         <div className="w-full overflow-x-auto pb-4">
           {mounted ? (
             <DndContext
@@ -388,7 +388,7 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
               onDragEnd={handleDragEnd}
             >
               <table className="w-full min-w-[720px] text-left border-collapse text-xs">
-                <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
+                <thead className="bg-slate-50 dark:bg-white/[0.02] border-b border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[11px]">
                   <tr>
                     <th className="py-4 px-6 font-semibold min-w-[180px]">Tên Thương Hiệu</th>
                     <th className="py-4 px-6 font-semibold w-[150px] min-w-[150px] whitespace-nowrap">Phân Loại</th>
@@ -401,7 +401,7 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
                   items={filteredPartners.map((p, idx) => String(p.id || `partner-${idx}-${p.name}`))}
                   strategy={verticalListSortingStrategy}
                 >
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                     {filteredPartners.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="py-12 text-center text-slate-400">
@@ -433,7 +433,7 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
             </DndContext>
           ) : (
             <table className="w-full min-w-[720px] text-left border-collapse text-xs">
-              <thead className="bg-white/[0.02] border-b border-white/5 text-slate-400 uppercase tracking-wider text-[11px]">
+              <thead className="bg-slate-50 dark:bg-white/[0.02] border-b border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-4 px-6 font-semibold min-w-[180px]">Tên Thương Hiệu</th>
                   <th className="py-4 px-6 font-semibold w-[150px] min-w-[150px] whitespace-nowrap">Phân Loại</th>
@@ -442,7 +442,7 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
                   <th className="py-4 px-6 font-semibold text-right w-[150px] min-w-[150px] whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                 {filteredPartners.map((p, idx) => {
                   const fullIdx = partners.findIndex((item) => item.id === p.id);
                   const realIdx = fullIdx !== -1 ? fullIdx : idx;
@@ -468,32 +468,35 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
 
       {/* CREATE MODAL */}
       {isCreating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="max-w-md w-full p-6 rounded-3xl bg-[#0B0F19] border border-white/15 space-y-5 text-xs shadow-2xl relative">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-black text-white">Thêm Khách Hàng / Đối Tác Mới</h3>
-              <button onClick={() => setIsCreating(false)} className="p-1.5 rounded-lg bg-white/5 text-slate-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="max-w-md w-full p-6 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-5 text-xs shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">Thêm Khách Hàng / Đối Tác Mới</h3>
+              <button
+                onClick={() => setIsCreating(false)}
+                className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Tên Thương Hiệu / Đơn Vị *</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tên Thương Hiệu / Đơn Vị *</label>
                 <input
                   type="text"
                   name="name"
                   required
                   placeholder="VD: Vinamilk / ĐH TDTT..."
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Phân Loại</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Phân Loại</label>
                 <select
                   name="type"
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722]"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722] cursor-pointer"
                 >
                   <option value="CUSTOMER">Khách Hàng (Customer)</option>
                   <option value="STRATEGIC_PARTNER">Đối Tác Chiến Lược (Partner)</option>
@@ -501,19 +504,19 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
               </div>
 
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Ngành Nghề / Lĩnh Vực</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Ngành Nghề / Lĩnh Vực</label>
                 <input
                   type="text"
                   name="industry"
                   placeholder="VD: Tài chính Ngân hàng / Thể thao"
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-xl bg-[#FF5722] hover:bg-orange-600 text-white font-bold transition-all shadow-lg flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-[#FF5722] hover:bg-orange-600 text-white font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Lưu Đối Tác Mới</span>}
               </button>
@@ -524,33 +527,36 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
 
       {/* EDIT MODAL */}
       {editingPartner && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="max-w-md w-full p-6 rounded-3xl bg-[#0B0F19] border border-white/15 space-y-5 text-xs shadow-2xl relative">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-black text-white">Chỉnh Sửa Đối Tác</h3>
-              <button onClick={() => setEditingPartner(null)} className="p-1.5 rounded-lg bg-white/5 text-slate-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="max-w-md w-full p-6 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-5 text-xs shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">Chỉnh Sửa Đối Tác</h3>
+              <button
+                onClick={() => setEditingPartner(null)}
+                className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Tên Thương Hiệu *</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tên Thương Hiệu *</label>
                 <input
                   type="text"
                   name="name"
                   required
                   defaultValue={editingPartner.name}
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#00E5FF]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Phân Loại</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Phân Loại</label>
                 <select
                   name="type"
                   defaultValue={editingPartner.type === 'PARTNER' ? 'STRATEGIC_PARTNER' : editingPartner.type}
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#00E5FF] cursor-pointer"
                 >
                   <option value="CUSTOMER">Khách Hàng (Customer)</option>
                   <option value="STRATEGIC_PARTNER">Đối Tác Chiến Lược (Partner)</option>
@@ -558,19 +564,19 @@ export default function PartnersClient({ initialPartners }: { initialPartners: P
               </div>
 
               <div>
-                <label className="block text-slate-400 font-bold mb-1">Ngành Nghề</label>
+                <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Ngành Nghề</label>
                 <input
                   type="text"
                   name="industry"
                   defaultValue={editingPartner.industry || ''}
-                  className="w-full p-3 rounded-xl bg-[#060913] border border-white/10 text-white"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#00E5FF]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-xl bg-[#00E5FF] hover:bg-cyan-400 text-slate-950 font-bold transition-all shadow-lg flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-[#00E5FF] hover:bg-cyan-400 text-slate-950 font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Lưu Thay Đổi</span>}
               </button>

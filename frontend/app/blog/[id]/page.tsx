@@ -151,7 +151,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#060913] text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#060913] text-slate-900 dark:text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased transition-colors duration-200">
       {/* Schema.org BlogPosting Structured Data */}
       <script
         type="application/ld+json"
@@ -164,47 +164,47 @@ export default async function BlogDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between">
           <Link
             href="/#blog"
-            className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-orange-400 transition-colors font-mono"
+            className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-orange-500 dark:text-zinc-400 dark:hover:text-orange-400 transition-colors font-mono"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Trở về Tin Tức & Góc Nhìn</span>
           </Link>
 
-          <span className="text-[11px] font-mono text-zinc-400 uppercase px-3 py-1 rounded-full bg-white/5 border border-white/5">
+          <span className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase px-3 py-1 rounded-full bg-slate-200/60 dark:bg-white/5 border border-slate-300 dark:border-white/5">
             S-Digital Knowledge Hub
           </span>
         </div>
 
         {/* ARTICLE HEADER */}
-        <header className="space-y-6 border-b border-white/10 pb-8">
+        <header className="space-y-6 border-b border-slate-200 dark:border-white/10 pb-8">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs font-mono font-bold uppercase px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">
+            <span className="text-xs font-mono font-bold uppercase px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
               {post.category || 'Digital Marketing'}
             </span>
 
-            <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
-              <Clock className="w-3.5 h-3.5 text-orange-400" />
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-mono">
+              <Clock className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
               <span>{readTime}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
-              <Calendar className="w-3.5 h-3.5 text-zinc-400" />
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-mono">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-400" />
               <span>{publishedDate}</span>
             </div>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
             {post.title}
           </h1>
 
-          <div className="flex items-center justify-between text-xs text-zinc-400 pt-2">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-400 pt-2">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FF5722] to-orange-600 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-orange-500/20">
                 SD
               </div>
               <div>
-                <p className="font-bold text-white">{post.author || 'S-Digital Strategy Team'}</p>
-                <p className="text-[10px] text-zinc-400">Chuyên gia phân tích & chiến lược số</p>
+                <p className="font-bold text-slate-900 dark:text-white">{post.author || 'S-Digital Strategy Team'}</p>
+                <p className="text-[10px] text-slate-500 dark:text-zinc-400">Chuyên gia phân tích & chiến lược số</p>
               </div>
             </div>
 
@@ -213,7 +213,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 href={post.external_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 text-xs font-bold transition-all border border-orange-500/20"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 text-xs font-bold transition-all border border-orange-500/20"
               >
                 <span>Nguồn báo chí ngoài</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -224,47 +224,47 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
         {/* LEAD EXCERPT / QUOTE BOX */}
         {post.excerpt && (
-          <div className="border-l-4 border-orange-500 bg-orange-500/[0.05] p-6 rounded-r-xl text-zinc-200 italic text-sm sm:text-base leading-relaxed shadow-sm">
+          <div className="border-l-4 border-orange-500 bg-orange-500/[0.06] p-6 rounded-r-xl text-slate-700 dark:text-zinc-200 italic text-sm sm:text-base leading-relaxed shadow-xs">
             &ldquo;{post.excerpt}&rdquo;
           </div>
         )}
 
         {/* ARTICLE CONTENT - STANDARD MARKDOWN TYPOGRAPHY */}
-        <article className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-p:text-zinc-300 prose-p:leading-relaxed prose-strong:text-orange-400 prose-hr:border-white/10 text-sm sm:text-base leading-relaxed">
+        <article className="prose dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-headings:font-bold prose-p:text-slate-700 dark:prose-p:text-zinc-300 prose-p:leading-relaxed prose-strong:text-orange-600 dark:prose-strong:text-orange-400 prose-hr:border-slate-200 dark:prose-hr:border-white/10 text-sm sm:text-base leading-relaxed">
           <ReactMarkdown
             components={{
               h1: ({ node, ...props }) => (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mt-8 mb-4 tracking-tight" {...props} />
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white mt-8 mb-4 tracking-tight" {...props} />
               ),
               h2: ({ node, ...props }) => (
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mt-8 mb-4 pb-2 border-b border-white/10 tracking-tight" {...props} />
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-white/10 tracking-tight" {...props} />
               ),
               h3: ({ node, ...props }) => (
-                <h3 className="text-lg sm:text-xl font-bold text-white mt-6 mb-3 tracking-tight flex items-center gap-2" {...props} />
+                <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white mt-6 mb-3 tracking-tight flex items-center gap-2" {...props} />
               ),
               p: ({ node, ...props }) => (
-                <p className="text-zinc-300 leading-relaxed my-4 text-sm sm:text-base" {...props} />
+                <p className="text-slate-700 dark:text-zinc-300 leading-relaxed my-4 text-sm sm:text-base" {...props} />
               ),
               strong: ({ node, ...props }) => (
-                <strong className="text-orange-400 font-bold" {...props} />
+                <strong className="text-orange-600 dark:text-orange-400 font-bold" {...props} />
               ),
               ul: ({ node, ...props }) => (
-                <ul className="space-y-2 pl-6 list-disc marker:text-orange-500 my-4 text-zinc-300 text-sm sm:text-base" {...props} />
+                <ul className="space-y-2 pl-6 list-disc marker:text-orange-500 my-4 text-slate-700 dark:text-zinc-300 text-sm sm:text-base" {...props} />
               ),
               ol: ({ node, ...props }) => (
-                <ol className="space-y-2 pl-6 list-decimal marker:text-orange-500 my-4 text-zinc-300 text-sm sm:text-base" {...props} />
+                <ol className="space-y-2 pl-6 list-decimal marker:text-orange-500 my-4 text-slate-700 dark:text-zinc-300 text-sm sm:text-base" {...props} />
               ),
               li: ({ node, ...props }) => (
                 <li className="pl-1 leading-relaxed" {...props} />
               ),
               hr: ({ node, ...props }) => (
-                <hr className="my-8 border-white/10" {...props} />
+                <hr className="my-8 border-slate-200 dark:border-white/10" {...props} />
               ),
               blockquote: ({ node, ...props }) => (
-                <blockquote className="border-l-4 border-orange-500 bg-orange-500/[0.05] p-5 my-6 rounded-r-xl text-zinc-200 italic" {...props} />
+                <blockquote className="border-l-4 border-orange-500 bg-orange-500/[0.05] p-5 my-6 rounded-r-xl text-slate-700 dark:text-zinc-200 italic" {...props} />
               ),
               a: ({ node, ...props }) => (
-                <a className="text-orange-400 hover:text-orange-300 underline underline-offset-4 font-medium transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
+                <a className="text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 underline underline-offset-4 font-medium transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
               ),
             }}
           >
@@ -274,12 +274,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
         {/* EXTERNAL LINK CALLOUT (IF AVAILABLE) */}
         {post.external_url && (
-          <div className="p-6 rounded-2xl bg-orange-500/[0.04] border border-orange-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-6 rounded-2xl bg-orange-500/[0.06] border border-orange-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <span className="text-[11px] font-mono font-bold text-orange-400 uppercase">
+              <span className="text-[11px] font-mono font-bold text-orange-600 dark:text-orange-400 uppercase">
                 BÀI VIẾT NGUỒN NGOÀI
               </span>
-              <p className="text-xs text-zinc-300">
+              <p className="text-xs text-slate-600 dark:text-zinc-300">
                 Bài viết này được xuất bản gốc trên nền tảng báo chí uy tín. Bạn có thể mở bài viết gốc để xác thực.
               </p>
             </div>
@@ -296,15 +296,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
         )}
 
         {/* BOTTOM CTA: CONTACT S-DIGITAL */}
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-[#0B111E] to-[#121826] border border-white/10 space-y-5 text-center relative overflow-hidden">
+        <div className="p-8 rounded-3xl bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-[#0B111E] dark:to-[#121826] border border-slate-200 dark:border-white/10 space-y-5 text-center relative overflow-hidden shadow-sm dark:shadow-xl">
           <div className="space-y-2">
             <span className="text-[#FF5722] text-xs font-mono font-bold uppercase tracking-wider">
               S-DIGITAL PARTNERSHIP
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-white">
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
               Cần Tư Vấn Chiến Lược Cho Doanh Nghiệp Của Bạn?
             </h3>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
               Đội ngũ chuyên viên chiến lược S-Digital sẵn sàng thiết kế giải pháp Marketing và giải đấu thể thao độc quyền tối ưu ngân sách.
             </p>
           </div>
@@ -319,7 +319,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </Link>
             <Link
               href="/#blog"
-              className="px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs transition-all border border-white/10"
+              className="px-5 py-3.5 rounded-xl bg-slate-200/80 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all border border-slate-300 dark:border-white/10"
             >
               <span>Đọc thêm bài viết khác</span>
             </Link>

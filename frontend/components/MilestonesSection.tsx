@@ -60,8 +60,8 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
         <span className="text-[#FF5722] text-xs font-mono tracking-widest uppercase font-bold">
           PROVEN TRACK RECORD & STATS
         </span>
-        <h2 className="text-3xl md:text-5xl font-black text-white">Thành Tựu Nổi Bật</h2>
-        <p className="text-xs md:text-sm text-slate-400">
+        <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white">Thành Tựu Nổi Bật</h2>
+        <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400">
           Hiệu quả thực chiến được chứng minh qua hàng trăm chiến dịch truyền thông và sự kiện thể thao quy mô lớn.
         </p>
       </div>
@@ -72,18 +72,18 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
           return (
             <div
               key={item.label || `milestone-${idx}`}
-              className={`p-8 rounded-3xl bg-[#0B111E] border border-white/10 ${item.border} transition-all space-y-4 text-left group hover:-translate-y-1.5 duration-300 shadow-xl ${item.glow}`}
+              className={`p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 ${item.border} transition-all space-y-4 text-left group hover:-translate-y-1.5 duration-300 shadow-sm hover:shadow-xl dark:shadow-xl ${item.glow}`}
             >
               <div className="flex items-center justify-between">
                 <div className={`text-4xl lg:text-5xl font-black ${item.color} tracking-tight`}>
                   {item.value}
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center">
                   <Icon className={`w-6 h-6 ${item.color} group-hover:scale-110 transition-transform`} />
                 </div>
               </div>
-              <h3 className="font-bold text-white text-base pt-2">{item.label}</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+              <h3 className="font-bold text-slate-900 dark:text-white text-base pt-2">{item.label}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
             </div>
           );
         })}

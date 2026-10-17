@@ -24,16 +24,16 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
   const blogList = blogs && blogs.length > 0 ? blogs : FALLBACK_BLOGS;
 
   return (
-    <section id="blog" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-16 border-t border-white/5">
+    <section id="blog" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-16 border-t border-slate-200 dark:border-white/5">
       {/* HEADER */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-[#FF5722] text-xs font-mono tracking-widest uppercase font-bold">
           INSIGHTS & KNOWLEDGE
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
           Góc Nhìn & Tin Tức Chuyên Sâu
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
           Cập nhật xu hướng tiếp thị số mới nhất và các kinh nghiệm tổ chức sự kiện thể thao thực chiến từ chuyên gia S-Digital.
         </p>
       </div>
@@ -49,20 +49,20 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
           return (
             <article
               key={post.id || post.slug || `blog-${idx}-${post.title}`}
-              className="p-8 rounded-3xl bg-[#0B111E] border border-white/10 hover:border-[#FF5722]/40 transition-all flex flex-col justify-between space-y-6 group hover:-translate-y-1.5 duration-300 shadow-xl relative"
+              className="p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 hover:border-[#FF5722]/50 dark:hover:border-[#FF5722]/40 transition-all flex flex-col justify-between space-y-6 group hover:-translate-y-1.5 duration-300 shadow-sm hover:shadow-xl dark:shadow-xl relative"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-[#FF5722]/10 text-[#FF5722] border border-[#FF5722]/20">
                     {post.category || 'Tin Tức'}
                   </span>
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-orange-400" />
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                    <Clock className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
                     <span>{readTime}</span>
                   </div>
                 </div>
 
-                <h3 className="text-lg font-black text-white group-hover:text-[#FF5722] transition-colors leading-snug">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-[#FF5722] transition-colors leading-snug">
                   {isExternal ? (
                     <a
                       href={postLink}
@@ -71,7 +71,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
                       className="hover:underline flex items-start gap-1"
                     >
                       <span>{post.title}</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-[#00E5FF] shrink-0 mt-1 inline" />
+                      <ExternalLink className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF] shrink-0 mt-1 inline" />
                     </a>
                   ) : (
                     <Link href={postLink} className="hover:underline">
@@ -80,14 +80,14 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
                   )}
                 </h3>
 
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
                   {post.excerpt}
                 </p>
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-white/5">
+              <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span className="truncate max-w-[140px] text-slate-400">{post.author || 'S-Digital Strategy Team'}</span>
+                  <span className="truncate max-w-[140px] text-slate-700 dark:text-slate-400">{post.author || 'S-Digital Strategy Team'}</span>
                   <span>{publishedDate}</span>
                 </div>
 
@@ -98,7 +98,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
                       href={post.external_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00E5FF] hover:text-[#00E5FF]/80 group-hover:translate-x-0.5 transition-transform"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-[#00E5FF] hover:text-cyan-700 dark:hover:text-[#00E5FF]/80 group-hover:translate-x-0.5 transition-transform"
                     >
                       <span>Đọc tại báo nguồn</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -106,7 +106,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
                   ) : (
                     <Link
                       href={`/blog/${post.slug || post.id || idx}`}
-                      className="inline-flex items-center gap-2 text-xs font-bold text-[#FF5722] hover:text-orange-400 group-hover:translate-x-1 transition-transform"
+                      className="inline-flex items-center gap-2 text-xs font-bold text-[#FF5722] hover:text-orange-600 dark:hover:text-orange-400 group-hover:translate-x-1 transition-transform"
                     >
                       <span>Đọc toàn bộ bài viết</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -118,7 +118,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
                     <button
                       type="button"
                       onClick={() => setQuickReadPost(post)}
-                      className="text-[11px] font-medium text-slate-400 hover:text-white px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                      className="text-[11px] font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
                       title="Xem nhanh nội dung bài viết ngay trên trang"
                     >
                       Đọc nhanh
@@ -133,11 +133,11 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
 
       {/* QUICK READ MODAL */}
       {quickReadPost && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="max-w-2xl w-full p-6 sm:p-8 rounded-3xl bg-[#0B111E] border border-white/15 space-y-6 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 dark:bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="max-w-2xl w-full p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/15 space-y-6 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setQuickReadPost(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
               aria-label="Đóng"
             >
               <X className="w-5 h-5" />
@@ -145,48 +145,48 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
 
             <div className="space-y-3 pr-8">
               <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                <span className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 font-bold">
+                <span className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-bold">
                   {quickReadPost.category || 'Digital Marketing'}
                 </span>
-                <span className="text-zinc-400 flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-orange-400" />
+                <span className="text-slate-500 dark:text-zinc-400 flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-orange-500 dark:text-orange-400" />
                   {formatReadTime(quickReadPost.read_time, quickReadPost.content || quickReadPost.excerpt)}
                 </span>
-                <span className="text-zinc-500 flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-zinc-500" />
+                <span className="text-slate-400 dark:text-zinc-500 flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-slate-400 dark:text-zinc-500" />
                   {formatVietnameseDate(quickReadPost.published_at)}
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
                 {quickReadPost.title}
               </h3>
 
-              <div className="flex items-center gap-2 text-[11px] text-zinc-400">
-                <span className="font-bold text-white">{quickReadPost.author || 'S-Digital Strategy Team'}</span>
+              <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-zinc-400">
+                <span className="font-bold text-slate-900 dark:text-white">{quickReadPost.author || 'S-Digital Strategy Team'}</span>
               </div>
             </div>
 
             {/* EXCERPT LEAD */}
             {quickReadPost.excerpt && (
-              <div className="border-l-4 border-orange-500 bg-orange-500/[0.05] p-4 rounded-r-xl text-xs text-zinc-200 italic leading-relaxed">
+              <div className="border-l-4 border-orange-500 bg-orange-500/[0.05] p-4 rounded-r-xl text-xs text-slate-700 dark:text-zinc-200 italic leading-relaxed">
                 &ldquo;{quickReadPost.excerpt}&rdquo;
               </div>
             )}
 
             {/* FULL CONTENT WITH MARKDOWN */}
-            <div className="space-y-3 text-xs sm:text-sm text-zinc-300 leading-relaxed max-h-[45vh] overflow-y-auto pr-2 prose prose-invert max-w-none prose-headings:text-white prose-strong:text-orange-400">
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed max-h-[45vh] overflow-y-auto pr-2 prose dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-strong:text-orange-500 dark:prose-strong:text-orange-400">
               <ReactMarkdown
                 components={{
-                  h1: ({ node, ...props }) => <h3 className="text-lg font-bold text-white mt-4 mb-2" {...props} />,
-                  h2: ({ node, ...props }) => <h3 className="text-base font-bold text-white mt-4 mb-2 pb-1 border-b border-white/10" {...props} />,
-                  h3: ({ node, ...props }) => <h4 className="text-sm font-bold text-white mt-3 mb-1" {...props} />,
-                  p: ({ node, ...props }) => <p className="text-zinc-300 leading-relaxed my-2" {...props} />,
-                  strong: ({ node, ...props }) => <strong className="text-orange-400 font-bold" {...props} />,
-                  ul: ({ node, ...props }) => <ul className="space-y-1.5 pl-5 list-disc marker:text-orange-500 my-2 text-zinc-300" {...props} />,
-                  ol: ({ node, ...props }) => <ol className="space-y-1.5 pl-5 list-decimal marker:text-orange-500 my-2 text-zinc-300" {...props} />,
+                  h1: ({ node, ...props }) => <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-4 mb-2" {...props} />,
+                  h2: ({ node, ...props }) => <h3 className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 pb-1 border-b border-slate-200 dark:border-white/10" {...props} />,
+                  h3: ({ node, ...props }) => <h4 className="text-sm font-bold text-slate-800 dark:text-white mt-3 mb-1" {...props} />,
+                  p: ({ node, ...props }) => <p className="text-slate-600 dark:text-zinc-300 leading-relaxed my-2" {...props} />,
+                  strong: ({ node, ...props }) => <strong className="text-orange-600 dark:text-orange-400 font-bold" {...props} />,
+                  ul: ({ node, ...props }) => <ul className="space-y-1.5 pl-5 list-disc marker:text-orange-500 my-2 text-slate-600 dark:text-zinc-300" {...props} />,
+                  ol: ({ node, ...props }) => <ol className="space-y-1.5 pl-5 list-decimal marker:text-orange-500 my-2 text-slate-600 dark:text-zinc-300" {...props} />,
                   li: ({ node, ...props }) => <li className="pl-1" {...props} />,
-                  blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-orange-500 bg-orange-500/[0.05] p-3 rounded-r-lg text-zinc-200 italic my-2" {...props} />,
+                  blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-orange-500 bg-orange-500/[0.05] p-3 rounded-r-lg text-slate-700 dark:text-zinc-200 italic my-2" {...props} />,
                 }}
               >
                 {cleanMarkdownContent(quickReadPost.content || quickReadPost.excerpt || '')}
@@ -194,7 +194,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
             </div>
 
             {/* MODAL FOOTER */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/10">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
               <Link
                 href={`/blog/${quickReadPost.slug || quickReadPost.id}`}
                 onClick={() => setQuickReadPost(null)}
@@ -205,7 +205,7 @@ export default function BlogSection({ blogs = [] }: BlogSectionProps) {
               </Link>
               <button
                 onClick={() => setQuickReadPost(null)}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white font-bold text-xs cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-zinc-400 dark:hover:text-white font-bold text-xs cursor-pointer"
               >
                 Đóng Cửa Sổ
               </button>

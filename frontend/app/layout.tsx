@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import './globals.css'; // Giữ lại import CSS hiện tại của bạn (nếu có)
+import './globals.css';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 // 1. Cấu hình SEO & OpenGraph
 export const metadata: Metadata = {
@@ -56,10 +57,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      <body className="antialiased bg-[#030712] text-white">
-        {/* Nếu trước đó bạn có Navbar, Footer hay ThemeProvider thì giữ nguyên ở đây */}
-        {children}
+    <html lang="vi" suppressHydrationWarning>
+      <body className="antialiased bg-background text-foreground transition-colors duration-200">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

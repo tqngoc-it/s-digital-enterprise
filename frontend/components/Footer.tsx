@@ -14,7 +14,7 @@ export default function Footer({ companyInfo }: FooterProps) {
   const copyrightText = companyInfo?.copyright_text || FALLBACK_COMPANY.copyright_text;
 
   return (
-    <footer className="border-t border-white/10 bg-[#04060C] text-xs text-slate-400 py-16">
+    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#04060C] text-xs text-slate-600 dark:text-slate-400 py-16 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* COL 1: BRAND INFO (5 COLS) */}
@@ -24,7 +24,7 @@ export default function Footer({ companyInfo }: FooterProps) {
                 S
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-base tracking-wider text-white flex items-center gap-1">
+                <span className="font-black text-base tracking-wider text-slate-900 dark:text-white flex items-center gap-1">
                   S-DIGITAL
                   <Flame className="w-3.5 h-3.5 text-[#FF5722]" />
                 </span>
@@ -33,7 +33,7 @@ export default function Footer({ companyInfo }: FooterProps) {
                 </span>
               </div>
             </Link>
-            <p className="text-slate-400 leading-relaxed text-xs max-w-sm">
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-xs max-w-sm">
               {companyName} - Tổ hợp tiếp thị số đa kênh và giải pháp tổ chức giải đấu thể thao chuyên nghiệp hàng đầu Việt Nam.
             </p>
             <p className="text-[11px] text-slate-500 font-mono">
@@ -43,7 +43,7 @@ export default function Footer({ companyInfo }: FooterProps) {
 
           {/* COL 2: QUICK NAVIGATION (3 COLS) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider">Hệ Sinh Thái</h4>
+            <h4 className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Hệ Sinh Thái</h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="/#about" className="hover:text-[#FF5722] transition-colors">
@@ -90,7 +90,7 @@ export default function Footer({ companyInfo }: FooterProps) {
 
           {/* COL 3: CONTACT & HEADQUARTER (4 COLS) */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider">Thông Tin Liên Hệ</h4>
+            <h4 className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Thông Tin Liên Hệ</h4>
             <div className="space-y-2 text-xs">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#FF5722] shrink-0 mt-0.5" />
@@ -98,7 +98,7 @@ export default function Footer({ companyInfo }: FooterProps) {
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#FF5722] shrink-0" />
-                <span className="text-white font-bold">{contactPhone}</span>
+                <span className="text-slate-900 dark:text-white font-bold">{contactPhone}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />
@@ -113,7 +113,7 @@ export default function Footer({ companyInfo }: FooterProps) {
         </div>
 
         {/* BOTTOM COPYRIGHT */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <p>{copyrightText}</p>
           <a
             href="#home"

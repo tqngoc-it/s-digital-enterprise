@@ -39,53 +39,53 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060913] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-[#0D1322] border border-slate-800 rounded-2xl p-8 shadow-2xl">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#060913] flex items-center justify-center p-4 transition-colors">
+      <div className="w-full max-w-md bg-white dark:bg-[#0D1322] border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-2xl transition-all">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#FF5722]/10 border border-[#FF5722]/20 mb-4">
             <Lock className="w-6 h-6 text-[#FF5722]" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">S-DIGITAL CMS</h1>
-          <p className="text-sm text-slate-400 mt-1">Đăng nhập quyền quản trị hệ thống</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">S-DIGITAL CMS</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Đăng nhập quyền quản trị hệ thống</p>
         </div>
 
         {errorMsg && (
-          <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+          <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center">
             {errorMsg}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
               Email Quản Trị
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@s-digital.com.vn"
-                className="w-full bg-[#151D30] border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FF5722] transition-colors"
+                className="w-full bg-slate-50 dark:bg-[#151D30] border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#FF5722] transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
               Mật Khẩu
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#151D30] border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FF5722] transition-colors"
+                className="w-full bg-slate-50 dark:bg-[#151D30] border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#FF5722] transition-colors"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#FF5722]/20 disabled:opacity-50"
+            className="w-full mt-6 bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#FF5722]/20 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <>

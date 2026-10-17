@@ -50,20 +50,20 @@ export default function SolutionsSection({
       {/* SECTION HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-3 max-w-2xl">
-          <span className="text-[#00E5FF] text-xs font-mono tracking-widest uppercase font-bold">
+          <span className="text-cyan-600 dark:text-[#00E5FF] text-xs font-mono tracking-widest uppercase font-bold">
             PROVEN SUCCESS & RESULTS
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
             Giải Pháp & Dự Án Tiêu Biểu
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
             Minh chứng năng lực vận hành giải đấu thể thao chuyên nghiệp và chiến dịch marketing quy mô lớn từ S-Digital.
           </p>
         </div>
 
         <Link
           href="/case-studies"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold border border-white/10 transition-all self-start md:self-auto hover:border-[#00E5FF]/40 text-[#00E5FF]"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-cyan-600 dark:text-[#00E5FF] text-xs font-bold border border-slate-200 dark:border-white/10 transition-all self-start md:self-auto hover:border-cyan-500/40 dark:hover:border-[#00E5FF]/40"
         >
           <span>Xem tất cả {activeStudies.length} Case Studies</span>
           <ArrowRight className="w-4 h-4" />
@@ -88,7 +88,7 @@ export default function SolutionsSection({
           return (
             <div
               key={study.id || study.slug || `top-case-${idx}`}
-              className="p-8 md:p-12 rounded-3xl bg-[#0B111E] border border-white/10 relative overflow-hidden shadow-2xl hover:border-white/20 transition-all group"
+              className="p-8 md:p-12 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 relative overflow-hidden shadow-sm dark:shadow-2xl hover:border-slate-300 dark:hover:border-white/20 transition-all group"
             >
               {/* Background ambient lighting */}
               <div
@@ -110,30 +110,30 @@ export default function SolutionsSection({
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>DỰ ÁN #{idx + 1}</span>
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 text-xs font-mono font-bold">
+                      <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold">
                         {study.client_name}
                       </span>
                       {study.is_featured && (
-                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
                           ★ Tiêu Biểu
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-2xl sm:text-3xl md:text-3xl font-black text-white leading-tight">
+                    <h3 className="text-2xl sm:text-3xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight">
                       {study.title}
                     </h3>
 
-                    <div className="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <div className="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                      <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 space-y-1">
                         <span className="text-[#FF5722] font-bold text-xs uppercase tracking-wider block">
                           Thách Thức
                         </span>
                         <p>{study.challenge}</p>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
-                        <span className="text-[#00E5FF] font-bold text-xs uppercase tracking-wider block">
+                      <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 space-y-1">
+                        <span className="text-cyan-600 dark:text-[#00E5FF] font-bold text-xs uppercase tracking-wider block">
                           Giải Pháp S-Digital
                         </span>
                         <p>{study.solution}</p>
@@ -152,7 +152,7 @@ export default function SolutionsSection({
                     </button>
                     <Link
                       href="/case-studies"
-                      className="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-bold text-xs flex items-center gap-2 transition-all border border-white/10"
+                      className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-bold text-xs flex items-center gap-2 transition-all border border-slate-200 dark:border-white/10"
                     >
                       <span>Danh mục dự án</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -161,22 +161,22 @@ export default function SolutionsSection({
                 </div>
 
                 {/* METRICS & DELIVERABLES COLUMN */}
-                <div className="lg:w-5/12 flex flex-col justify-between space-y-6 p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
+                <div className="lg:w-5/12 flex flex-col justify-between space-y-6 p-6 sm:p-8 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10">
                   {/* 3 DYNAMIC METRIC PILLARS */}
                   <div className="space-y-3">
-                    <span className="text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">
                       KẾT QUẢ ĐẠT ĐƯỢC
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {metrics.map((m, mIdx) => (
                         <div
                           key={`metric-${idx}-${mIdx}`}
-                          className="p-3.5 rounded-xl bg-[#060913]/60 border border-white/5 space-y-1 text-center sm:text-left"
+                          className="p-3.5 rounded-xl bg-white dark:bg-[#060913]/60 border border-slate-200 dark:border-white/5 space-y-1 text-center sm:text-left shadow-xs"
                         >
-                          <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-400">
+                          <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                             {mIdx === 0 && <Users className="w-3.5 h-3.5 text-[#FF5722]" />}
-                            {mIdx === 1 && <Newspaper className="w-3.5 h-3.5 text-[#00E5FF]" />}
-                            {mIdx === 2 && <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />}
+                            {mIdx === 1 && <Newspaper className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />}
+                            {mIdx === 2 && <TrendingUp className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />}
                             <span className="truncate" title={m.label}>{m.label}</span>
                           </div>
                           <div
@@ -184,8 +184,8 @@ export default function SolutionsSection({
                               mIdx === 0
                                 ? 'text-[#FF5722]'
                                 : mIdx === 1
-                                ? 'text-[#00E5FF]'
-                                : 'text-emerald-400'
+                                ? 'text-cyan-600 dark:text-[#00E5FF]'
+                                : 'text-emerald-500 dark:text-emerald-400'
                             }`}
                           >
                             {m.value}
@@ -201,12 +201,12 @@ export default function SolutionsSection({
                   </div>
 
                   {/* SCOPE ITEMS / HẠNG MỤC THỰC HIỆN */}
-                  <div className="space-y-3 pt-4 border-t border-white/10">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
-                      <Award className="w-4 h-4 text-amber-400" />
+                  <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                      <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                       <span>Hạng Mục Triển Khai Thực Tế</span>
                     </div>
-                    <ul className="space-y-2.5 text-xs text-slate-300">
+                    <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
                       {scopeList.slice(0, 4).map((item, sIdx) => (
                         <li key={`scope-${idx}-${sIdx}`} className="flex items-start gap-2.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#FF5722] mt-1.5 shrink-0" />
@@ -235,11 +235,11 @@ export default function SolutionsSection({
               ];
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="max-w-2xl w-full p-6 sm:p-8 rounded-3xl bg-[#0B111E] border border-white/15 space-y-6 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 dark:bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="max-w-2xl w-full p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/15 space-y-6 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto">
               <button
                 onClick={() => setSelectedStudy(null)}
-                className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
                 aria-label="Đóng"
               >
                 <X className="w-5 h-5" />
@@ -251,18 +251,18 @@ export default function SolutionsSection({
                     {selectedStudy.client_name}
                   </span>
                   {selectedStudy.is_featured && (
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-[11px]">
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
                       ★ Tiêu Biểu
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
                   {selectedStudy.title}
                 </h3>
               </div>
 
               {/* 3 METRIC PILLARS */}
-              <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-[#060913] border border-white/5 text-center">
+              <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/5 text-center">
                 {modalMetrics.map((m, mIdx) => (
                   <div key={`modal-metric-${mIdx}`} className="space-y-0.5">
                     <div
@@ -270,44 +270,44 @@ export default function SolutionsSection({
                         mIdx === 0
                           ? 'text-[#FF5722]'
                           : mIdx === 1
-                          ? 'text-[#00E5FF]'
-                          : 'text-emerald-400'
+                          ? 'text-cyan-600 dark:text-[#00E5FF]'
+                          : 'text-emerald-500 dark:text-emerald-400'
                       }`}
                     >
                       {m.value}
                     </div>
-                    <div className="text-[11px] text-slate-400 font-semibold">{m.label}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">{m.label}</div>
                   </div>
                 ))}
               </div>
 
               {/* CHALLENGE & SOLUTION */}
-              <div className="space-y-4 text-xs text-slate-300 leading-relaxed">
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
-                  <h4 className="font-bold text-white text-xs flex items-center gap-1.5">
+              <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FF5722]" />
                     <span>Thách Thức Ban Đầu:</span>
                   </h4>
-                  <p className="text-slate-300 pl-3">{selectedStudy.challenge}</p>
+                  <p className="text-slate-600 dark:text-slate-300 pl-3">{selectedStudy.challenge}</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
-                  <h4 className="font-bold text-white text-xs flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" />
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-[#00E5FF]" />
                     <span>Giải Pháp Chiến Lược Từ S-Digital:</span>
                   </h4>
-                  <p className="text-slate-300 pl-3">{selectedStudy.solution}</p>
+                  <p className="text-slate-600 dark:text-slate-300 pl-3">{selectedStudy.solution}</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
-                  <h4 className="font-bold text-white text-xs flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-amber-400" />
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-2">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                     <span>Phạm Vi Triển Khai:</span>
                   </h4>
                   <ul className="space-y-1.5 pl-3">
                     {modalScope.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 mt-0.5 shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -327,7 +327,7 @@ export default function SolutionsSection({
                 <Link
                   href="/case-studies"
                   onClick={() => setSelectedStudy(null)}
-                  className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs text-center transition-all border border-white/10"
+                  className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 font-bold text-xs text-center transition-all border border-slate-200 dark:border-white/10"
                 >
                   Xem Tất Cả Dự Án
                 </Link>
@@ -343,7 +343,7 @@ export default function SolutionsSection({
           <span className="text-[#FF5722] text-xs font-mono font-bold uppercase tracking-wider">
             CLIENT TESTIMONIALS
           </span>
-          <h3 className="text-2xl sm:text-3xl font-black text-white">
+          <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
             Đánh Giá Từ Khách Hàng & Đối Tác
           </h3>
         </div>
@@ -352,7 +352,7 @@ export default function SolutionsSection({
           {testimonialList.map((t, idx) => (
             <div
               key={`testimonial-${t.author}-${idx}`}
-              className="p-8 rounded-3xl bg-[#0B111E] border border-white/10 flex flex-col justify-between space-y-6 hover:border-white/20 transition-all text-left group shadow-xl"
+              className="p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 flex flex-col justify-between space-y-6 hover:border-slate-300 dark:hover:border-white/20 transition-all text-left group shadow-sm dark:shadow-xl"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -363,19 +363,19 @@ export default function SolutionsSection({
                     ))}
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic">
                   &ldquo;{t.content}&rdquo;
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-white/5">
+              <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-white/5">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF5722] to-orange-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
                   {t.avatarText}
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">{t.author}</div>
-                  <div className="text-[11px] text-slate-400">
-                    {t.role} · <span className="text-slate-300 font-semibold">{t.brand}</span>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">{t.author}</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {t.role} · <span className="text-slate-700 dark:text-slate-300 font-semibold">{t.brand}</span>
                   </div>
                 </div>
               </div>

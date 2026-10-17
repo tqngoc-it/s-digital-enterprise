@@ -153,7 +153,7 @@ export default function AiChatWidget() {
                 );
               }
               return (
-                <strong key={pIdx} className="font-semibold text-slate-100">
+                <strong key={pIdx} className="font-semibold text-slate-900 dark:text-slate-100">
                   {innerText}
                 </strong>
               );
@@ -181,19 +181,19 @@ export default function AiChatWidget() {
       {/* 1. NÚT NỔI GÓC DƯỚI BÊN PHẢI */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         {!isOpen && showTooltip && (
-          <div className="mb-3 relative group hidden sm:flex items-center gap-2 bg-[#0c1222] border border-[#00E5FF]/40 text-slate-200 text-xs px-3.5 py-2 rounded-xl shadow-[0_8px_20px_rgba(0,229,255,0.2)]">
+          <div className="mb-3 relative group hidden sm:flex items-center gap-2 bg-white dark:bg-[#0c1222] border border-cyan-500/40 dark:border-[#00E5FF]/40 text-slate-800 dark:text-slate-200 text-xs px-3.5 py-2 rounded-xl shadow-lg dark:shadow-[0_8px_20px_rgba(0,229,255,0.2)]">
             <span>Tư vấn dịch vụ & báo giá 24/7 cùng <strong>S-Digital AI</strong></span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setShowTooltip(false);
               }}
-              className="text-slate-400 hover:text-slate-200 ml-1 p-0.5 rounded cursor-pointer"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 ml-1 p-0.5 rounded cursor-pointer"
               title="Đóng gợi ý"
             >
               <X className="w-3 h-3" />
             </button>
-            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-[#0c1222] border-b border-r border-[#00E5FF]/40 rotate-45" />
+            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white dark:bg-[#0c1222] border-b border-r border-cyan-500/40 dark:border-[#00E5FF]/40 rotate-45" />
           </div>
         )}
 
@@ -204,7 +204,7 @@ export default function AiChatWidget() {
           }}
           className={`relative group flex items-center justify-center rounded-full transition-all duration-300 ${
             isOpen
-              ? 'w-13 h-13 bg-slate-800 border-2 border-slate-600 shadow-xl text-slate-300 hover:text-white'
+              ? 'w-13 h-13 bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 shadow-xl text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white'
               : 'w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-tr from-[#FF5722] via-[#F4511E] to-[#FF8A65] border-2 border-[#00E5FF] text-white shadow-[0_0_30px_rgba(255,87,34,0.65)] hover:shadow-[0_0_35px_rgba(0,229,255,0.85)] hover:scale-105 active:scale-95'
           }`}
           aria-label={isOpen ? 'Thu nhỏ khung chat' : 'Mở S-Digital AI Chatbot'}
@@ -222,7 +222,7 @@ export default function AiChatWidget() {
               {/* Online status indicator */}
               <span className="absolute top-0 right-0 flex h-4 w-4">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-[#060913]" />
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white dark:border-[#060913]" />
               </span>
             </>
           )}
@@ -232,40 +232,40 @@ export default function AiChatWidget() {
       {/* 2. KHUNG CHAT S-DIGITAL AI */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[420px] h-[590px] max-h-[82vh] flex flex-col rounded-2xl bg-[#090d18]/95 backdrop-blur-xl border border-slate-700/80 shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-6"
+          className="fixed bottom-24 right-4 sm:right-6 z-50 w-[94vw] sm:w-[420px] h-[590px] max-h-[82vh] flex flex-col rounded-2xl bg-white/95 dark:bg-[#090d18]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700/80 shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-6"
           role="dialog"
           aria-label="Khung chat S-Digital AI"
         >
           <div className="h-1 w-full bg-gradient-to-r from-[#FF5722] via-[#00E5FF] to-[#FF5722]" />
 
           {/* HEADER */}
-          <div className="px-4 py-3.5 bg-[#0e1526] border-b border-slate-800 flex items-center justify-between">
+          <div className="px-4 py-3.5 bg-slate-50 dark:bg-[#0e1526] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-[#00E5FF]/15 border border-[#00E5FF]/40 flex items-center justify-center font-bold text-xs text-[#00E5FF]">
                 AI
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-white text-sm tracking-wide">S-Digital AI</h3>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/30">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide">S-Digital AI</h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-[#00E5FF]/15 text-cyan-600 dark:text-[#00E5FF] border border-cyan-200 dark:border-[#00E5FF]/30">
                     24/7 Online
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">Trợ lý tư vấn giải pháp & báo giá</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Trợ lý tư vấn giải pháp & báo giá</p>
               </div>
             </div>
 
             <div className="flex items-center gap-1">
               <button
                 onClick={handleResetChat}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Làm mới đoạn chat"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Thu nhỏ khung chat"
               >
                 <X className="w-4 h-4" />
@@ -274,7 +274,7 @@ export default function AiChatWidget() {
           </div>
 
           {/* MESSAGE LIST */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-sm scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-sm scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
             {messages.map((msg) => {
               const isBot = msg.role === 'assistant';
               return (
@@ -285,7 +285,7 @@ export default function AiChatWidget() {
                   <div
                     className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 shadow-md ${
                       isBot
-                        ? 'bg-[#131b2e] border border-slate-700/60 text-slate-200 rounded-tl-xs'
+                        ? 'bg-slate-100 dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/60 text-slate-800 dark:text-slate-200 rounded-tl-xs'
                         : 'bg-gradient-to-r from-[#FF5722] to-[#E64A19] text-white rounded-tr-xs font-normal'
                     }`}
                   >
@@ -305,11 +305,11 @@ export default function AiChatWidget() {
             {/* LOADING STATE */}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-[#131b2e] border border-slate-700/60 rounded-2xl rounded-tl-xs px-4 py-2.5 shadow-md flex items-center gap-1.5">
+                <div className="bg-slate-100 dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/60 rounded-2xl rounded-tl-xs px-4 py-2.5 shadow-md flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-2 h-2 rounded-full bg-[#FF5722] animate-bounce" style={{ animationDelay: '150ms' }} />
                   <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-bounce" style={{ animationDelay: '300ms' }} />
-                  <span className="text-xs text-slate-400 ml-1.5">Đang xử lý phản hồi...</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 ml-1.5">Đang xử lý phản hồi...</span>
                 </div>
               </div>
             )}
@@ -318,10 +318,10 @@ export default function AiChatWidget() {
           </div>
 
           {/* GỢI Ý CÂU HỎI NHANH VỚI CUỘN CHUỘT NGANG */}
-          <div className="px-3 py-2 bg-[#0b101e] border-t border-slate-800/80">
-            <div className="flex items-center justify-between mb-1.5 text-[11px] text-slate-400">
-              <span className="font-medium text-slate-300">Gợi ý câu hỏi nhanh:</span>
-              <span className="text-[10px] text-slate-500">Lăn chuột để xem thêm →</span>
+          <div className="px-3 py-2 bg-slate-50 dark:bg-[#0b101e] border-t border-slate-200 dark:border-slate-800/80">
+            <div className="flex items-center justify-between mb-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="font-medium text-slate-700 dark:text-slate-300">Gợi ý câu hỏi nhanh:</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">Lăn chuột để xem thêm →</span>
             </div>
             
             <div 
@@ -330,7 +330,7 @@ export default function AiChatWidget() {
                   e.currentTarget.scrollLeft += e.deltaY;
                 }
               }}
-              className="flex gap-2 overflow-x-auto pb-1 select-none scrollbar-thin scrollbar-thumb-slate-700/80 scrollbar-track-slate-900/40"
+              className="flex gap-2 overflow-x-auto pb-1 select-none scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700/80 scrollbar-track-slate-100 dark:scrollbar-track-slate-900/40"
             >
               {QUICK_PROMPTS.map((prompt, idx) => (
                 <button
@@ -338,7 +338,7 @@ export default function AiChatWidget() {
                   type="button"
                   onClick={() => handleSendMessage(prompt.query)}
                   disabled={isLoading}
-                  className="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 hover:border-[#00E5FF]/60 transition-all cursor-pointer whitespace-nowrap active:scale-95 disabled:opacity-50"
+                  className="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white border border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-[#00E5FF]/60 transition-all cursor-pointer whitespace-nowrap active:scale-95 disabled:opacity-50"
                 >
                   {prompt.label}
                 </button>
@@ -347,8 +347,8 @@ export default function AiChatWidget() {
           </div>
 
           {/* INPUT BAR */}
-          <div className="p-3 bg-[#0e1526] border-t border-slate-800">
-            <div className="flex items-center gap-2 bg-[#070b14] border border-slate-700 focus-within:border-[#00E5FF] rounded-xl px-3 py-1.5 transition-colors">
+          <div className="p-3 bg-slate-50 dark:bg-[#0e1526] border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2 bg-white dark:bg-[#070b14] border border-slate-300 dark:border-slate-700 focus-within:border-[#00E5FF] rounded-xl px-3 py-1.5 transition-colors">
               <input
                 ref={inputRef}
                 type="text"
@@ -357,7 +357,7 @@ export default function AiChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder="Hỏi S-Digital AI về dịch vụ, giá..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none disabled:opacity-50"
+                className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none disabled:opacity-50"
               />
               <button
                 onClick={() => handleSendMessage()}
@@ -365,7 +365,7 @@ export default function AiChatWidget() {
                 className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${
                   inputValue.trim() && !isLoading
                     ? 'bg-gradient-to-r from-[#FF5722] to-[#E64A19] text-white hover:brightness-110 shadow-[0_0_10px_rgba(255,87,34,0.5)] cursor-pointer'
-                    : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                    : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
                 }`}
                 title="Gửi tin nhắn (Enter)"
               >
@@ -375,7 +375,7 @@ export default function AiChatWidget() {
 
             {/* FOOTER */}
             <div className="flex items-center justify-between mt-2 px-1 text-[11px]">
-              <span className="text-slate-400">
+              <span className="text-slate-500 dark:text-slate-400">
                 Bảo mật & Trực tuyến 24/7
               </span>
               <a

@@ -325,13 +325,13 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
       {/* FILTER, SEARCH & SORT BAR */}
       <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Tìm theo họ tên, email, SĐT, công ty..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-slate-200 text-xs focus:outline-none focus:border-[#FF5722] placeholder:text-slate-600 transition-colors"
+            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:border-[#FF5722] placeholder:text-slate-400 dark:placeholder:text-slate-600 transition-colors"
           />
         </div>
 
@@ -340,7 +340,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-[#FF5722]/30 text-xs text-[#FF5722] font-bold cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-[#FF5722]/30 text-xs text-[#FF5722] font-bold cursor-pointer focus:outline-none focus:border-[#FF5722]"
             title="Thứ tự hiển thị danh sách"
           >
             <option value="PRIORITY">⚡ Ưu tiên: HOT / Score cao + Mới</option>
@@ -353,7 +353,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           <select
             value={tierFilter}
             onChange={(e) => setTierFilter(e.target.value)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
           >
             <option value="ALL">Tất cả tiềm năng</option>
             <option value="HOT">Tiềm năng cao (HOT)</option>
@@ -366,7 +366,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           <select
             value={industryFilter}
             onChange={(e) => setIndustryFilter(e.target.value)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
             title="Lọc theo ngành nghề"
           >
             <option value="ALL">Tất cả ngành nghề</option>
@@ -381,7 +381,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           <select
             value={budgetFilter}
             onChange={(e) => setBudgetFilter(e.target.value)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
             title="Lọc theo ngân sách dự kiến"
           >
             <option value="ALL">Tất cả ngân sách</option>
@@ -396,7 +396,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            className="p-2.5 rounded-xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
           >
             <option value="ALL">Tất cả trạng thái ({leads.length})</option>
             {Object.entries(STATUS_CONFIG).map(([k, v]) => (
@@ -410,22 +410,22 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
 
       {/* EMPTY STATE KIỂM TRA NGUỒN LEADS */}
       {leads.length === 0 ? (
-        <div className="py-20 px-6 text-center rounded-3xl bg-[#0B0F19] border border-slate-800 space-y-4 shadow-xl">
-          <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-500">
+        <div className="py-20 px-6 text-center rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm dark:shadow-xl">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mx-auto text-slate-400 dark:text-slate-500">
             <Inbox className="w-7 h-7" />
           </div>
           <div className="space-y-1 max-w-md mx-auto">
-            <h3 className="text-sm font-bold text-white">Chưa có liên hệ mới từ khách hàng</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Chưa có liên hệ mới từ khách hàng</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Dữ liệu sẽ xuất hiện khi có khách gửi yêu cầu từ Website.
             </p>
           </div>
         </div>
       ) : (
         /* TABLE */
-        <div className="rounded-2xl bg-[#0B0F19] border border-slate-800 overflow-x-auto shadow-xl">
-          <table className="w-full min-w-[1050px] text-left text-xs text-slate-300">
-            <thead className="bg-[#090D18] border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
+        <div className="rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 overflow-x-auto shadow-sm dark:shadow-xl">
+          <table className="w-full min-w-[1050px] text-left text-xs text-slate-700 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-[#090D18] border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="py-4 px-6 font-semibold">Khách Hàng</th>
                 <th className="py-4 px-6 font-semibold">Liên Hệ & Thao Tác Nhanh</th>
@@ -437,7 +437,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                 <th className="py-4 px-6 font-semibold text-right">Thao Tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/80">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
               {sortedLeads.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-500">
@@ -456,10 +456,10 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                     <tr
                       key={lead.id || `lead-${idx}-${lead.email}`}
                       onClick={() => setSelectedLead(lead)}
-                      className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                      className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
                     >
                       {/* KHÁCH HÀNG */}
-                      <td className="py-4 px-6 font-bold text-white whitespace-nowrap group-hover:text-[#FF5722] transition-colors">
+                      <td className="py-4 px-6 font-bold text-slate-900 dark:text-white whitespace-nowrap group-hover:text-[#FF5722] transition-colors">
                         <div className="flex items-center gap-2">
                           <span
                             className={`w-2 h-2 rounded-full shrink-0 ${
@@ -467,7 +467,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                                 ? 'bg-[#FF5722]'
                                 : tier === 'WARM'
                                 ? 'bg-amber-400'
-                                : 'bg-slate-500'
+                                : 'bg-slate-400 dark:bg-slate-500'
                             }`}
                           />
                           <span>{lead.full_name}</span>
@@ -475,12 +475,12 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                       </td>
 
                       {/* LIÊN HỆ & QUICK ACTIONS */}
-                      <td className="py-4 px-6 text-slate-300" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-4 px-6 text-slate-700 dark:text-slate-300" onClick={(e) => e.stopPropagation()}>
                         <div className="space-y-1.5">
-                          <div className="flex items-center gap-2 font-medium text-white">
+                          <div className="flex items-center gap-2 font-medium text-slate-900 dark:text-white">
                             <span className="truncate max-w-[160px]">{lead.email}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-slate-400 text-[11px] font-mono">
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px] font-mono">
                             <span>{lead.phone || 'Chưa có SĐT'}</span>
                           </div>
 
@@ -489,7 +489,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                             {lead.phone && (
                               <a
                                 href={`tel:${lead.phone}`}
-                                className="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
+                                className="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
                                 title="Gọi điện thoại trực tiếp"
                               >
                                 <Phone className="w-2.5 h-2.5" />
@@ -501,7 +501,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                                 href={`https://zalo.me/${rawPhone}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="px-2 py-0.5 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
+                                className="px-2 py-0.5 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-bold flex items-center gap-1 transition-all"
                                 title="Mở chat Zalo với khách hàng"
                               >
                                 <span>Zalo</span>
@@ -519,7 +519,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                             )}
                             <button
                               onClick={(e) => handleCopyLeadInfo(lead, e)}
-                              className="px-1.5 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5 text-[10px] transition-all"
+                              className="px-1.5 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-400 dark:hover:text-white dark:border-white/5 text-[10px] transition-all"
                               title="Sao chép toàn bộ thông tin Lead"
                             >
                               Copy
@@ -529,17 +529,17 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                       </td>
 
                       {/* CÔNG TY & B2B INFO */}
-                      <td className="py-4 px-6 text-slate-300 whitespace-nowrap">
+                      <td className="py-4 px-6 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         <div className="space-y-1">
-                          <p className="font-semibold text-white">{lead.company_name || '---'}</p>
+                          <p className="font-semibold text-slate-900 dark:text-white">{lead.company_name || '---'}</p>
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {lead.industry && (
-                              <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5">
+                              <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 text-[10px] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/5">
                                 {INDUSTRY_CONFIG[lead.industry] || lead.industry}
                               </span>
                             )}
                             {lead.budget && (
-                              <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-[10px] text-emerald-400 border border-emerald-500/20 font-mono">
+                              <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-[10px] text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
                                 {BUDGET_CONFIG[lead.budget] || lead.budget}
                               </span>
                             )}
@@ -548,7 +548,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                       </td>
 
                       {/* LỜI NHẮN */}
-                      <td className="py-4 px-6 text-slate-400 max-w-xs truncate">
+                      <td className="py-4 px-6 text-slate-500 dark:text-slate-400 max-w-xs truncate">
                         {lead.message || lead.notes || '---'}
                       </td>
 
@@ -679,10 +679,10 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
 
       {/* 3. VIEW LEAD DETAILS & EVALUATION MODAL */}
       {selectedLead && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="max-w-2xl w-full max-h-[90vh] flex flex-col rounded-3xl bg-[#090D18] border border-slate-800 space-y-0 shadow-2xl relative text-xs text-slate-300 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 dark:bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="max-w-2xl w-full max-h-[90vh] flex flex-col rounded-3xl bg-white dark:bg-[#090D18] border border-slate-200 dark:border-slate-800 space-y-0 shadow-2xl relative text-xs text-slate-700 dark:text-slate-300 overflow-hidden">
             {/* MODAL HEADER */}
-            <div className="p-6 md:p-7 border-b border-slate-800 flex items-start justify-between bg-[#0B0F19]">
+            <div className="p-6 md:p-7 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-slate-50 dark:bg-[#0B0F19]">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono uppercase text-[#FF5722] font-bold px-2 py-0.5 rounded bg-[#FF5722]/10 border border-[#FF5722]/30">
@@ -690,22 +690,22 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                      STATUS_CONFIG[selectedLead.status]?.color || 'bg-slate-800 text-slate-300'
+                      STATUS_CONFIG[selectedLead.status]?.color || 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {STATUS_CONFIG[selectedLead.status]?.label || selectedLead.status}
                   </span>
                 </div>
-                <h3 className="text-2xl font-black text-white pt-1">{selectedLead.full_name}</h3>
-                <p className="text-slate-400 text-xs flex items-center gap-1.5">
-                  <Building className="w-3.5 h-3.5 text-slate-500" />
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white pt-1">{selectedLead.full_name}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1.5">
+                  <Building className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                   <span>{selectedLead.company_name || 'Khách hàng cá nhân'}</span>
                 </p>
               </div>
 
               <button
                 onClick={() => setSelectedLead(null)}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -715,31 +715,31 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
             <div className="p-6 md:p-7 overflow-y-auto space-y-6">
               {/* LIÊN HỆ & QUICK ACTIONS */}
               <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-[#070A10] border border-slate-800">
-                  <div className="flex items-center gap-2.5 text-slate-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
                     <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />
                     <div className="overflow-hidden">
                       <p className="text-[10px] text-slate-500 uppercase font-mono">Email</p>
-                      <p className="font-semibold text-white truncate">{selectedLead.email}</p>
+                      <p className="font-semibold text-slate-900 dark:text-white truncate">{selectedLead.email}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2.5 text-slate-300">
-                    <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
+                    <Phone className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
                     <div>
                       <p className="text-[10px] text-slate-500 uppercase font-mono">Số điện thoại</p>
-                      <p className="font-semibold text-white font-mono">{selectedLead.phone || 'Chưa cung cấp'}</p>
+                      <p className="font-semibold text-slate-900 dark:text-white font-mono">{selectedLead.phone || 'Chưa cung cấp'}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* MODAL QUICK CONTACT ACTIONS BAR */}
-                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold mr-1">Liên hệ nhanh:</span>
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                  <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold mr-1">Liên hệ nhanh:</span>
                   {selectedLead.phone && (
                     <a
                       href={`tel:${selectedLead.phone}`}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Gọi {selectedLead.phone}</span>
@@ -750,7 +750,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                       href={`https://zalo.me/${selectedLead.phone.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 border border-blue-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+                      className="px-3 py-1.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-600 dark:text-blue-400 border border-blue-500/30 text-xs font-bold flex items-center gap-1.5 transition-all"
                     >
                       <span>Chat Zalo</span>
                     </a>
@@ -766,15 +766,15 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                   )}
                   <button
                     onClick={() => handleCopyLeadInfo(selectedLead)}
-                    className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs font-bold flex items-center gap-1.5 transition-all"
+                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-white dark:border-white/10 text-xs font-bold flex items-center gap-1.5 transition-all"
                   >
                     <span>Sao chép hồ sơ</span>
                   </button>
                 </div>
 
                 {/* MODAL STATUS WORKFLOW */}
-                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold mr-1">Cập nhật tiến độ:</span>
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                  <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold mr-1">Cập nhật tiến độ:</span>
                   {Object.entries(STATUS_CONFIG).map(([k, v]) => {
                     const isCurrent = selectedLead.status === k;
                     return (
@@ -784,8 +784,8 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                         onClick={() => handleStatusChange(selectedLead.id, k)}
                         className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                           isCurrent
-                            ? `${v.color} ring-2 ring-white/20 shadow-md`
-                            : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-white'
+                            ? `${v.color} ring-2 ring-orange-500/20 dark:ring-white/20 shadow-sm`
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
                         {v.label}
@@ -796,44 +796,44 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
               </div>
 
               {/* THÔNG SỐ PHÂN LOẠI KHÁCH HÀNG B2B */}
-              <div className="p-4 rounded-2xl bg-[#070A10] border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold flex items-center gap-1.5">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-2.5">
+                  <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5">
                     <Target className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Thông số B2B (Khung phân loại BANT)</span>
                   </span>
                   {(selectedLead.ai_suggested_service || selectedLead.recommended_service) && (
-                    <span className="text-[10px] text-[#00E5FF] font-medium font-mono truncate max-w-[260px]">
+                    <span className="text-[10px] text-cyan-600 dark:text-[#00E5FF] font-medium font-mono truncate max-w-[260px]">
                       Gợi ý: {selectedLead.ai_suggested_service || selectedLead.recommended_service}
                     </span>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                  <div className="p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1 shadow-xs">
                     <span className="text-[10px] text-slate-500 uppercase font-mono block">Ngành nghề</span>
-                    <span className="font-bold text-white block truncate">
+                    <span className="font-bold text-slate-900 dark:text-white block truncate">
                       {INDUSTRY_CONFIG[selectedLead.industry] || selectedLead.industry || 'Chưa phân loại'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                  <div className="p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1 shadow-xs">
                     <span className="text-[10px] text-slate-500 uppercase font-mono block">Ngân sách dự kiến</span>
-                    <span className="font-bold text-emerald-400 block font-mono">
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 block font-mono">
                       {BUDGET_CONFIG[selectedLead.budget] || selectedLead.budget || 'Chưa xác định'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                  <div className="p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1 shadow-xs">
                     <span className="text-[10px] text-slate-500 uppercase font-mono block">Quy mô nhân sự</span>
-                    <span className="font-bold text-white block">
+                    <span className="font-bold text-slate-900 dark:text-white block">
                       {COMPANY_SIZE_CONFIG[selectedLead.company_size] || selectedLead.company_size || 'Chưa rõ'}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                  <div className="p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1 shadow-xs">
                     <span className="text-[10px] text-slate-500 uppercase font-mono block">Thời hạn triển khai</span>
-                    <span className="font-bold text-amber-400 block">
+                    <span className="font-bold text-amber-600 dark:text-amber-400 block">
                       {TIMELINE_CONFIG[selectedLead.timeline] || selectedLead.timeline || 'Đang khảo sát'}
                     </span>
                   </div>
@@ -842,10 +842,10 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
 
               {/* LỜI NHẮN */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Nội dung yêu cầu / Lời nhắn:
                 </label>
-                <div className="p-4 rounded-xl bg-[#070A10] border border-slate-800 text-slate-200 leading-relaxed max-h-36 overflow-y-auto whitespace-pre-wrap font-sans text-xs">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 leading-relaxed max-h-36 overflow-y-auto whitespace-pre-wrap font-sans text-xs">
                   {selectedLead.message || selectedLead.notes || 'Không có lời nhắn.'}
                 </div>
               </div>
@@ -853,7 +853,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
               {/* KHU VỰC THẨM ĐỊNH CƠ HỘI & ĐỀ XUẤT TIẾP CẬN */}
               <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                     <Sparkles className="w-4 h-4 text-[#FF5722]" />
                     <span>Thẩm định cơ hội & Đề xuất tiếp cận</span>
                   </div>
@@ -881,36 +881,36 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                     {/* SCORE & TIER GAUGE + ESTIMATED CONTRACT VALUE */}
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                       {/* CỘT ĐIỂM & TIER */}
-                      <div className="sm:col-span-5 p-4 rounded-2xl bg-[#070A10] border border-slate-800 flex flex-col justify-between">
-                        <span className="text-[10px] font-mono uppercase text-slate-400 font-bold">
+                      <div className="sm:col-span-5 p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold">
                           Chỉ số tiềm năng & Phân hạng
                         </span>
 
                         <div className="flex items-baseline gap-3 my-2">
-                          <span className="text-4xl font-black text-white font-mono">
+                          <span className="text-4xl font-black text-slate-900 dark:text-white font-mono">
                             {selectedLead.ai_score ?? selectedLead.aiScore}
                           </span>
-                          <span className="text-slate-500 font-mono text-sm">/ 100</span>
+                          <span className="text-slate-400 dark:text-slate-500 font-mono text-sm">/ 100</span>
 
                           {(selectedLead.ai_tier || selectedLead.aiTier) === 'HOT' && (
-                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#FF5722]/20 text-[#FF5722] border border-[#FF5722]/40 shadow-md shadow-[#FF5722]/20">
+                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#FF5722]/20 text-[#FF5722] border border-[#FF5722]/40 shadow-sm shadow-[#FF5722]/20">
                               Tiềm năng cao
                             </span>
                           )}
                           {(selectedLead.ai_tier || selectedLead.aiTier) === 'WARM' && (
-                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40 shadow-md shadow-[#F59E0B]/20">
+                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40 shadow-sm shadow-[#F59E0B]/20">
                               Tiềm năng
                             </span>
                           )}
                           {(selectedLead.ai_tier || selectedLead.aiTier) === 'COLD' && (
-                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#64748B]/25 text-slate-300 border border-[#64748B]/40">
+                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#64748B]/25 text-slate-700 dark:text-slate-300 border border-[#64748B]/40">
                               Ít tiềm năng
                             </span>
                           )}
                         </div>
 
                         {/* THANH ĐIỂM TIẾN ĐỘ */}
-                        <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300 dark:border-slate-700">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
                               (selectedLead.ai_tier || selectedLead.aiTier) === 'HOT'
@@ -927,60 +927,60 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                       </div>
 
                       {/* CỘT GIÁ TRỊ HỢP ĐỒNG ƯỚC TÍNH */}
-                      <div className="sm:col-span-7 p-4 rounded-2xl bg-gradient-to-br from-[#070A10] to-[#0D1527] border border-slate-800 flex flex-col justify-between">
+                      <div className="sm:col-span-7 p-4 rounded-2xl bg-gradient-to-br from-cyan-50/60 to-slate-50 dark:from-[#070A10] dark:to-[#0D1527] border border-cyan-200 dark:border-slate-800 flex flex-col justify-between">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono uppercase text-[#00E5FF] font-bold">
+                          <span className="text-[10px] font-mono uppercase text-cyan-700 dark:text-[#00E5FF] font-bold">
                             Giá Trị Hợp Đồng Ước Tính (Estimated Value)
                           </span>
-                          <ShieldCheck className="w-3.5 h-3.5 text-[#00E5FF]" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />
                         </div>
-                        <p className="text-xl md:text-2xl font-black text-white font-mono my-2 text-[#00E5FF]">
+                        <p className="text-xl md:text-2xl font-black font-mono my-2 text-cyan-600 dark:text-[#00E5FF]">
                           {selectedLead.ai_estimated_value || selectedLead.aiEstimatedValue || 'Chưa xác định'}
                         </p>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
                           Dựa trên mức ngân sách dự kiến và bảng giá dịch vụ thực tế S-Digital.
                         </span>
                       </div>
                     </div>
 
                     {/* MỤC SUMMARY -> NHẬN ĐỊNH NHU CẦU */}
-                    <div className="p-4 rounded-2xl bg-[#070A10] border border-slate-800 space-y-1.5">
-                      <div className="flex items-center gap-2 text-slate-300 font-bold text-[11px] uppercase font-mono">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase font-mono">
                         <Target className="w-3.5 h-3.5 text-[#FF5722]" />
                         <span>Nhận định nhu cầu:</span>
                       </div>
-                      <p className="text-slate-200 leading-relaxed font-normal text-xs">
+                      <p className="text-slate-700 dark:text-slate-200 leading-relaxed font-normal text-xs">
                         {selectedLead.ai_summary || selectedLead.aiSummary}
                       </p>
                     </div>
 
                     {/* MỤC ACTIONPLAN -> KỊCH BẢN TƯ VẤN ĐỀ XUẤT */}
-                    <div className="p-4 rounded-2xl bg-[#070A10] border border-slate-800 space-y-1.5">
-                      <div className="flex items-center gap-2 text-slate-300 font-bold text-[11px] uppercase font-mono">
-                        <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase font-mono">
+                        <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                         <span>Kịch bản tư vấn đề xuất:</span>
                       </div>
-                      <p className="text-slate-200 leading-relaxed font-normal text-xs">
+                      <p className="text-slate-700 dark:text-slate-200 leading-relaxed font-normal text-xs">
                         {selectedLead.ai_action_plan || selectedLead.aiActionPlan}
                       </p>
                     </div>
 
                     {/* MỤC RECOMMENDED SERVICE -> DỊCH VỤ ĐỀ XUẤT */}
                     {(selectedLead.ai_suggested_service || selectedLead.recommended_service) && (
-                      <div className="p-4 rounded-2xl bg-[#070A10] border border-[#00E5FF]/20 space-y-1.5">
-                        <div className="flex items-center gap-2 text-[#00E5FF] font-bold text-[11px] uppercase font-mono">
-                          <Sparkles className="w-3.5 h-3.5 text-[#00E5FF]" />
+                      <div className="p-4 rounded-2xl bg-cyan-50/50 dark:bg-[#070A10] border border-cyan-200 dark:border-[#00E5FF]/20 space-y-1.5">
+                        <div className="flex items-center gap-2 text-cyan-700 dark:text-[#00E5FF] font-bold text-[11px] uppercase font-mono">
+                          <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />
                           <span>Dịch vụ phù hợp đề xuất (AI Recommendation):</span>
                         </div>
-                        <p className="text-white font-bold leading-relaxed text-xs">
+                        <p className="text-slate-900 dark:text-white font-bold leading-relaxed text-xs">
                           {selectedLead.ai_suggested_service || selectedLead.recommended_service}
                         </p>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="p-8 rounded-2xl bg-[#070A10] border border-dashed border-slate-800 text-center space-y-3">
-                    <p className="text-slate-400 text-xs">
+                  <div className="p-8 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-dashed border-slate-300 dark:border-slate-800 text-center space-y-3">
+                    <p className="text-slate-500 dark:text-slate-400 text-xs">
                       Khách hàng này chưa có dữ liệu thẩm định chất lượng.
                     </p>
                     <button
@@ -1001,14 +1001,14 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
             </div>
 
             {/* MODAL FOOTER */}
-            <div className="p-4 md:p-5 border-t border-slate-800 bg-[#0B0F19] flex items-center justify-between">
+            <div className="p-4 md:p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] flex items-center justify-between">
               <div className="text-[10px] text-slate-500 font-mono">
                 {selectedLead.source || 'Landing Page'} · Tiếp nhận:{' '}
                 {selectedLead.created_at ? new Date(selectedLead.created_at).toLocaleString('vi-VN') : '---'}
               </div>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition-colors cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-white/10 dark:hover:bg-white/15 dark:text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 Đóng
               </button>

@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-[#070A10] flex flex-col md:flex-row text-slate-200 antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#070A10] flex flex-col md:flex-row text-slate-800 dark:text-slate-200 antialiased transition-colors">
       {/* RESPONSIVE NAVIGATION (MOBILE TOP BAR & DRAWER + DESKTOP SIDEBAR) */}
       <AdminNavigation userEmail={user?.email} onSignOut={handleSignOut} />
 
