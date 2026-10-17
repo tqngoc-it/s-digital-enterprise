@@ -83,84 +83,92 @@ export default function PricingSection({
       </div>
 
       {/* 3 PRICING TIERS */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        {sortedPlans.map((plan, idx) => {
-          const isPopular =
-            plan.popular ||
-            Boolean((plan as any).is_popular) ||
-            plan.tier_name.includes('Chuyên Nghiệp');
-          return (
-            <div
-              key={plan.id || `pricing-plan-${plan.tier_name}-${idx}`}
-              className={`p-8 md:p-10 rounded-3xl bg-[#0B111E] flex flex-col justify-between space-y-8 relative transition-all duration-300 ${
-                isPopular
-                  ? 'border-2 border-[#FF5722] shadow-2xl shadow-[#FF5722]/15 lg:-translate-y-3'
-                  : 'border border-white/10 hover:border-white/25'
-              }`}
-            >
-              {isPopular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FF5722] text-white text-[10px] font-black tracking-widest uppercase shadow-lg shadow-[#FF5722]/40 flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3" />
-                  <span>PHỔ BIẾN NHẤT</span>
-                </div>
-              )}
+      {(() => {
+        const popularPlanId =
+          sortedPlans.find((p) => Boolean((p as any).is_popular || p.popular))?.id ||
+          sortedPlans[1]?.id;
 
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  {!isPopular && (
-                    <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
-                      {plan.badge || 'Lựa Chọn'}
-                    </span>
+        return (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            {sortedPlans.map((plan, idx) => {
+              const isPopular = popularPlanId
+                ? plan.id === popularPlanId
+                : Boolean((plan as any).is_popular || plan.popular) || idx === 1;
+
+              return (
+                <div
+                  key={plan.id || `pricing-plan-${plan.tier_name}-${idx}`}
+                  className={`p-8 md:p-10 rounded-3xl bg-[#0B111E] flex flex-col justify-between space-y-8 relative transition-all duration-300 ${
+                    isPopular
+                      ? 'border-2 border-[#FF5722] shadow-2xl shadow-[#FF5722]/15 lg:-translate-y-3'
+                      : 'border border-white/10 hover:border-white/25'
+                  }`}
+                >
+                  {isPopular && (
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FF5722] text-white text-[10px] font-black tracking-widest uppercase shadow-lg shadow-[#FF5722]/40 flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3" />
+                      <span>PHỔ BIẾN NHẤT</span>
+                    </div>
                   )}
-                  <h3 className="text-2xl font-black text-white pt-2">{plan.tier_name}</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed min-h-[36px]">
-                    {plan.target_audience}
-                  </p>
-                </div>
 
-                <div className="flex items-baseline gap-1.5 pt-2 pb-4 border-b border-white/10">
-                  <span className={`text-4xl font-black ${isPopular ? 'text-[#FF5722]' : 'text-white'}`}>
-                    {plan.price_display}
-                  </span>
-                  {plan.period && (
-                    <span className="text-xs font-normal text-slate-400">{plan.period}</span>
-                  )}
-                </div>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      {!isPopular && (
+                        <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
+                          {plan.badge || 'Lựa Chọn'}
+                        </span>
+                      )}
+                      <h3 className="text-2xl font-black text-white pt-2">{plan.tier_name}</h3>
+                      <p className="text-xs text-slate-400 leading-relaxed min-h-[36px]">
+                        {plan.target_audience}
+                      </p>
+                    </div>
 
-                <div className="space-y-3">
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    Quyền lợi chi tiết bao gồm:
-                  </span>
-                  <ul className="space-y-3 pt-1 text-xs text-slate-300">
-                    {plan.features?.map((f, fIdx) => (
-                      <li key={`plan-${idx}-feat-${fIdx}`} className="flex items-start gap-2.5">
-                        <CheckCircle2
-                          className={`w-4 h-4 shrink-0 mt-0.5 ${
-                            isPopular ? 'text-[#FF5722]' : 'text-emerald-400'
-                          }`}
-                        />
-                        <span className="leading-relaxed">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                    <div className="flex items-baseline gap-1.5 pt-2 pb-4 border-b border-white/10">
+                      <span className={`text-4xl font-black ${isPopular ? 'text-[#FF5722]' : 'text-white'}`}>
+                        {plan.price_display}
+                      </span>
+                      {plan.period && (
+                        <span className="text-xs font-normal text-slate-400">{plan.period}</span>
+                      )}
+                    </div>
 
-              <a
-                href="#contact"
-                className={`w-full py-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-                  isPopular
-                    ? 'bg-[#FF5722] hover:bg-orange-600 text-white shadow-xl shadow-[#FF5722]/30 hover:scale-[1.02]'
-                    : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'
-                }`}
-              >
-                <span>{isPopular ? 'Đăng Ký Gói Chuyên Nghiệp' : 'Đăng Ký Tư Vấn'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          );
-        })}
-      </div>
+                    <div className="space-y-3">
+                      <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        Quyền lợi chi tiết bao gồm:
+                      </span>
+                      <ul className="space-y-3 pt-1 text-xs text-slate-300">
+                        {plan.features?.map((f, fIdx) => (
+                          <li key={`plan-${idx}-feat-${fIdx}`} className="flex items-start gap-2.5">
+                            <CheckCircle2
+                              className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                isPopular ? 'text-[#FF5722]' : 'text-emerald-400'
+                              }`}
+                            />
+                            <span className="leading-relaxed">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <a
+                    href="#contact"
+                    className={`w-full py-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                      isPopular
+                        ? 'bg-[#FF5722] hover:bg-orange-600 text-white shadow-xl shadow-[#FF5722]/30 hover:scale-[1.02]'
+                        : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <span>{isPopular ? `Đăng Ký ${plan.tier_name}` : 'Đăng Ký Tư Vấn'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
 
       {/* 4 QUALITY COMMITMENTS */}
       <div className="p-8 md:p-10 rounded-3xl bg-[#0B111E] border border-white/10 space-y-6 shadow-2xl">

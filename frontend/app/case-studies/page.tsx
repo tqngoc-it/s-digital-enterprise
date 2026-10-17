@@ -12,8 +12,7 @@ export const metadata: Metadata = {
     'Khám phá các case study thành công trong lĩnh vực tổ chức giải đấu thể thao chuyên nghiệp và chiến dịch Digital Marketing toàn diện từ S-Digital.',
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function CaseStudiesPage() {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
@@ -21,7 +20,7 @@ export default async function CaseStudiesPage() {
   let caseStudies: CaseStudyItem[] = FALLBACK_CASE_STUDIES;
 
   try {
-    const res = await fetch(`${backendUrl}/api/case-studies`, { cache: 'no-store' });
+    const res = await fetch(`${backendUrl}/api/case-studies`, { next: { revalidate: 60 } });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {

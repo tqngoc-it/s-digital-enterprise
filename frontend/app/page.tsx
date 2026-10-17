@@ -10,8 +10,6 @@ import PricingSection from '@/components/PricingSection';
 import BlogSection from '@/components/BlogSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
-import AiChatWidget from '@/components/AiChatWidget';
-import ServiceRecommendationWizard from '@/components/ServiceRecommendationWizard';
 import {
   FALLBACK_COMPANY,
   FALLBACK_PARTNERS,
@@ -21,19 +19,20 @@ import {
   FALLBACK_SERVICES,
 } from '@/lib/fallbackData';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+import InteractiveWidgets from '@/components/InteractiveWidgets';
+
+export const revalidate = 60;
 
 export default async function HomePage() {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
-  // Truy vấn song song các endpoints từ NestJS Core Backend
+  // Truy vấn song song các endpoints từ NestJS Core Backend (ISR 60s Cache)
   const [partnersRes, servicesRes, pricingRes, caseStudiesRes, blogsRes] = await Promise.allSettled([
-    fetch(`${backendUrl}/api/partners`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
-    fetch(`${backendUrl}/api/services`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
-    fetch(`${backendUrl}/api/pricing`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
-    fetch(`${backendUrl}/api/case-studies`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
-    fetch(`${backendUrl}/api/blogs`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/partners`, { next: { revalidate: 60 } }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/services`, { next: { revalidate: 60 } }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/pricing`, { next: { revalidate: 60 } }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/case-studies`, { next: { revalidate: 60 } }).then((r) => (r.ok ? r.json() : null)),
+    fetch(`${backendUrl}/api/blogs`, { next: { revalidate: 60 } }).then((r) => (r.ok ? r.json() : null)),
   ]);
 
   const companyInfo = FALLBACK_COMPANY;
@@ -107,11 +106,8 @@ export default async function HomePage() {
       {/* 12. FOOTER */}
       <Footer companyInfo={companyInfo} />
 
-      {/* 13. AI CHATBOT WIDGET (S-DIGITAL AI ASSISTANT 24/7) */}
-      <AiChatWidget />
-
-      {/* 14. AI SERVICE RECOMMENDATION WIZARD (MODAL) */}
-      <ServiceRecommendationWizard />
+      {/* 13. INTERACTIVE CLIENT WIDGETS (LAZY LOADED AI CHATBOT & RECOMMENDATION WIZARD) */}
+      <InteractiveWidgets />
     </div>
   );
 }

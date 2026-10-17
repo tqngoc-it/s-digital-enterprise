@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -20,12 +21,15 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getBlogPost(idOrSlug: string): Promise<BlogPostItem | null> {
+export const revalidate = 60;
+
+// Gom request và cache trong cùng một chu kỳ render (tránh gọi lặp lại 2 lần giữa generateMetadata và Page)
+const getBlogPost = cache(async (idOrSlug: string): Promise<BlogPostItem | null> => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
-  // 1. Tìm trong backend qua ID/slug trực tiếp
+  // 1. Tìm trong backend qua ID/slug trực tiếp với ISR Cache 60s
   try {
-    const res = await fetch(`${backendUrl}/api/blogs/${idOrSlug}`, { cache: 'no-store' });
+    const res = await fetch(`${backendUrl}/api/blogs/${idOrSlug}`, { next: { revalidate: 60 } });
     if (res.ok) {
       const data = await res.json();
       if (data && (data.id || data.title)) return data;
@@ -36,7 +40,7 @@ async function getBlogPost(idOrSlug: string): Promise<BlogPostItem | null> {
 
   // 2. Tìm trong danh sách tất cả backend blogs
   try {
-    const resAll = await fetch(`${backendUrl}/api/blogs`, { cache: 'no-store' });
+    const resAll = await fetch(`${backendUrl}/api/blogs`, { next: { revalidate: 60 } });
     if (resAll.ok) {
       const blogs = await resAll.json();
       if (Array.isArray(blogs)) {
@@ -62,7 +66,7 @@ async function getBlogPost(idOrSlug: string): Promise<BlogPostItem | null> {
   );
 
   return fallback || null;
-}
+});
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
@@ -74,6 +78,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const thumbnailUrl =
+    post.thumbnail_url || (post as any).thumbnail || 'https://s-digital-vn.vercel.app/vercel.svg';
+
   return {
     title: `${post.title} | S-Digital Insights`,
     description: post.excerpt,
@@ -83,6 +90,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       publishedTime: post.published_at,
       authors: [post.author || 'S-Digital Strategy Team'],
+      images: [
+        {
+          url: thumbnailUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [thumbnailUrl],
     },
   };
 }
@@ -100,8 +121,42 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const rawArticle = post.content || post.excerpt || '';
   const cleanArticle = cleanMarkdownContent(rawArticle);
 
+  const postUrl = `https://s-digital-vn.vercel.app/blog/${post.slug || post.id || id}`;
+  const thumbnailUrl =
+    post.thumbnail_url || (post as any).thumbnail || 'https://s-digital-vn.vercel.app/vercel.svg';
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    image: [thumbnailUrl],
+    datePublished: post.published_at,
+    author: {
+      '@type': 'Person',
+      name: post.author || 'S-Digital Strategy Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'S-Digital Media & Sports',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://s-digital-vn.vercel.app/vercel.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': postUrl,
+    },
+  };
+
   return (
     <div className="min-h-screen bg-[#060913] text-slate-100 selection:bg-[#FF5722] selection:text-white flex flex-col antialiased">
+      {/* Schema.org BlogPosting Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
 
       <main className="flex-1 py-12 md:py-20 max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-10">

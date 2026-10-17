@@ -184,7 +184,7 @@ export class PricingService {
       const { error: resetError } = await this.supabase.client
         .from('pricing_plans')
         .update({ is_popular: false })
-        .eq('is_popular', true);
+        .not('id', 'is', null);
 
       if (resetError) {
         this.logger.warn(`[RESET_POPULAR_PRICING_WARN]: ${resetError.message}`);
@@ -220,7 +220,6 @@ export class PricingService {
       const { error: resetError } = await this.supabase.client
         .from('pricing_plans')
         .update({ is_popular: false })
-        .eq('is_popular', true)
         .neq('id', id);
 
       if (resetError) {
