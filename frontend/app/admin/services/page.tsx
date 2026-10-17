@@ -27,11 +27,11 @@ export default async function AdminServicesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-          <Briefcase className="w-8 h-8 text-violet-400" />
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+          <Briefcase className="w-8 h-8 text-violet-500 dark:text-violet-400" />
           <span>Quản Lý Hệ Sinh Thái Dịch Vụ</span>
         </h1>
-        <p className="text-xs md:text-sm text-slate-400 mt-1">
+        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
           Quản lý toàn bộ danh mục dịch vụ thuộc 2 nhóm Marketing Số (Digital Suite) và Thể Thao & Đào Tạo (Sports Hub).
         </p>
       </div>

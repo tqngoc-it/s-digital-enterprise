@@ -27,11 +27,11 @@ export default async function AdminCaseStudiesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-          <Award className="w-8 h-8 text-emerald-400" />
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+          <Award className="w-8 h-8 text-emerald-500 dark:text-emerald-400" />
           <span>Quản Lý Case Studies & Dự Án Tiêu Biểu</span>
         </h1>
-        <p className="text-xs md:text-sm text-slate-400 mt-1">
+        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
           Quản lý các case study giải chạy marathon, chiến dịch truyền thông thành công hiển thị cho khách hàng.
         </p>
       </div>

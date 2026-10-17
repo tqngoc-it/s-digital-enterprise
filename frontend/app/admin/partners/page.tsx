@@ -27,11 +27,11 @@ export default async function AdminPartnersPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-          <Handshake className="w-8 h-8 text-[#00E5FF]" />
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+          <Handshake className="w-8 h-8 text-cyan-600 dark:text-[#00E5FF]" />
           <span>Quản Lý Đối Tác & Khách Hàng</span>
         </h1>
-        <p className="text-xs md:text-sm text-slate-400 mt-1">
+        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
           Quản lý danh sách 16 khách hàng tiêu biểu và 9 đối tác chiến lược hiển thị trên dải logo trang chủ.
         </p>
       </div>

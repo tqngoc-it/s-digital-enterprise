@@ -24,25 +24,34 @@ function normalizeLead(lead: any) {
     if (lead.admin_notes.includes('[AI_METRICS]')) {
       const scoreMatch = lead.admin_notes.match(/SCORE:(\d+)/);
       if (scoreMatch) score = parseInt(scoreMatch[1], 10);
-      const valMatch = lead.admin_notes.match(/VALUE:([^| \]]+)/);
+      const valMatch = lead.admin_notes.match(/VALUE:([^|\]]+?)(?:\s*\[|\s*\||$)/);
       if (valMatch) estimatedValue = valMatch[1].trim();
     }
     if (!industry) {
-      const match = lead.admin_notes.match(/INDUSTRY:([^| \]]+)/);
+      const match = lead.admin_notes.match(/INDUSTRY:([^|\]]+?)(?:\s*\[|\s*\||$)/);
       if (match) industry = match[1].trim();
     }
     if (!companySize) {
-      const match = lead.admin_notes.match(/SIZE:([^| \]]+)/);
+      const match = lead.admin_notes.match(/SIZE:([^|\]]+?)(?:\s*\[|\s*\||$)/);
       if (match) companySize = match[1].trim();
     }
     if (!budget) {
-      const match = lead.admin_notes.match(/BUDGET:([^| \]]+)/);
+      const match = lead.admin_notes.match(/BUDGET:([^|\]]+?)(?:\s*\[|\s*\||$)/);
       if (match) budget = match[1].trim();
     }
     if (!timeline) {
-      const match = lead.admin_notes.match(/TIMELINE:([^| \]]+)/);
+      const match = lead.admin_notes.match(/TIMELINE:([^|\]]+?)(?:\s*\[|\s*\||$)/);
       if (match) timeline = match[1].trim();
     }
+  }
+
+  if (estimatedValue) {
+    const valTrim = String(estimatedValue).trim();
+    if (valTrim.toLowerCase() === 'dưới' || valTrim === 'Dưới') {
+      estimatedValue = 'Dưới 20 triệu VNĐ';
+    }
+  } else if (budget === 'under_20m') {
+    estimatedValue = 'Dưới 20 triệu VNĐ';
   }
 
   if (score === undefined && lead.ai_priority) {
@@ -539,13 +548,17 @@ Hãy thẩm định khách hàng này theo khung tiêu chuẩn BANT và trả v�
         'Chiến lược tiếp thị số & Giải pháp thể thao tích hợp';
 
       if (parsed.summary) {
+        let estVal = String(parsed.estimatedValue || 'Thỏa thuận theo phạm vi công việc').trim();
+        if (estVal.toLowerCase() === 'dưới' || estVal === 'Dưới') {
+          estVal = 'Dưới 20 triệu VNĐ';
+        }
         return {
           score,
           tier,
           summary: String(parsed.summary).trim(),
           recommended_service: String(recommendedService).trim(),
           actionPlan: String(parsed.actionPlan || 'Tư vấn chuyên sâu 1:1 theo hồ sơ doanh nghiệp').trim(),
-          estimatedValue: String(parsed.estimatedValue || 'Thỏa thuận theo phạm vi công việc').trim(),
+          estimatedValue: estVal,
         };
       }
       return null;
@@ -580,7 +593,7 @@ Hãy thẩm định khách hàng này theo khung tiêu chuẩn BANT và trả v�
     const industryRaw = (params.industry || '').toLowerCase();
 
     // 1. Tiêu chí B (Budget - Ngân sách): Tối đa 40 điểm
-    let estimatedValue = 'Dưới 20.000.000 VNĐ';
+    let estimatedValue = 'Dưới 20 triệu VNĐ';
     if (
       budgetRaw.includes('above_100m') ||
       budgetRaw.includes('> 100') ||
@@ -589,24 +602,24 @@ Hãy thẩm định khách hàng này theo khung tiêu chuẩn BANT và trả v�
       budgetRaw.includes('500tr')
     ) {
       score += 40;
-      estimatedValue = '100.000.000 - 300.000.000 VNĐ';
+      estimatedValue = 'Trên 100 triệu VNĐ';
     } else if (
       budgetRaw.includes('50m_100m') ||
       budgetRaw.includes('50-100') ||
       budgetRaw.includes('50 - 100')
     ) {
       score += 30;
-      estimatedValue = '50.000.000 - 100.000.000 VNĐ';
+      estimatedValue = '50 - 100 triệu VNĐ';
     } else if (
       budgetRaw.includes('20m_50m') ||
       budgetRaw.includes('20-50') ||
       budgetRaw.includes('20 - 50')
     ) {
       score += 18;
-      estimatedValue = '20.000.000 - 50.000.000 VNĐ';
+      estimatedValue = '20 - 50 triệu VNĐ';
     } else {
       score += 5;
-      estimatedValue = 'Dưới 20.000.000 VNĐ';
+      estimatedValue = 'Dưới 20 triệu VNĐ';
     }
 
     // 2. Tiêu chí T (Timeline - Thời hạn triển khai): Tối đa 20 điểm

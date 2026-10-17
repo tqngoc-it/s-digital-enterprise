@@ -574,13 +574,13 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                                 </span>
                               )}
                               {tier === 'COLD' && (
-                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-[#64748B]/25 text-slate-300 border border-[#64748B]/40">
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] tracking-wide bg-slate-100 text-slate-700 border border-slate-300 font-semibold dark:bg-zinc-800/70 dark:text-zinc-300 dark:border-white/10">
                                   Ít tiềm năng
                                 </span>
                               )}
 
                               {/* ĐIỂM SỐ TRỰC QUAN */}
-                              <span className="font-mono font-bold text-white text-xs">
+                              <span className="font-mono text-slate-800 dark:text-zinc-200 font-bold text-xs">
                                 {score}/100
                               </span>
                             </div>
@@ -680,7 +680,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
       {/* 3. VIEW LEAD DETAILS & EVALUATION MODAL */}
       {selectedLead && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 dark:bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="max-w-2xl w-full max-h-[90vh] flex flex-col rounded-3xl bg-white dark:bg-[#090D18] border border-slate-200 dark:border-slate-800 space-y-0 shadow-2xl relative text-xs text-slate-700 dark:text-slate-300 overflow-hidden">
+          <div className="max-w-2xl w-full max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-[#090D18] border border-slate-200 dark:border-white/10 space-y-0 shadow-2xl relative text-xs text-slate-700 dark:text-slate-300 overflow-hidden">
             {/* MODAL HEADER */}
             <div className="p-6 md:p-7 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-slate-50 dark:bg-[#0B0F19]">
               <div className="space-y-1">
@@ -712,7 +712,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
             </div>
 
             {/* MODAL BODY (SCROLLABLE) */}
-            <div className="p-6 md:p-7 overflow-y-auto space-y-6">
+            <div className="p-6 md:p-7 pr-3 max-h-[80vh] overflow-y-auto space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full">
               {/* LIÊN HỆ & QUICK ACTIONS */}
               <div className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#070A10] border border-slate-200 dark:border-slate-800">
@@ -903,7 +903,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                             </span>
                           )}
                           {(selectedLead.ai_tier || selectedLead.aiTier) === 'COLD' && (
-                            <span className="ml-auto px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-[#64748B]/25 text-slate-700 dark:text-slate-300 border border-[#64748B]/40">
+                            <span className="ml-auto px-3 py-1 rounded-full text-xs tracking-wide bg-slate-100 text-slate-700 border border-slate-300 font-semibold dark:bg-zinc-800/70 dark:text-zinc-300 dark:border-white/10">
                               Ít tiềm năng
                             </span>
                           )}
@@ -934,8 +934,18 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                           </span>
                           <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />
                         </div>
-                        <p className="text-xl md:text-2xl font-black font-mono my-2 text-cyan-600 dark:text-[#00E5FF]">
-                          {selectedLead.ai_estimated_value || selectedLead.aiEstimatedValue || 'Chưa xác định'}
+                        <p className="whitespace-normal break-words text-xl md:text-2xl font-bold text-cyan-600 dark:text-cyan-400 font-mono my-2">
+                          {(() => {
+                            const raw = selectedLead.ai_estimated_value || selectedLead.aiEstimatedValue;
+                            if (!raw || raw.trim() === 'Dưới' || raw.trim().toLowerCase() === 'dưới' || raw === 'Chưa xác định') {
+                              if (selectedLead.budget === 'under_20m' || selectedLead.budget?.includes('under')) return 'Dưới 20 triệu VNĐ';
+                              if (selectedLead.budget === '20m_50m') return '20 - 50 triệu VNĐ';
+                              if (selectedLead.budget === '50m_100m') return '50 - 100 triệu VNĐ';
+                              if (selectedLead.budget === 'above_100m') return 'Trên 100 triệu VNĐ';
+                              return 'Dưới 20 triệu VNĐ';
+                            }
+                            return raw;
+                          })()}
                         </p>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400">
                           Dựa trên mức ngân sách dự kiến và bảng giá dịch vụ thực tế S-Digital.

@@ -41,6 +41,7 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
 
   return (
     <section id="contact" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 relative border-t border-slate-200 dark:border-white/5">
+      <span id="contact-section" className="absolute -top-24 pointer-events-none" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* LEFT COLUMN: INFO */}
         <div className="lg:col-span-5 space-y-8">

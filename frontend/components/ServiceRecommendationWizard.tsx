@@ -159,6 +159,152 @@ export default function ServiceRecommendationWizard({
     }
   };
 
+// Ánh xạ sang enum chuẩn của hệ thống cho form B2B Leads
+function mapWizardIndustryToEnum(industryText: string): string {
+  const lower = (industryText || '').toLowerCase();
+  if (
+    lower.includes('công nghệ') ||
+    lower.includes('tmđt') ||
+    lower.includes('khởi nghiệp') ||
+    lower.includes('tech')
+  ) {
+    return 'tech_services';
+  }
+  if (
+    lower.includes('thể thao') ||
+    lower.includes('sự kiện') ||
+    lower.includes('giải đấu') ||
+    lower.includes('sports')
+  ) {
+    return 'sports_entertainment';
+  }
+  if (
+    lower.includes('f&b') ||
+    lower.includes('ẩm thực') ||
+    lower.includes('nhà hàng')
+  ) {
+    return 'fnb';
+  }
+  if (
+    lower.includes('bất động sản') ||
+    lower.includes('địa ốc') ||
+    lower.includes('tài chính') ||
+    lower.includes('ngân hàng')
+  ) {
+    return 'real_estate';
+  }
+  if (
+    lower.includes('bán lẻ') ||
+    lower.includes('e-commerce') ||
+    lower.includes('retail')
+  ) {
+    return 'retail_ecommerce';
+  }
+  return 'other';
+}
+
+function mapWizardBudgetToEnum(budgetIdOrText: string): string {
+  const lower = (budgetIdOrText || '').toLowerCase();
+  if (
+    lower.includes('< 20') ||
+    lower.includes('<20') ||
+    lower.includes('dưới 20') ||
+    lower.includes('under_20')
+  ) {
+    return 'under_20m';
+  }
+  if (
+    (lower.includes('20') && lower.includes('50')) ||
+    lower.includes('20-50') ||
+    lower.includes('20 - 50') ||
+    lower.includes('20m_50m')
+  ) {
+    return '20m_50m';
+  }
+  if (
+    (lower.includes('50') && lower.includes('100')) ||
+    lower.includes('50-100') ||
+    lower.includes('50 - 100') ||
+    lower.includes('50m_100m')
+  ) {
+    return '50m_100m';
+  }
+  if (
+    lower.includes('> 100') ||
+    lower.includes('>100') ||
+    lower.includes('trên 100') ||
+    lower.includes('above_100')
+  ) {
+    return 'above_100m';
+  }
+  return '20m_50m';
+}
+
+function mapWizardCompanySizeToEnum(budgetKey: string, noteText: string = ''): string {
+  const combined = `${budgetKey} ${noteText}`.toLowerCase();
+  if (
+    combined.includes('> 100') ||
+    combined.includes('>100') ||
+    combined.includes('trên 100') ||
+    combined.includes('above_100')
+  ) {
+    return 'above_100';
+  }
+  if (
+    combined.includes('< 20') ||
+    combined.includes('<20') ||
+    combined.includes('dưới 20') ||
+    combined.includes('under_20')
+  ) {
+    return 'under_20';
+  }
+  if (
+    combined.includes('20 - 100') ||
+    combined.includes('20-100') ||
+    combined.includes('20_100')
+  ) {
+    return '20_100';
+  }
+  if (budgetKey === 'above_100m') return 'above_100';
+  if (budgetKey === 'under_20m') return 'under_20';
+  return '20_100';
+}
+
+function mapWizardTimelineToEnum(
+  goalText: string = '',
+  resTimeline: string = '',
+  noteText: string = ''
+): string {
+  const combined = `${goalText} ${resTimeline} ${noteText}`.toLowerCase();
+  if (
+    combined.includes('gấp') ||
+    combined.includes('trong tháng') ||
+    combined.includes('ngay') ||
+    combined.includes('khẩn cấp') ||
+    combined.includes('urgent') ||
+    combined.includes('khủng hoảng')
+  ) {
+    return 'urgent_this_month';
+  }
+  if (
+    combined.includes('1 - 3') ||
+    combined.includes('1-3') ||
+    combined.includes('1_3') ||
+    combined.includes('tháng tới') ||
+    combined.includes('tuần')
+  ) {
+    return 'next_1_3_months';
+  }
+  if (
+    combined.includes('khảo sát') ||
+    combined.includes('ý tưởng') ||
+    combined.includes('exploring')
+  ) {
+    return 'exploring';
+  }
+  return 'urgent_this_month';
+}
+
   const handleApplyToContactForm = () => {
     if (!result) return;
 
@@ -170,10 +316,30 @@ export default function ServiceRecommendationWizard({
 ${note ? `- Ghi chú thêm: ${note}` : ''}
 Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản kế hoạch chi tiết.`;
 
-    // Phát custom event đến ContactForm
+    const mappedIndustry = mapWizardIndustryToEnum(selectedIndustry);
+    const mappedBudget = mapWizardBudgetToEnum(selectedBudget || result.estimatedBudget);
+    const mappedCompanySize = mapWizardCompanySizeToEnum(mappedBudget, note);
+    const mappedTimeline = mapWizardTimelineToEnum(selectedGoal, result.timeline, note);
+
+    const eventPayload = {
+      message: formattedMessage,
+      industry: mappedIndustry,
+      company_size: mappedCompanySize,
+      budget: mappedBudget,
+      timeline: mappedTimeline,
+    };
+
+    // 1. Phát sự kiện toàn cục chuẩn prefill_lead_form
+    window.dispatchEvent(
+      new CustomEvent('prefill_lead_form', {
+        detail: eventPayload,
+      })
+    );
+
+    // 2. Phát đồng thời event tương thích ngược
     window.dispatchEvent(
       new CustomEvent('sdigital:apply-recommendation', {
-        detail: { message: formattedMessage },
+        detail: eventPayload,
       })
     );
 
@@ -182,7 +348,10 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
 
     // Cuộn mượt màn hình tới Form Liên Hệ
     setTimeout(() => {
-      const contactEl = document.getElementById('contact-form') || document.getElementById('contact');
+      const contactEl =
+        document.getElementById('contact-form') ||
+        document.getElementById('contact-section') ||
+        document.getElementById('contact');
       if (contactEl) {
         contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }

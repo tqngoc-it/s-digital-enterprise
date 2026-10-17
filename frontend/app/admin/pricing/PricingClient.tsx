@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createPricingPlanAction,
@@ -41,7 +41,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function SortablePricingCard({
+const SortablePricingCard = memo(function SortablePricingCard({
   p,
   idx,
   totalLength,
@@ -70,7 +70,8 @@ function SortablePricingCard({
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    transition: isDragging ? undefined : transition,
+    transition: transition || 'transform 200ms ease',
+    willChange: 'transform',
     zIndex: isDragging ? 50 : undefined,
   };
 
@@ -193,7 +194,7 @@ function SortablePricingCard({
       </div>
     </div>
   );
-}
+});
 
 export default function PricingClient({ initialPlans }: { initialPlans: PricingPlanItem[] }) {
   const router = useRouter();
@@ -507,9 +508,9 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
 
       {/* CREATE MODAL */}
       {isCreating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="max-w-lg w-full p-6 md:p-8 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-5 text-xs shadow-2xl relative my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="max-w-lg w-full rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-6 pb-3 border-b border-slate-100 dark:border-white/10 shrink-0">
               <h3 className="text-base font-black text-slate-900 dark:text-white">Thêm Gói Dịch Vụ Mới</h3>
               <button
                 onClick={() => setIsCreating(false)}
@@ -519,7 +520,8 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="space-y-4">
+            <div className="overflow-y-auto p-6 pt-4 pr-3 max-h-[80vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full text-xs">
+              <form onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tên Gói Dịch Vụ *</label>
                 <input
@@ -595,13 +597,14 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
             </form>
           </div>
         </div>
+      </div>
       )}
 
       {/* EDIT MODAL */}
       {editingPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="max-w-lg w-full p-6 md:p-8 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-5 text-xs shadow-2xl relative my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+          <div className="max-w-lg w-full rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-6 pb-3 border-b border-slate-100 dark:border-white/10 shrink-0">
               <h3 className="text-base font-black text-slate-900 dark:text-white">Chỉnh Sửa Gói Giá</h3>
               <button
                 onClick={() => setEditingPlan(null)}
@@ -611,7 +614,8 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
               </button>
             </div>
 
-            <form onSubmit={handleUpdate} className="space-y-4">
+            <div className="overflow-y-auto p-6 pt-4 pr-3 max-h-[80vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full text-xs">
+              <form onSubmit={handleUpdate} className="space-y-4">
               <div>
                 <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tên Gói Dịch Vụ *</label>
                 <input
@@ -691,6 +695,7 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
             </form>
           </div>
         </div>
+      </div>
       )}
     </div>
   );

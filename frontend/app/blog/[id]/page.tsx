@@ -296,15 +296,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
         )}
 
         {/* BOTTOM CTA: CONTACT S-DIGITAL */}
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-[#0B111E] dark:to-[#121826] border border-slate-200 dark:border-white/10 space-y-5 text-center relative overflow-hidden shadow-sm dark:shadow-xl">
+        <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 dark:bg-gradient-to-b dark:from-[#0f172a] dark:to-[#060913] dark:border-white/10 space-y-5 text-center relative overflow-hidden shadow-sm dark:shadow-xl">
           <div className="space-y-2">
             <span className="text-[#FF5722] text-xs font-mono font-bold uppercase tracking-wider">
               S-DIGITAL PARTNERSHIP
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
               Cần Tư Vấn Chiến Lược Cho Doanh Nghiệp Của Bạn?
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-xl mx-auto">
               Đội ngũ chuyên viên chiến lược S-Digital sẵn sàng thiết kế giải pháp Marketing và giải đấu thể thao độc quyền tối ưu ngân sách.
             </p>
           </div>

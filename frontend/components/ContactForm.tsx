@@ -31,17 +31,211 @@ export default function ContactForm() {
     message?: string;
   }>({});
 
-  // Lắng nghe gợi ý từ AI ServiceRecommendationWizard
+  // Robust Mapping Helpers: Chuẩn hóa dữ liệu B2B sang đúng giá trị enum của ContactForm
+  function mapToIndustryValue(val?: string): string {
+    if (!val) return 'sports_entertainment';
+    const trimmed = String(val).trim();
+    const valid = ['sports_entertainment', 'fnb', 'real_estate', 'retail_ecommerce', 'tech_services', 'other'];
+    if (valid.includes(trimmed)) return trimmed;
+
+    const lower = trimmed.toLowerCase();
+    if (
+      lower.includes('công nghệ') ||
+      lower.includes('tmđt') ||
+      lower.includes('khởi nghiệp') ||
+      lower.includes('tech') ||
+      lower.includes('phần mềm') ||
+      lower.includes('software')
+    ) {
+      return 'tech_services';
+    }
+    if (
+      lower.includes('thể thao') ||
+      lower.includes('sự kiện') ||
+      lower.includes('giải đấu') ||
+      lower.includes('sports') ||
+      lower.includes('marathon')
+    ) {
+      return 'sports_entertainment';
+    }
+    if (
+      lower.includes('f&b') ||
+      lower.includes('ẩm thực') ||
+      lower.includes('nhà hàng') ||
+      lower.includes('đồ uống')
+    ) {
+      return 'fnb';
+    }
+    if (
+      lower.includes('bất động sản') ||
+      lower.includes('địa ốc') ||
+      lower.includes('tài chính') ||
+      lower.includes('ngân hàng') ||
+      lower.includes('real_estate')
+    ) {
+      return 'real_estate';
+    }
+    if (
+      lower.includes('bán lẻ') ||
+      lower.includes('e-commerce') ||
+      lower.includes('retail') ||
+      lower.includes('chuỗi cửa hàng')
+    ) {
+      return 'retail_ecommerce';
+    }
+    return 'other';
+  }
+
+  function mapToBudgetValue(val?: string): string {
+    if (!val) return '50m_100m';
+    const trimmed = String(val).trim();
+    const valid = ['under_20m', '20m_50m', '50m_100m', 'above_100m'];
+    if (valid.includes(trimmed)) return trimmed;
+
+    const lower = trimmed.toLowerCase();
+    if (
+      lower.includes('dưới 20') ||
+      lower.includes('< 20') ||
+      lower.includes('<20') ||
+      lower.includes('under_20') ||
+      lower.includes('15.000.000') ||
+      lower.includes('15 triệu')
+    ) {
+      return 'under_20m';
+    }
+    if (
+      lower.includes('trên 100') ||
+      lower.includes('> 100') ||
+      lower.includes('>100') ||
+      lower.includes('above_100')
+    ) {
+      return 'above_100m';
+    }
+    if (
+      (lower.includes('20') && lower.includes('50')) ||
+      lower.includes('20 - 50') ||
+      lower.includes('20-50') ||
+      lower.includes('20m_50m') ||
+      lower.includes('35.000.000') ||
+      lower.includes('35 triệu')
+    ) {
+      return '20m_50m';
+    }
+    if (
+      (lower.includes('50') && lower.includes('100')) ||
+      lower.includes('50 - 100') ||
+      lower.includes('50-100') ||
+      lower.includes('50m_100m')
+    ) {
+      return '50m_100m';
+    }
+    return '20m_50m';
+  }
+
+  function mapToCompanySizeValue(val?: string): string {
+    if (!val) return '20_100';
+    const trimmed = String(val).trim();
+    const valid = ['under_20', '20_100', 'above_100'];
+    if (valid.includes(trimmed)) return trimmed;
+
+    const lower = trimmed.toLowerCase();
+    if (
+      lower.includes('dưới 20') ||
+      lower.includes('< 20') ||
+      lower.includes('<20') ||
+      lower.includes('under_20') ||
+      lower.includes('nhỏ') ||
+      lower.includes('startup')
+    ) {
+      return 'under_20';
+    }
+    if (
+      lower.includes('trên 100') ||
+      lower.includes('> 100') ||
+      lower.includes('>100') ||
+      lower.includes('above_100') ||
+      lower.includes('lớn') ||
+      lower.includes('tập đoàn')
+    ) {
+      return 'above_100';
+    }
+    if (
+      lower.includes('20 - 100') ||
+      lower.includes('20-100') ||
+      lower.includes('20_100')
+    ) {
+      return '20_100';
+    }
+    return '20_100';
+  }
+
+  function mapToTimelineValue(val?: string): string {
+    if (!val) return 'urgent_this_month';
+    const trimmed = String(val).trim();
+    const valid = ['urgent_this_month', 'next_1_3_months', 'exploring'];
+    if (valid.includes(trimmed)) return trimmed;
+
+    const lower = trimmed.toLowerCase();
+    if (
+      lower.includes('gấp') ||
+      lower.includes('trong tháng') ||
+      lower.includes('ngay') ||
+      lower.includes('urgent') ||
+      lower.includes('khẩn cấp') ||
+      lower.includes('30 phút')
+    ) {
+      return 'urgent_this_month';
+    }
+    if (
+      lower.includes('1 - 3') ||
+      lower.includes('1-3') ||
+      lower.includes('1_3') ||
+      lower.includes('tháng tới') ||
+      lower.includes('tuần')
+    ) {
+      return 'next_1_3_months';
+    }
+    if (
+      lower.includes('khảo sát') ||
+      lower.includes('ý tưởng') ||
+      lower.includes('exploring') ||
+      lower.includes('tìm hiểu')
+    ) {
+      return 'exploring';
+    }
+    return 'urgent_this_month';
+  }
+
+  // Lắng nghe sự kiện đồng bộ từ ServiceRecommendationWizard (prefill_lead_form & sdigital:apply-recommendation)
   useEffect(() => {
-    const handleApplyRecommendation = (e: any) => {
-      if (e.detail?.message) {
-        setMessage(e.detail.message);
+    const handlePrefill = (event: CustomEvent<any> | Event) => {
+      const customEvent = event as CustomEvent<any>;
+      const data = customEvent.detail;
+      if (!data) return;
+
+      if (data.message) {
+        setMessage(data.message);
         setFieldErrors((prev) => ({ ...prev, message: undefined }));
       }
+      if (data.industry) {
+        setIndustry(mapToIndustryValue(data.industry));
+      }
+      if (data.company_size || data.companySize) {
+        setCompanySize(mapToCompanySizeValue(data.company_size || data.companySize));
+      }
+      if (data.budget) {
+        setBudget(mapToBudgetValue(data.budget));
+      }
+      if (data.timeline) {
+        setTimeline(mapToTimelineValue(data.timeline));
+      }
     };
-    window.addEventListener('sdigital:apply-recommendation', handleApplyRecommendation);
+
+    window.addEventListener('prefill_lead_form', handlePrefill as EventListener);
+    window.addEventListener('sdigital:apply-recommendation', handlePrefill as EventListener);
     return () => {
-      window.removeEventListener('sdigital:apply-recommendation', handleApplyRecommendation);
+      window.removeEventListener('prefill_lead_form', handlePrefill as EventListener);
+      window.removeEventListener('sdigital:apply-recommendation', handlePrefill as EventListener);
     };
   }, []);
 

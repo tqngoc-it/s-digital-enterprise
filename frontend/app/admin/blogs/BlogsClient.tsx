@@ -170,8 +170,8 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
       {/* CREATE MODAL */}
       {isCreating && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="max-w-lg w-full p-6 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-4 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between">
+          <div className="max-w-lg w-full rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-6 pb-3 border-b border-slate-100 dark:border-white/10 shrink-0">
               <h3 className="text-base font-black text-slate-900 dark:text-white">Thêm Bài Viết Mới</h3>
               <button
                 onClick={() => setIsCreating(false)}
@@ -181,7 +181,8 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="space-y-3">
+            <div className="overflow-y-auto p-6 pt-4 pr-3 max-h-[80vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full text-xs">
+              <form onSubmit={handleCreate} className="space-y-3">
               <div>
                 <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tiêu Đề Bài Viết *</label>
                 <input
@@ -269,6 +270,7 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
             </form>
           </div>
         </div>
+      </div>
       )}
 
       {/* EDIT MODAL */}
@@ -276,9 +278,9 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div
             key={editingBlog.id || editingBlog.slug || 'edit-modal'}
-            className="max-w-lg w-full p-6 rounded-3xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/15 space-y-4 text-xs shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            className="max-w-lg w-full rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-6 pb-3 border-b border-slate-100 dark:border-white/10 shrink-0">
               <h3 className="text-base font-black text-slate-900 dark:text-white">Chỉnh Sửa Bài Viết</h3>
               <button
                 onClick={() => setEditingBlog(null)}
@@ -288,7 +290,8 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
               </button>
             </div>
 
-            <form onSubmit={handleUpdate} className="space-y-3">
+            <div className="overflow-y-auto p-6 pt-4 pr-3 max-h-[80vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full text-xs">
+              <form onSubmit={handleUpdate} className="space-y-3">
               <div>
                 <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1">Tiêu Đề Bài Viết *</label>
                 <input
@@ -376,6 +379,7 @@ export default function BlogsClient({ initialBlogs }: { initialBlogs: BlogPostIt
             </form>
           </div>
         </div>
+      </div>
       )}
     </div>
   );
