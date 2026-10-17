@@ -34,7 +34,19 @@ export class CreateLeadDto {
 
   @IsString()
   @IsOptional()
+  industry?: string;
+
+  @IsString()
+  @IsOptional()
+  company_size?: string;
+
+  @IsString()
+  @IsOptional()
   budget?: string;
+
+  @IsString()
+  @IsOptional()
+  timeline?: string;
 
   @IsString()
   @IsOptional()

@@ -8,6 +8,10 @@ export async function submitLeadAction(formData: FormData) {
     const email = (formData.get('email') as string)?.trim();
     const phone = (formData.get('phone') as string)?.trim();
     const company_name = (formData.get('company_name') as string)?.trim();
+    const industry = (formData.get('industry') as string)?.trim() || 'sports_entertainment';
+    const company_size = (formData.get('company_size') as string)?.trim() || '20_100';
+    const budget = (formData.get('budget') as string)?.trim() || '50m_100m';
+    const timeline = (formData.get('timeline') as string)?.trim() || 'urgent_this_month';
     const message = (formData.get('message') as string)?.trim();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,6 +45,10 @@ export async function submitLeadAction(formData: FormData) {
         email,
         phone: phone || undefined,
         company_name: company_name || undefined,
+        industry,
+        company_size,
+        budget,
+        timeline,
         message,
       }),
     });

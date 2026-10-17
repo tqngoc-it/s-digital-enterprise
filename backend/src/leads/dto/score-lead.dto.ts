@@ -23,7 +23,19 @@ export class ScoreLeadDto {
 
   @IsString()
   @IsOptional()
+  industry?: string;
+
+  @IsString()
+  @IsOptional()
+  company_size?: string;
+
+  @IsString()
+  @IsOptional()
   budget?: string;
+
+  @IsString()
+  @IsOptional()
+  timeline?: string;
 
   @IsString()
   @IsOptional()
@@ -46,6 +58,7 @@ export interface ScoreLeadResponse {
   score: number;
   tier: 'HOT' | 'WARM' | 'COLD';
   summary: string;
+  recommended_service?: string;
   actionPlan: string;
   estimatedValue: string;
 }

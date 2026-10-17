@@ -15,11 +15,34 @@ function normalizeLead(lead: any) {
   let estimatedValue = lead.ai_estimated_value;
   const tier = lead.ai_tier || lead.ai_priority || 'WARM';
 
-  if (lead.admin_notes && typeof lead.admin_notes === 'string' && lead.admin_notes.includes('[AI_METRICS]')) {
-    const scoreMatch = lead.admin_notes.match(/SCORE:(\d+)/);
-    if (scoreMatch) score = parseInt(scoreMatch[1], 10);
-    const valMatch = lead.admin_notes.match(/VALUE:([^|]+)/);
-    if (valMatch) estimatedValue = valMatch[1].trim();
+  let industry = lead.industry;
+  let companySize = lead.company_size;
+  let budget = lead.budget;
+  let timeline = lead.timeline;
+
+  if (lead.admin_notes && typeof lead.admin_notes === 'string') {
+    if (lead.admin_notes.includes('[AI_METRICS]')) {
+      const scoreMatch = lead.admin_notes.match(/SCORE:(\d+)/);
+      if (scoreMatch) score = parseInt(scoreMatch[1], 10);
+      const valMatch = lead.admin_notes.match(/VALUE:([^| \]]+)/);
+      if (valMatch) estimatedValue = valMatch[1].trim();
+    }
+    if (!industry) {
+      const match = lead.admin_notes.match(/INDUSTRY:([^| \]]+)/);
+      if (match) industry = match[1].trim();
+    }
+    if (!companySize) {
+      const match = lead.admin_notes.match(/SIZE:([^| \]]+)/);
+      if (match) companySize = match[1].trim();
+    }
+    if (!budget) {
+      const match = lead.admin_notes.match(/BUDGET:([^| \]]+)/);
+      if (match) budget = match[1].trim();
+    }
+    if (!timeline) {
+      const match = lead.admin_notes.match(/TIMELINE:([^| \]]+)/);
+      if (match) timeline = match[1].trim();
+    }
   }
 
   if (score === undefined && lead.ai_priority) {
@@ -28,11 +51,16 @@ function normalizeLead(lead: any) {
 
   return {
     ...lead,
+    industry: industry || 'other',
+    company_size: companySize || 'under_20',
+    budget: budget || 'under_20m',
+    timeline: timeline || 'exploring',
     ai_score: score,
     ai_tier: tier,
     ai_priority: tier,
     ai_action_plan: lead.ai_action_plan || lead.ai_sales_advice,
     ai_estimated_value: estimatedValue || lead.ai_estimated_value || 'Chưa xác định',
+    ai_suggested_service: lead.ai_suggested_service || lead.service || 'Tư vấn chiến lược tổng thể',
   };
 }
 
@@ -47,8 +75,8 @@ export class LeadsService {
 
   /**
    * Luồng tự động hóa khi tiếp nhận Lead:
-   * 1. Lưu lead vào bảng leads với trạng thái mặc định NEW ("Mới tiếp nhận")
-   * 2. Tự động gọi Gemini AI (hoặc Smart Fallback) thẩm định điểm số ngay lập tức
+   * 1. Lưu lead vào bảng leads với trạng thái mặc định NEW ("Mới tiếp nhận") kèm 4 trường B2B
+   * 2. Tự động gọi Gemini AI (hoặc Smart Fallback BANT) thẩm định điểm số ngay lập tức
    * 3. Cập nhật các trường ai_summary, ai_priority, ai_sales_advice và metrics vào DB
    * 4. Trả về Lead hoàn chỉnh đã có điểm thẩm định cho Client
    */
@@ -59,54 +87,85 @@ export class LeadsService {
       const phone = dto.phone ? dto.phone.trim().replace(/[\s.-]/g, '').replace(/^\+/, '') : null;
       const company_name = dto.company || dto.company_name || null;
       const service = dto.service || 'Tư vấn chiến lược tổng thể';
-      const budget = dto.budget || 'Chưa xác định';
+      const industry = dto.industry || 'other';
+      const company_size = dto.company_size || 'under_20';
+      const budget = dto.budget || 'under_20m';
+      const timeline = dto.timeline || 'exploring';
       const message = dto.message || dto.notes || '';
 
-      // Bước 1: Lưu lead vào bảng leads
+      const basePayload: any = {
+        full_name,
+        email,
+        phone,
+        company_name,
+        message,
+        status: 'NEW',
+        source: 'Landing Page Form',
+      };
+
+      // Bước 1: Lưu lead vào bảng leads (hỗ trợ cả schema có hoặc chưa có cột B2B mới)
       let leadData: any = null;
+      const fullPayload = {
+        ...basePayload,
+        industry,
+        company_size,
+        budget,
+        timeline,
+      };
+
       const { data, error } = await this.supabase.client
         .from('leads')
-        .insert({
-          full_name,
-          email,
-          phone,
-          company_name,
-          message,
-          status: 'NEW',
-          source: 'Landing Page Form',
-        })
+        .insert(fullPayload)
         .select()
         .single();
 
       if (error) {
-        this.logger.error(`[DB_ERROR]: ${error.message}`, error.details);
-        throw new InternalServerErrorException('Lỗi khi lưu dữ liệu vào cơ sở dữ liệu');
+        this.logger.warn(`[DB_INSERT_WARN] Bảng leads chưa có cột B2B, lưu fallback metadata: ${error.message}`);
+        const b2bNotes = `[B2B_DATA] INDUSTRY:${industry}|SIZE:${company_size}|BUDGET:${budget}|TIMELINE:${timeline}`;
+        const { data: fallbackData, error: fallbackError } = await this.supabase.client
+          .from('leads')
+          .insert({
+            ...basePayload,
+            admin_notes: b2bNotes,
+          })
+          .select()
+          .single();
+
+        if (fallbackError) {
+          this.logger.error(`[DB_ERROR]: ${fallbackError.message}`, fallbackError.details);
+          throw new InternalServerErrorException('Lỗi khi lưu dữ liệu vào cơ sở dữ liệu');
+        }
+        leadData = fallbackData;
+      } else {
+        leadData = data;
       }
-      leadData = data;
 
-      this.logger.log(`Đã tiếp nhận Lead mới từ: ${email} (ID: ${leadData.id})`);
+      this.logger.log(`Đã tiếp nhận Lead B2B mới từ: ${email} (ID: ${leadData.id}, Budget: ${budget}, Industry: ${industry})`);
 
-      // Bước 2: Tự động gọi thẩm định AI Lead Scoring
+      // Bước 2: Tự động gọi thẩm định AI Lead Scoring (BANT chuẩn)
       const scoreResult = await this.scoreLead({
         name: full_name,
         email,
         phone: phone || '',
         company: company_name || '',
         service,
+        industry,
+        company_size,
         budget,
+        timeline,
         message,
       });
 
-      // Bước 3: Cập nhật điểm số thẩm định vào DB tương thích schema hiện có
+      // Bước 3: Cập nhật điểm số thẩm định vào DB
       try {
-        const adminNotes = `[AI_METRICS] SCORE:${scoreResult.score}|TIER:${scoreResult.tier}|VALUE:${scoreResult.estimatedValue}`;
+        const adminNotes = `[AI_METRICS] SCORE:${scoreResult.score}|TIER:${scoreResult.tier}|VALUE:${scoreResult.estimatedValue} [B2B_DATA] INDUSTRY:${industry}|SIZE:${company_size}|BUDGET:${budget}|TIMELINE:${timeline}`;
         const { data: updatedData } = await this.supabase.client
           .from('leads')
           .update({
             ai_summary: scoreResult.summary,
             ai_priority: scoreResult.tier,
             ai_sales_advice: scoreResult.actionPlan,
-            ai_suggested_service: service,
+            ai_suggested_service: scoreResult.recommended_service || service,
             admin_notes: adminNotes,
           })
           .eq('id', leadData.id)
@@ -122,11 +181,16 @@ export class LeadsService {
 
       const normalized = normalizeLead({
         ...leadData,
+        industry,
+        company_size,
+        budget,
+        timeline,
         ai_score: scoreResult.score,
         ai_tier: scoreResult.tier,
         ai_summary: scoreResult.summary,
         ai_action_plan: scoreResult.actionPlan,
         ai_estimated_value: scoreResult.estimatedValue,
+        ai_suggested_service: scoreResult.recommended_service || service,
       });
 
       // Bước 4: Trả về kết quả hoàn chỉnh
@@ -211,19 +275,23 @@ export class LeadsService {
       phone: lead.phone || '',
       company: lead.company_name || '',
       service: lead.service || lead.ai_suggested_service || 'Tư vấn giải pháp',
-      budget: lead.budget || 'Chưa xác định',
+      industry: lead.industry || 'other',
+      company_size: lead.company_size || 'under_20',
+      budget: lead.budget || 'under_20m',
+      timeline: lead.timeline || 'exploring',
       message: lead.message || lead.notes || '',
     });
 
     let updatedLead = lead;
     try {
-      const adminNotes = `[AI_METRICS] SCORE:${scoreResult.score}|TIER:${scoreResult.tier}|VALUE:${scoreResult.estimatedValue}`;
+      const adminNotes = `[AI_METRICS] SCORE:${scoreResult.score}|TIER:${scoreResult.tier}|VALUE:${scoreResult.estimatedValue} [B2B_DATA] INDUSTRY:${lead.industry || 'other'}|SIZE:${lead.company_size || 'under_20'}|BUDGET:${lead.budget || 'under_20m'}|TIMELINE:${lead.timeline || 'exploring'}`;
       const { data, error } = await this.supabase.client
         .from('leads')
         .update({
           ai_summary: scoreResult.summary,
           ai_priority: scoreResult.tier,
           ai_sales_advice: scoreResult.actionPlan,
+          ai_suggested_service: scoreResult.recommended_service || lead.service,
           admin_notes: adminNotes,
         })
         .eq('id', id)
@@ -244,6 +312,7 @@ export class LeadsService {
       ai_summary: scoreResult.summary,
       ai_action_plan: scoreResult.actionPlan,
       ai_estimated_value: scoreResult.estimatedValue,
+      ai_suggested_service: scoreResult.recommended_service || lead.service,
     });
 
     return {
@@ -252,6 +321,7 @@ export class LeadsService {
       score: scoreResult.score,
       tier: scoreResult.tier,
       summary: scoreResult.summary,
+      recommended_service: scoreResult.recommended_service,
       actionPlan: scoreResult.actionPlan,
       estimatedValue: scoreResult.estimatedValue,
     };
@@ -269,14 +339,17 @@ export class LeadsService {
 
   /**
    * Thẩm định và phân loại khách hàng tiềm năng bằng Google Gemini AI REST API
-   * Kết hợp cơ chế Smart Fallback nội bộ đảm bảo sẵn sàng 100%
+   * Kết hợp cơ chế Smart Fallback BANT nội bộ đảm bảo sẵn sàng 100%
    */
   async scoreLead(dto: ScoreLeadDto) {
     const name = dto.name || dto.full_name || 'Khách hàng';
     const email = dto.email || '';
     const phone = dto.phone || '';
     const service = dto.service || 'Tư vấn chiến lược tổng thể';
-    const budget = dto.budget || 'Chưa xác định';
+    const industry = dto.industry || 'other';
+    const company_size = dto.company_size || 'under_20';
+    const budget = dto.budget || 'under_20m';
+    const timeline = dto.timeline || 'exploring';
     const message = dto.message || dto.notes || '';
     const company = dto.company || dto.company_name || '';
 
@@ -286,14 +359,17 @@ export class LeadsService {
         email,
         phone,
         service,
+        industry,
+        company_size,
         budget,
+        timeline,
         message,
         company,
       });
 
       if (geminiResult) {
         this.logger.log(
-          `[AI_SCORE_LEAD] Gemini (${geminiResult.source}) thẩm định thành công: ${name} (${geminiResult.score}/100 - ${geminiResult.tier})`,
+          `[AI_SCORE_LEAD] Gemini (${geminiResult.source}) thẩm định BANT thành công: ${name} (${geminiResult.score}/100 - ${geminiResult.tier})`,
         );
         return {
           success: true,
@@ -304,7 +380,7 @@ export class LeadsService {
       }
     } catch (geminiError: any) {
       this.logger.warn(
-        `[AI_SCORE_LEAD] Gemini API gặp sự cố, kích hoạt Smart Fallback: ${
+        `[AI_SCORE_LEAD] Gemini API gặp sự cố, kích hoạt Smart Fallback BANT: ${
           geminiError?.message || geminiError
         }`,
       );
@@ -316,13 +392,16 @@ export class LeadsService {
       email,
       phone,
       service,
+      industry,
+      company_size,
       budget,
+      timeline,
       message,
       company,
     });
 
     this.logger.log(
-      `[AI_SCORE_LEAD] Áp dụng Smart Fallback: ${name} (${fallbackResult.score}/100 - ${fallbackResult.tier})`,
+      `[AI_SCORE_LEAD] Áp dụng Smart Fallback BANT: ${name} (${fallbackResult.score}/100 - ${fallbackResult.tier})`,
     );
 
     return {
@@ -338,18 +417,54 @@ export class LeadsService {
     email: string;
     phone: string;
     service: string;
-    budget: string;
+    industry?: string;
+    company_size?: string;
+    budget?: string;
+    timeline?: string;
     message: string;
     company: string;
   }): Promise<(ScoreLeadResponse & { source?: string }) | null> {
+    const INDUSTRY_LABELS: Record<string, string> = {
+      sports_entertainment: 'Thể thao & Sự kiện',
+      fnb: 'F&B (Ẩm thực & Đồ uống)',
+      real_estate: 'Bất động sản',
+      retail_ecommerce: 'Bán lẻ & E-commerce',
+      tech_services: 'Công nghệ & Dịch vụ',
+      other: 'Khác',
+    };
+
+    const COMPANY_SIZE_LABELS: Record<string, string> = {
+      under_20: 'Dưới 20 nhân sự',
+      '20_100': '20 - 100 nhân sự',
+      above_100: 'Trên 100 nhân sự',
+    };
+
+    const BUDGET_LABELS: Record<string, string> = {
+      under_20m: 'Dưới 20 triệu VNĐ',
+      '20m_50m': '20 - 50 triệu VNĐ',
+      '50m_100m': '50 - 100 triệu VNĐ',
+      above_100m: 'Trên 100 triệu VNĐ',
+    };
+
+    const TIMELINE_LABELS: Record<string, string> = {
+      urgent_this_month: 'Cần triển khai gấp trong tháng',
+      next_1_3_months: 'Trong 1 - 3 tháng tới',
+      exploring: 'Đang khảo sát ý tưởng',
+    };
+
+    const industryText = INDUSTRY_LABELS[params.industry || 'other'] || params.industry || 'Chưa cung cấp';
+    const companySizeText = COMPANY_SIZE_LABELS[params.company_size || 'under_20'] || params.company_size || 'Chưa cung cấp';
+    const budgetText = BUDGET_LABELS[params.budget || 'under_20m'] || params.budget || 'Chưa cung cấp';
+    const timelineText = TIMELINE_LABELS[params.timeline || 'exploring'] || params.timeline || 'Chưa cung cấp';
+
     const systemPrompt = `
 Bạn là Giám đốc Kinh doanh B2B cấp cao của S-Digital Media & Sports - tổ hợp Tiếp thị số & Giải pháp Thể thao hàng đầu Việt Nam.
-Nhiệm vụ: Thẩm định chất lượng khách hàng tiềm năng (AI Lead Scoring) để tối ưu hóa nguồn lực chuyển đổi.
+Nhiệm vụ: Thẩm định chất lượng khách hàng tiềm năng (AI Lead Scoring) dựa trên khung tiêu chuẩn BANT (Budget, Authority, Need, Timeline).
 
-TIÊU CHÍ ĐÁNH GIÁ (0 - 100):
-- HOT (75 - 100): Doanh nghiệp rõ ràng, ngân sách > 50-100tr hoặc rất cấp bách. Phản hồi trong 15-30 phút.
-- WARM (45 - 74): Có tiềm năng thực tế, ngân sách 15-50tr hoặc cần tư vấn định hướng. Phản hồi trong 2 giờ.
-- COLD (0 - 44): Thông tin sơ sài, ngân sách thấp, nhu cầu chưa rõ. Chăm sóc tự động qua email.
+TIÊU CHÍ ĐÁNH GIÁ (0 - 100) VÀ PHÂN LOẠI:
+- HOT (80 - 100): Ngân sách > 50 triệu (50m_100m hoặc above_100m), có nhu cầu triển khai ngay trong tháng hoặc 1-3 tháng, quy mô rõ ràng. Phản hồi trong 15-30 phút.
+- WARM (50 - 79): Có nhu cầu cụ thể nhưng ngân sách vừa phải (20-50 triệu) hoặc đang trong giai đoạn khảo sát 1-3 tháng. Phản hồi trong 2 giờ.
+- COLD (< 50): Ngân sách dưới 20 triệu, lời nhắn spam/thiếu thông tin, hoặc chỉ đang khảo sát ý tưởng. Chăm sóc tự động qua email.
 
 QUY TẮC BẮT BUỘC:
 1. Tuyệt đối không dùng bất kỳ emoji hay icon robot nào.
@@ -358,29 +473,33 @@ QUY TẮC BẮT BUỘC:
   "score": number,
   "tier": "HOT" | "WARM" | "COLD",
   "summary": string,
+  "recommended_service": string,
   "actionPlan": string,
   "estimatedValue": string
 }
 `.trim();
 
     const userPrompt = `
-Hồ sơ khách hàng tiềm năng:
+Hồ sơ khách hàng tiềm năng B2B:
 - Họ tên: ${params.name}
 - Công ty: ${params.company || 'Chưa cung cấp'}
 - Email: ${params.email || 'Chưa cung cấp'}
 - SĐT: ${params.phone || 'Chưa cung cấp'}
-- Dịch vụ: ${params.service}
-- Ngân sách: ${params.budget}
-- Lời nhắn: ${params.message || 'Không có'}
+- Ngành nghề: ${industryText}
+- Quy mô nhân sự: ${companySizeText}
+- Mức ngân sách dự kiến: ${budgetText}
+- Thời hạn triển khai: ${timelineText}
+- Dịch vụ quan tâm: ${params.service}
+- Lời nhắn / Nhu cầu chi tiết: ${params.message || 'Không có'}
 
-Hãy thẩm định và trả về JSON theo yêu cầu.
+Hãy thẩm định khách hàng này theo khung tiêu chuẩn BANT và trả về JSON theo yêu cầu.
 `.trim();
 
     const result = await this.geminiService.generateContent({
       systemInstruction: systemPrompt,
       prompt: userPrompt,
       temperature: 0.2,
-      maxOutputTokens: 250,
+      maxOutputTokens: 300,
       responseMimeType: 'application/json',
       timeoutMs: 25000,
     });
@@ -410,16 +529,23 @@ Hãy thẩm định và trả về JSON theo yêu cầu.
       if (parsed.tier === 'HOT' || parsed.tier === 'WARM' || parsed.tier === 'COLD') {
         tier = parsed.tier;
       } else {
-        tier = score >= 75 ? 'HOT' : score >= 45 ? 'WARM' : 'COLD';
+        tier = score >= 80 ? 'HOT' : score >= 50 ? 'WARM' : 'COLD';
       }
 
-      if (parsed.summary && parsed.actionPlan && parsed.estimatedValue) {
+      const recommendedService =
+        parsed.recommended_service ||
+        parsed.recommendedService ||
+        parsed.suggested_service ||
+        'Chiến lược tiếp thị số & Giải pháp thể thao tích hợp';
+
+      if (parsed.summary) {
         return {
           score,
           tier,
           summary: String(parsed.summary).trim(),
-          actionPlan: String(parsed.actionPlan).trim(),
-          estimatedValue: String(parsed.estimatedValue).trim(),
+          recommended_service: String(recommendedService).trim(),
+          actionPlan: String(parsed.actionPlan || 'Tư vấn chuyên sâu 1:1 theo hồ sơ doanh nghiệp').trim(),
+          estimatedValue: String(parsed.estimatedValue || 'Thỏa thuận theo phạm vi công việc').trim(),
         };
       }
       return null;
@@ -429,26 +555,79 @@ Hãy thẩm định và trả về JSON theo yêu cầu.
   }
 
   /**
-   * Smart Fallback: Ma trận logic nội bộ dự phòng chuyên sâu khi không có API key hoặc API bận
+   * Smart Fallback: Ma trận logic nội bộ dự phòng chuẩn BANT (Budget, Authority, Need, Timeline)
    */
   private computeSmartLeadScore(params: {
     name: string;
     email: string;
     phone: string;
     service: string;
-    budget: string;
+    industry?: string;
+    company_size?: string;
+    budget?: string;
+    timeline?: string;
     message: string;
     company: string;
   }): ScoreLeadResponse {
-    let score = 30; // Điểm cơ bản
+    let score = 20; // Điểm nền tảng
     const msgLower = (params.message || '').toLowerCase();
     const emailLower = (params.email || '').toLowerCase();
     const phoneClean = (params.phone || '').replace(/\s+/g, '');
     const companyClean = (params.company || '').trim();
-    const budgetLower = (params.budget || '').toLowerCase();
-    const serviceLower = (params.service || '').toLowerCase();
+    const budgetRaw = (params.budget || '').toLowerCase();
+    const timelineRaw = (params.timeline || '').toLowerCase();
+    const sizeRaw = (params.company_size || '').toLowerCase();
+    const industryRaw = (params.industry || '').toLowerCase();
 
-    // 1. Kiểm tra thông tin liên hệ
+    // 1. Tiêu chí B (Budget - Ngân sách): Tối đa 40 điểm
+    let estimatedValue = 'Dưới 20.000.000 VNĐ';
+    if (
+      budgetRaw.includes('above_100m') ||
+      budgetRaw.includes('> 100') ||
+      budgetRaw.includes('trên 100') ||
+      budgetRaw.includes('tỷ') ||
+      budgetRaw.includes('500tr')
+    ) {
+      score += 40;
+      estimatedValue = '100.000.000 - 300.000.000 VNĐ';
+    } else if (
+      budgetRaw.includes('50m_100m') ||
+      budgetRaw.includes('50-100') ||
+      budgetRaw.includes('50 - 100')
+    ) {
+      score += 30;
+      estimatedValue = '50.000.000 - 100.000.000 VNĐ';
+    } else if (
+      budgetRaw.includes('20m_50m') ||
+      budgetRaw.includes('20-50') ||
+      budgetRaw.includes('20 - 50')
+    ) {
+      score += 18;
+      estimatedValue = '20.000.000 - 50.000.000 VNĐ';
+    } else {
+      score += 5;
+      estimatedValue = 'Dưới 20.000.000 VNĐ';
+    }
+
+    // 2. Tiêu chí T (Timeline - Thời hạn triển khai): Tối đa 20 điểm
+    if (timelineRaw.includes('urgent') || timelineRaw.includes('gấp') || timelineRaw.includes('month')) {
+      score += 20;
+    } else if (timelineRaw.includes('1_3') || timelineRaw.includes('1-3')) {
+      score += 14;
+    } else {
+      score += 5; // exploring
+    }
+
+    // 3. Tiêu chí A (Authority / Quy mô doanh nghiệp): Tối đa 15 điểm
+    if (sizeRaw.includes('above_100') || sizeRaw.includes('>100') || sizeRaw.includes('trên 100')) {
+      score += 15;
+    } else if (sizeRaw.includes('20_100') || sizeRaw.includes('20-100')) {
+      score += 10;
+    } else {
+      score += 5;
+    }
+
+    // 4. Tiêu chí N (Need & Contact completeness): Tối đa 25 điểm
     const isCorporateEmail =
       emailLower.includes('@') &&
       !emailLower.endsWith('@gmail.com') &&
@@ -456,101 +635,60 @@ Hãy thẩm định và trả về JSON theo yêu cầu.
       !emailLower.endsWith('@hotmail.com') &&
       !emailLower.endsWith('@outlook.com');
 
-    if (isCorporateEmail) score += 15;
-    else if (emailLower.includes('@')) score += 8;
+    if (isCorporateEmail) score += 8;
+    else if (emailLower.includes('@')) score += 4;
 
     const hasValidPhone = /^[0-9+]{9,13}$/.test(phoneClean);
-    if (hasValidPhone) score += 12;
+    if (hasValidPhone) score += 6;
 
     const hasCompany = companyClean.length > 2;
-    if (hasCompany) score += 13;
+    if (hasCompany) score += 6;
 
-    // 2. Kiểm tra ngân sách
-    let estimatedValue = '25.000.000 - 45.000.000 VNĐ';
-    if (
-      budgetLower.includes('> 100') ||
-      budgetLower.includes('trên 100') ||
-      budgetLower.includes('enterprise') ||
-      budgetLower.includes('500tr') ||
-      budgetLower.includes('tỷ')
-    ) {
-      score += 25;
-      estimatedValue = '100.000.000 - 250.000.000 VNĐ';
-    } else if (
-      budgetLower.includes('50-100') ||
-      budgetLower.includes('50 - 100') ||
-      budgetLower.includes('growth') ||
-      budgetLower.includes('70')
-    ) {
-      score += 20;
-      estimatedValue = '50.000.000 - 100.000.000 VNĐ';
-    } else if (
-      budgetLower.includes('20-50') ||
-      budgetLower.includes('20 - 50') ||
-      budgetLower.includes('35')
-    ) {
-      score += 15;
-      estimatedValue = '35.000.000 - 50.000.000 VNĐ';
-    } else if (budgetLower.includes('< 20') || budgetLower.includes('dưới 20')) {
-      score += 5;
-      estimatedValue = '15.000.000 - 25.000.000 VNĐ';
-    } else {
-      score += 8;
-    }
+    if (msgLower.length > 40) score += 5;
 
-    // 3. Kiểm tra độ chi tiết của lời nhắn
-    if (msgLower.length > 80) score += 12;
-    else if (msgLower.length > 30) score += 7;
+    // Giới hạn điểm chuẩn từ 20 đến 98
+    score = Math.max(20, Math.min(98, score));
 
-    // 4. Kiểm tra từ khóa giá trị cao S-Digital
-    const isHighValueIntent =
-      msgLower.includes('marathon') ||
-      msgLower.includes('giải chạy') ||
-      msgLower.includes('trọng tài') ||
-      msgLower.includes('khủng hoảng') ||
-      msgLower.includes('tvc') ||
-      msgLower.includes('booking') ||
-      msgLower.includes('tổng thể') ||
-      serviceLower.includes('marathon') ||
-      serviceLower.includes('thể thao') ||
-      serviceLower.includes('khủng hoảng');
-
-    if (isHighValueIntent) score += 10;
-
-    // Giới hạn điểm chuẩn từ 15 đến 98
-    score = Math.max(15, Math.min(98, score));
-
-    // Phân tầng Tier
+    // Phân tầng chuẩn BANT
     let tier: 'HOT' | 'WARM' | 'COLD' = 'WARM';
     let summary = '';
     let actionPlan = '';
 
-    if (score >= 75) {
+    if (score >= 80) {
       tier = 'HOT';
-      summary = `Khách hàng tiềm năng cấp cao${
-        hasCompany ? ` từ ${companyClean}` : ''
-      }, có định hướng dịch vụ rõ ràng và ngân sách tương thích với các gói chiến lược trọng điểm của S-Digital. Mức độ sẵn sàng hợp tác rất cao.`;
+      summary = `Khách hàng B2B tiềm năng cao${hasCompany ? ` từ ${companyClean}` : ''}. Ngân sách đầu tư lớn, thời gian triển khai cấp bách và định hướng dịch vụ rõ ràng theo chuẩn BANT.`;
       actionPlan =
-        'Phân công Trưởng phòng Kinh doanh B2B gọi điện thoại trực tiếp trong vòng 15 phút. Gửi hồ sơ năng lực Credentials kèm Proposal giải pháp may đo và bảng dự toán chi tiết trong 2 giờ làm việc.';
-    } else if (score >= 45) {
+        'Trưởng phòng Kinh doanh B2B liên hệ trực tiếp trong 15-30 phút. Hoàn thiện Proposal chiến lược và báo giá chi tiết gửi trong 2 giờ làm việc.';
+    } else if (score >= 50) {
       tier = 'WARM';
-      summary = `Khách hàng có nhu cầu hợp tác thực tế${
-        hasCompany ? ` đại diện cho ${companyClean}` : ''
-      }, thông tin cơ bản đầy đủ nhưng cần làm rõ thêm về KPI cụ thể và khung thời gian triển khai.`;
+      summary = `Khách hàng tiềm năng${hasCompany ? ` đại diện cho ${companyClean}` : ''}. Nhu cầu thực tế với ngân sách phù hợp, đang cân nhắc lộ trình triển khai trong 1-3 tháng.`;
       actionPlan =
-        'Chuyên viên tư vấn liên hệ qua điện thoại hoặc Zalo trong vòng 2 giờ làm việc. Gửi Profile dịch vụ tương ứng, lắng nghe bài toán kinh doanh và hẹn lịch họp tư vấn trực tuyến 1:1.';
+        'Chuyên viên tư vấn liên hệ trong vòng 2 giờ làm việc. Gửi Case Studies tương tự và hẹn lịch họp tư vấn giải pháp 1:1.';
     } else {
       tier = 'COLD';
       summary =
-        'Khách hàng có thông tin ban đầu còn hạn chế hoặc ngân sách khởi điểm khiêm tốn. Cần xác thực thêm mức độ nghiêm túc của nhu cầu trước khi phân bổ nguồn lực kinh doanh cấp cao.';
+        'Khách hàng đang trong giai đoạn khảo sát ý tưởng hoặc ngân sách ban đầu khiêm tốn. Cần nuôi dưỡng nhận thức thêm.';
       actionPlan =
-        'Gửi email tự động kèm cẩm nang giải pháp và bảng giá tham khảo. Thêm vào luồng chăm sóc email marketing định kỳ để tiếp tục nuôi dưỡng nhận thức thương hiệu.';
+        'Gửi email tự động kèm tài liệu giải pháp và biểu phí tham khảo. Chăm sóc định kỳ qua luồng Email Marketing.';
+    }
+
+    // Gợi ý dịch vụ thông minh theo ngành nghề
+    let recommended_service = 'Tư vấn chiến lược Digital Marketing tổng thể';
+    if (industryRaw.includes('sports')) {
+      recommended_service = 'Tổ chức giải đấu & Tài trợ thể thao chuyên nghiệp';
+    } else if (industryRaw.includes('fnb') || industryRaw.includes('retail')) {
+      recommended_service = 'Digital Performance Ads (Meta/TikTok/Google) & Booking KOLs';
+    } else if (industryRaw.includes('real_estate')) {
+      recommended_service = 'Chiến dịch Performance Mở bán Bất Động Sản & TVC Viral';
+    } else if (industryRaw.includes('tech')) {
+      recommended_service = 'Tư vấn Chuyển đổi số & Tăng trưởng B2B Lead Generation';
     }
 
     return {
       score,
       tier,
       summary,
+      recommended_service,
       actionPlan,
       estimatedValue,
     };

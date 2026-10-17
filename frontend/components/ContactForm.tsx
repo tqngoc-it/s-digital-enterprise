@@ -17,6 +17,10 @@ export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [companyName, setCompanyName] = useState('');
+  const [industry, setIndustry] = useState('sports_entertainment');
+  const [companySize, setCompanySize] = useState('20_100');
+  const [budget, setBudget] = useState('50m_100m');
+  const [timeline, setTimeline] = useState('urgent_this_month');
   const [message, setMessage] = useState('');
 
   // Per-field validation errors
@@ -107,6 +111,10 @@ export default function ContactForm() {
           email: email.trim(),
           phone: cleanPhone,
           company_name: companyName.trim() || undefined,
+          industry,
+          company_size: companySize,
+          budget,
+          timeline,
           message: message.trim(),
         }),
       });
@@ -121,6 +129,10 @@ export default function ContactForm() {
         setEmail('');
         setPhone('');
         setCompanyName('');
+        setIndustry('sports_entertainment');
+        setCompanySize('20_100');
+        setBudget('50m_100m');
+        setTimeline('urgent_this_month');
         setMessage('');
         setFieldErrors({});
       } else {
@@ -288,6 +300,80 @@ export default function ContactForm() {
                   <span>{fieldErrors.phone}</span>
                 </p>
               )}
+            </div>
+          </div>
+
+          {/* PHÂN LOẠI KHÁCH HÀNG B2B: NGÀNH NGHỀ & QUY MÔ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+                Ngành nghề hoạt động
+              </label>
+              <select
+                name="industry"
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
+              >
+                <option value="sports_entertainment" className="bg-[#0B111E] text-white">Thể thao & Sự kiện</option>
+                <option value="fnb" className="bg-[#0B111E] text-white">F&B (Ẩm thực & Đồ uống)</option>
+                <option value="real_estate" className="bg-[#0B111E] text-white">Bất động sản</option>
+                <option value="retail_ecommerce" className="bg-[#0B111E] text-white">Bán lẻ & E-commerce</option>
+                <option value="tech_services" className="bg-[#0B111E] text-white">Công nghệ & Dịch vụ</option>
+                <option value="other" className="bg-[#0B111E] text-white">Khác</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+                Quy mô doanh nghiệp
+              </label>
+              <select
+                name="company_size"
+                value={companySize}
+                onChange={(e) => setCompanySize(e.target.value)}
+                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
+              >
+                <option value="under_20" className="bg-[#0B111E] text-white">Dưới 20 nhân sự</option>
+                <option value="20_100" className="bg-[#0B111E] text-white">20 - 100 nhân sự</option>
+                <option value="above_100" className="bg-[#0B111E] text-white">Trên 100 nhân sự</option>
+              </select>
+            </div>
+          </div>
+
+          {/* PHÂN LOẠI KHÁCH HÀNG B2B: NGÂN SÁCH & THỜI GIAN */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+                Ngân sách dự kiến
+              </label>
+              <select
+                name="budget"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
+              >
+                <option value="under_20m" className="bg-[#0B111E] text-white">Dưới 20 triệu</option>
+                <option value="20m_50m" className="bg-[#0B111E] text-white">20 - 50 triệu</option>
+                <option value="50m_100m" className="bg-[#0B111E] text-white">50 - 100 triệu</option>
+                <option value="above_100m" className="bg-[#0B111E] text-white">Trên 100 triệu</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+                Thời gian triển khai
+              </label>
+              <select
+                name="timeline"
+                value={timeline}
+                onChange={(e) => setTimeline(e.target.value)}
+                className="w-full p-3.5 rounded-xl bg-[#060913] border border-white/10 text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
+              >
+                <option value="urgent_this_month" className="bg-[#0B111E] text-white">Cần triển khai gấp trong tháng</option>
+                <option value="next_1_3_months" className="bg-[#0B111E] text-white">Trong 1 - 3 tháng tới</option>
+                <option value="exploring" className="bg-[#0B111E] text-white">Đang khảo sát ý tưởng</option>
+              </select>
             </div>
           </div>
 

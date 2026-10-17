@@ -28,11 +28,41 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   REJECTED: { label: 'Từ chối / Spam', color: 'bg-red-500/15 text-red-400 border-red-500/30' },
 };
 
+const INDUSTRY_CONFIG: Record<string, string> = {
+  sports_entertainment: 'Thể thao & Sự kiện',
+  fnb: 'F&B (Ẩm thực & Đồ uống)',
+  real_estate: 'Bất động sản',
+  retail_ecommerce: 'Bán lẻ & E-commerce',
+  tech_services: 'Công nghệ & Dịch vụ',
+  other: 'Khác',
+};
+
+const COMPANY_SIZE_CONFIG: Record<string, string> = {
+  under_20: 'Dưới 20 nhân sự',
+  '20_100': '20 - 100 nhân sự',
+  above_100: 'Trên 100 nhân sự',
+};
+
+const BUDGET_CONFIG: Record<string, string> = {
+  under_20m: 'Dưới 20 triệu',
+  '20m_50m': '20 - 50 triệu',
+  '50m_100m': '50 - 100 triệu',
+  above_100m: 'Trên 100 triệu',
+};
+
+const TIMELINE_CONFIG: Record<string, string> = {
+  urgent_this_month: 'Cần triển khai gấp trong tháng',
+  next_1_3_months: 'Trong 1 - 3 tháng tới',
+  exploring: 'Đang khảo sát ý tưởng',
+};
+
 export default function LeadsClient({ initialLeads }: { initialLeads: any[] }) {
   const [leads, setLeads] = useState<any[]>(initialLeads || []);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [tierFilter, setTierFilter] = useState('ALL');
+  const [budgetFilter, setBudgetFilter] = useState('ALL');
+  const [industryFilter, setIndustryFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState<'PRIORITY' | 'NEWEST' | 'OLDEST' | 'SCORE_DESC'>('PRIORITY');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [scoringId, setScoringId] = useState<string | null>(null);
@@ -49,8 +79,13 @@ Họ tên: ${lead.full_name || 'Khách hàng'}
 Điện thoại: ${lead.phone || 'Chưa cung cấp'}
 Email: ${lead.email || 'Chưa cung cấp'}
 Công ty: ${lead.company_name || 'Chưa cung cấp'}
+Ngành nghề: ${INDUSTRY_CONFIG[lead.industry] || lead.industry || 'Chưa phân loại'}
+Quy mô: ${COMPANY_SIZE_CONFIG[lead.company_size] || lead.company_size || 'Chưa cung cấp'}
+Ngân sách: ${BUDGET_CONFIG[lead.budget] || lead.budget || 'Chưa xác định'}
+Thời gian: ${TIMELINE_CONFIG[lead.timeline] || lead.timeline || 'Đang khảo sát'}
 Trạng thái: ${STATUS_CONFIG[lead.status]?.label || lead.status || 'Mới'}
 Đánh giá AI: ${lead.ai_tier || lead.aiTier || 'Chưa thẩm định'} (${lead.ai_score ?? lead.aiScore ?? 'N/A'}/100)
+Dịch vụ gợi ý: ${lead.ai_suggested_service || lead.recommended_service || 'Tư vấn chiến lược'}
 Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
 
     try {
@@ -139,8 +174,11 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           email: lead.email,
           phone: lead.phone,
           company: lead.company_name,
-          service: lead.service || 'Tư vấn giải pháp',
-          budget: lead.budget || 'Chưa xác định',
+          service: lead.service || lead.ai_suggested_service || 'Tư vấn giải pháp',
+          industry: lead.industry,
+          company_size: lead.company_size,
+          budget: lead.budget || 'under_20m',
+          timeline: lead.timeline,
           message: lead.message || lead.notes,
         }),
       });
@@ -164,6 +202,11 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
           ai_summary: scoreData.summary ?? scoreData.ai_summary,
           ai_action_plan: scoreData.actionPlan ?? scoreData.ai_action_plan,
           ai_estimated_value: scoreData.estimatedValue ?? scoreData.ai_estimated_value,
+          ai_suggested_service:
+            scoreData.recommended_service ||
+            scoreData.recommendedService ||
+            scoreData.ai_suggested_service ||
+            lead.ai_suggested_service,
         };
 
         setLeads((prev) => prev.map((l) => (l.id === lead.id ? updatedLead : l)));
@@ -190,7 +233,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
     }
   }
 
-  // Bộ lọc tìm kiếm & trạng thái & mức tiềm năng
+  // Bộ lọc tìm kiếm & trạng thái & mức tiềm năng & ngành nghề & ngân sách B2B
   const filteredLeads = leads.filter((lead) => {
     const matchSearch =
       lead.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -207,7 +250,17 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
       (tierFilter === 'UNSCORED' && lead.ai_score === undefined && lead.aiScore === undefined) ||
       leadTier === tierFilter;
 
-    return matchSearch && matchStatus && matchTier;
+    const matchBudget =
+      budgetFilter === 'ALL' ||
+      lead.budget === budgetFilter ||
+      (budgetFilter === 'under_20m' && (lead.budget === 'under_20m' || lead.budget?.includes('< 20') || lead.budget?.includes('dưới 20'))) ||
+      (budgetFilter === '20m_50m' && (lead.budget === '20m_50m' || lead.budget?.includes('20-50') || lead.budget?.includes('20 - 50'))) ||
+      (budgetFilter === '50m_100m' && (lead.budget === '50m_100m' || lead.budget?.includes('50-100') || lead.budget?.includes('50 - 100'))) ||
+      (budgetFilter === 'above_100m' && (lead.budget === 'above_100m' || lead.budget?.includes('> 100') || lead.budget?.includes('trên 100')));
+
+    const matchIndustry = industryFilter === 'ALL' || lead.industry === industryFilter;
+
+    return matchSearch && matchStatus && matchTier && matchBudget && matchIndustry;
   });
 
   // Logic sắp xếp đa tiêu chí thông minh
@@ -309,6 +362,36 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
             <option value="UNSCORED">Chưa thẩm định</option>
           </select>
 
+          {/* BỘ LỌC NGÀNH NGHỀ B2B */}
+          <select
+            value={industryFilter}
+            onChange={(e) => setIndustryFilter(e.target.value)}
+            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            title="Lọc theo ngành nghề"
+          >
+            <option value="ALL">Tất cả ngành nghề</option>
+            {Object.entries(INDUSTRY_CONFIG).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+
+          {/* BỘ LỌC NGÂN SÁCH B2B */}
+          <select
+            value={budgetFilter}
+            onChange={(e) => setBudgetFilter(e.target.value)}
+            className="p-2.5 rounded-xl bg-[#0B0F19] border border-slate-800 text-xs text-slate-300 cursor-pointer focus:outline-none focus:border-[#FF5722]"
+            title="Lọc theo ngân sách dự kiến"
+          >
+            <option value="ALL">Tất cả ngân sách</option>
+            {Object.entries(BUDGET_CONFIG).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+
           {/* STATUS FILTER */}
           <select
             value={statusFilter}
@@ -346,7 +429,7 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
               <tr>
                 <th className="py-4 px-6 font-semibold">Khách Hàng</th>
                 <th className="py-4 px-6 font-semibold">Liên Hệ & Thao Tác Nhanh</th>
-                <th className="py-4 px-6 font-semibold">Công Ty</th>
+                <th className="py-4 px-6 font-semibold">Công Ty & B2B</th>
                 <th className="py-4 px-6 font-semibold">Lời Nhắn</th>
                 <th className="py-4 px-6 font-semibold text-center">Thẩm Định Chất Lượng</th>
                 <th className="py-4 px-6 font-semibold">Trạng Thái Xử Lý</th>
@@ -445,9 +528,23 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                         </div>
                       </td>
 
-                      {/* CÔNG TY */}
+                      {/* CÔNG TY & B2B INFO */}
                       <td className="py-4 px-6 text-slate-300 whitespace-nowrap">
-                        {lead.company_name || '---'}
+                        <div className="space-y-1">
+                          <p className="font-semibold text-white">{lead.company_name || '---'}</p>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {lead.industry && (
+                              <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5">
+                                {INDUSTRY_CONFIG[lead.industry] || lead.industry}
+                              </span>
+                            )}
+                            {lead.budget && (
+                              <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-[10px] text-emerald-400 border border-emerald-500/20 font-mono">
+                                {BUDGET_CONFIG[lead.budget] || lead.budget}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </td>
 
                       {/* LỜI NHẮN */}
@@ -698,6 +795,51 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                 </div>
               </div>
 
+              {/* THÔNG SỐ PHÂN LOẠI KHÁCH HÀNG B2B */}
+              <div className="p-4 rounded-2xl bg-[#070A10] border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5 text-[#FF5722]" />
+                    <span>Thông số B2B (Khung phân loại BANT)</span>
+                  </span>
+                  {(selectedLead.ai_suggested_service || selectedLead.recommended_service) && (
+                    <span className="text-[10px] text-[#00E5FF] font-medium font-mono truncate max-w-[260px]">
+                      Gợi ý: {selectedLead.ai_suggested_service || selectedLead.recommended_service}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <span className="text-[10px] text-slate-500 uppercase font-mono block">Ngành nghề</span>
+                    <span className="font-bold text-white block truncate">
+                      {INDUSTRY_CONFIG[selectedLead.industry] || selectedLead.industry || 'Chưa phân loại'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <span className="text-[10px] text-slate-500 uppercase font-mono block">Ngân sách dự kiến</span>
+                    <span className="font-bold text-emerald-400 block font-mono">
+                      {BUDGET_CONFIG[selectedLead.budget] || selectedLead.budget || 'Chưa xác định'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <span className="text-[10px] text-slate-500 uppercase font-mono block">Quy mô nhân sự</span>
+                    <span className="font-bold text-white block">
+                      {COMPANY_SIZE_CONFIG[selectedLead.company_size] || selectedLead.company_size || 'Chưa rõ'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <span className="text-[10px] text-slate-500 uppercase font-mono block">Thời hạn triển khai</span>
+                    <span className="font-bold text-amber-400 block">
+                      {TIMELINE_CONFIG[selectedLead.timeline] || selectedLead.timeline || 'Đang khảo sát'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* LỜI NHẮN */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
@@ -822,6 +964,19 @@ Lời nhắn: ${lead.message || lead.notes || 'Không có'}`;
                         {selectedLead.ai_action_plan || selectedLead.aiActionPlan}
                       </p>
                     </div>
+
+                    {/* MỤC RECOMMENDED SERVICE -> DỊCH VỤ ĐỀ XUẤT */}
+                    {(selectedLead.ai_suggested_service || selectedLead.recommended_service) && (
+                      <div className="p-4 rounded-2xl bg-[#070A10] border border-[#00E5FF]/20 space-y-1.5">
+                        <div className="flex items-center gap-2 text-[#00E5FF] font-bold text-[11px] uppercase font-mono">
+                          <Sparkles className="w-3.5 h-3.5 text-[#00E5FF]" />
+                          <span>Dịch vụ phù hợp đề xuất (AI Recommendation):</span>
+                        </div>
+                        <p className="text-white font-bold leading-relaxed text-xs">
+                          {selectedLead.ai_suggested_service || selectedLead.recommended_service}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="p-8 rounded-2xl bg-[#070A10] border border-dashed border-slate-800 text-center space-y-3">
