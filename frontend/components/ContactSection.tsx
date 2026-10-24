@@ -71,7 +71,17 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
                   </div>
                   <div className="space-y-0.5">
                     <h4 className="font-bold text-slate-900 dark:text-white text-xs">{info.title}</h4>
-                    <p className="text-slate-800 dark:text-slate-200 font-medium">{info.content}</p>
+                    {info.icon === Phone ? (
+                      <a
+                        href="tel:0933798609"
+                        className="text-slate-800 dark:text-slate-200 font-bold hover:text-[#FF5722] dark:hover:text-[#FF5722] transition-colors inline-block"
+                        title="Gọi ngay hotline S-Digital"
+                      >
+                        {info.content}
+                      </a>
+                    ) : (
+                      <p className="text-slate-800 dark:text-slate-200 font-medium">{info.content}</p>
+                    )}
                     {info.subContent && (
                       <p className="text-slate-500 text-[11px]">{info.subContent}</p>
                     )}

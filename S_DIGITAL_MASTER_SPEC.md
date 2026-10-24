@@ -66,7 +66,7 @@
    - 4 Cam kết: Minh Bạch, Chất Lượng Đảm Bảo, Hỗ Trợ 24/7, Đổi Mới Liên Tục.
 10. **Blog Tin Tức:** 3 bài viết chia sẻ kiến thức Marketing & Thể thao.
 11. **Liên Hệ & Form Tiếp Nhận Leads:**
-   - 101 Đường số 1, cư xá Đô Thành phường Bàn Cờ TP.HCM | Hotline: 0826 868 979 | Email: contact@s-digital.com.vn.
+   - 101 Đường số 1, cư xá Đô Thành phường Bàn Cờ TP.HCM | Hotline: 0933 798 609 | Email: contact@s-digital.com.vn.
    - Form gửi Lead (Họ tên*, Email*, SĐT, Lời nhắn*), validate 2 chiều, loading spinner và popup thành công.
 
 ---

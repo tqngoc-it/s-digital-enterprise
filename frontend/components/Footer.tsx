@@ -98,7 +98,13 @@ export default function Footer({ companyInfo }: FooterProps) {
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#FF5722] shrink-0" />
-                <span className="text-slate-900 dark:text-white font-bold">{contactPhone}</span>
+                <a
+                  href="tel:0933798609"
+                  className="text-slate-900 dark:text-white font-bold hover:text-[#FF5722] dark:hover:text-[#FF5722] transition-colors"
+                  title="Gọi ngay Hotline S-Digital"
+                >
+                  {contactPhone}
+                </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />

@@ -258,7 +258,7 @@ const SortableServiceRow = memo(function SortableServiceRow({
               type="button"
               disabled={realIdx === 0}
               onClick={() => onMove(realIdx, 'UP')}
-              className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer"
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed shadow-sm transition-all cursor-pointer"
               title="Di chuyển lên trước"
             >
               <ArrowUp className="w-3.5 h-3.5" />
@@ -267,7 +267,7 @@ const SortableServiceRow = memo(function SortableServiceRow({
               type="button"
               disabled={realIdx === totalLength - 1}
               onClick={() => onMove(realIdx, 'DOWN')}
-              className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer"
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed shadow-sm transition-all cursor-pointer"
               title="Di chuyển xuống sau"
             >
               <ArrowDown className="w-3.5 h-3.5" />
@@ -276,7 +276,7 @@ const SortableServiceRow = memo(function SortableServiceRow({
 
           <button
             onClick={() => onEdit(s)}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-blue-500/20 text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-300 dark:hover:border-blue-500/40 shadow-sm transition-all cursor-pointer"
             title="Chỉnh sửa dịch vụ"
           >
             <Edit2 className="w-3.5 h-3.5" />
@@ -284,7 +284,7 @@ const SortableServiceRow = memo(function SortableServiceRow({
           {s.id && (
             <button
               onClick={() => onDelete(s.id)}
-              className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-colors cursor-pointer"
+              className="p-2 rounded-xl border border-rose-200 dark:border-rose-500/20 bg-rose-50/70 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 hover:border-rose-300 dark:hover:border-rose-500/40 hover:text-rose-700 dark:hover:text-rose-300 shadow-sm transition-all cursor-pointer"
               title="Xóa dịch vụ"
             >
               <Trash2 className="w-3.5 h-3.5" />

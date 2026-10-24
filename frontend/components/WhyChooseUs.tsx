@@ -107,7 +107,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
       {/* 5-STEP WORKING WORKFLOW */}
       <div className="p-8 md:p-12 rounded-3xl bg-white dark:bg-[#0B111E] border border-slate-200 dark:border-white/10 space-y-8 shadow-sm dark:shadow-2xl">
         <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <span className="text-[#00E5FF] text-xs font-mono font-bold uppercase tracking-wider">
+          <span className="text-cyan-600 dark:text-[#00E5FF] text-xs font-mono font-bold uppercase tracking-wider">
             STANDARDIZED WORKFLOW
           </span>
           <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
@@ -125,7 +125,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
               className="p-6 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 hover:border-[#00E5FF]/50 dark:hover:border-[#00E5FF]/40 transition-all space-y-3 flex flex-col justify-between group shadow-xs"
             >
               <div className="space-y-3">
-                <div className="text-3xl font-black text-[#00E5FF] font-mono group-hover:scale-105 transition-transform">
+                <div className="text-3xl font-black text-cyan-600 dark:text-[#00E5FF] font-mono group-hover:scale-105 transition-transform">
                   {step.step}
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">{step.title}</h4>

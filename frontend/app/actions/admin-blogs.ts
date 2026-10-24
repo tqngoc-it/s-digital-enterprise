@@ -44,9 +44,10 @@ export async function createBlogAction(formData: FormData) {
       return { success: false, error: data?.message || 'Không thể tạo bài viết mới.' };
     }
 
+    revalidatePath('/blog/[id]', 'page');
+    revalidatePath('/');
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');
-    revalidatePath('/');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể tạo bài viết mới.' };
@@ -93,9 +94,10 @@ export async function updateBlogAction(id: string, formData: FormData) {
       return { success: false, error: data?.message || 'Không thể cập nhật bài viết.' };
     }
 
+    revalidatePath('/blog/[id]', 'page');
+    revalidatePath('/');
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');
-    revalidatePath('/');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể cập nhật bài viết.' };
@@ -113,9 +115,10 @@ export async function deleteBlogAction(id: string) {
       return { success: false, error: data?.message || 'Không thể xóa bài viết.' };
     }
 
+    revalidatePath('/blog/[id]', 'page');
+    revalidatePath('/');
     revalidatePath('/admin/blogs');
     revalidatePath('/admin');
-    revalidatePath('/');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể xóa bài viết.' };

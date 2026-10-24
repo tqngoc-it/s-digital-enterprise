@@ -81,7 +81,7 @@ export default function AiChatWidget() {
       const data = await response.json();
       const replyContent =
         data?.reply ||
-        'Dạ S-Digital đã nhận được thông tin. Quý khách vui lòng gọi ngay Hotline **0826 868 979** hoặc để lại Số điện thoại để chuyên viên hỗ trợ tức thì ạ!';
+        'Dạ S-Digital đã nhận được thông tin. Quý khách vui lòng gọi ngay Hotline **0933 798 609** hoặc để lại Số điện thoại để chuyên viên hỗ trợ tức thì ạ!';
 
       const assistantMsg: Message = {
         id: 'bot-' + Date.now(),
@@ -97,7 +97,7 @@ export default function AiChatWidget() {
         id: 'bot-' + Date.now(),
         role: 'assistant',
         content:
-          'Dạ chuyên viên S-Digital đang sẵn sàng hỗ trợ Quý khách! Vui lòng liên hệ trực tiếp Hotline **0826 868 979** hoặc để lại Số điện thoại/Email để nhận báo giá chi tiết trong 15 phút ạ.',
+          'Dạ chuyên viên S-Digital đang sẵn sàng hỗ trợ Quý khách! Vui lòng liên hệ trực tiếp Hotline **0933 798 609** hoặc để lại Số điện thoại/Email để nhận báo giá chi tiết trong 15 phút ạ.',
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);
@@ -141,11 +141,11 @@ export default function AiChatWidget() {
           const renderedLine = parts.map((part, pIdx) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               const innerText = part.slice(2, -2);
-              if (innerText.includes('0826 868 979')) {
+              if (innerText.includes('0933 798 609')) {
                 return (
                   <a
                     key={pIdx}
-                    href="tel:0826868979"
+                    href="tel:0933798609"
                     className="font-bold text-[#FF5722] hover:underline inline-flex items-center"
                   >
                     <span>{innerText}</span>
@@ -260,6 +260,7 @@ export default function AiChatWidget() {
                 onClick={handleResetChat}
                 className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Làm mới đoạn chat"
+                aria-label="Làm mới đoạn chat"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
@@ -267,6 +268,7 @@ export default function AiChatWidget() {
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Thu nhỏ khung chat"
+                aria-label="Thu nhỏ khung chat"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -368,6 +370,7 @@ export default function AiChatWidget() {
                     : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
                 }`}
                 title="Gửi tin nhắn (Enter)"
+                aria-label="Gửi tin nhắn"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -379,10 +382,10 @@ export default function AiChatWidget() {
                 Bảo mật & Trực tuyến 24/7
               </span>
               <a
-                href="tel:0826868979"
+                href="tel:0933798609"
                 className="text-[#FF5722] hover:text-[#FF8A65] font-medium transition-colors"
               >
-                Hotline: 0826 868 979
+                Hotline: 0933 798 609
               </a>
             </div>
           </div>

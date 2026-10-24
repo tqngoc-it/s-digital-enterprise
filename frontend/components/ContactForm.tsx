@@ -32,20 +32,51 @@ export default function ContactForm() {
   }>({});
 
   // Robust Mapping Helpers: Chuẩn hóa dữ liệu B2B sang đúng giá trị enum của ContactForm
-  function mapToIndustryValue(val?: string): string {
-    if (!val) return 'sports_entertainment';
-    const trimmed = String(val).trim();
+  function mapToIndustryValue(val?: string, contextText?: string): string {
+    const trimmed = String(val || '').trim();
     const valid = ['sports_entertainment', 'fnb', 'real_estate', 'retail_ecommerce', 'tech_services', 'other'];
-    if (valid.includes(trimmed)) return trimmed;
+    if (valid.includes(trimmed)) {
+      if (trimmed === 'other' && contextText) {
+        const lowerCtx = contextText.toLowerCase();
+        if (
+          lowerCtx.includes('website') ||
+          lowerCtx.includes('landing page') ||
+          lowerCtx.includes('công nghệ') ||
+          lowerCtx.includes('phần mềm') ||
+          lowerCtx.includes('ux') ||
+          lowerCtx.includes('cro') ||
+          lowerCtx.includes('dịch vụ số')
+        ) {
+          return 'tech_services';
+        }
+      }
+      return trimmed;
+    }
 
-    const lower = trimmed.toLowerCase();
+    const lower = `${trimmed} ${contextText || ''}`.toLowerCase();
+    if (
+      lower.includes('bán lẻ') ||
+      lower.includes('e-commerce') ||
+      lower.includes('retail') ||
+      lower.includes('tmđt') ||
+      lower.includes('thương mại điện tử') ||
+      lower.includes('chuỗi cửa hàng') ||
+      lower.includes('tiêu dùng')
+    ) {
+      return 'retail_ecommerce';
+    }
     if (
       lower.includes('công nghệ') ||
-      lower.includes('tmđt') ||
       lower.includes('khởi nghiệp') ||
       lower.includes('tech') ||
       lower.includes('phần mềm') ||
-      lower.includes('software')
+      lower.includes('software') ||
+      lower.includes('website') ||
+      lower.includes('landing page') ||
+      lower.includes('web') ||
+      lower.includes('cro') ||
+      lower.includes('ux') ||
+      lower.includes('dịch vụ số')
     ) {
       return 'tech_services';
     }
@@ -59,10 +90,21 @@ export default function ContactForm() {
       return 'sports_entertainment';
     }
     if (
+      lower.includes('bán lẻ') ||
+      lower.includes('e-commerce') ||
+      lower.includes('retail') ||
+      lower.includes('chuỗi cửa hàng') ||
+      lower.includes('tiêu dùng')
+    ) {
+      return 'retail_ecommerce';
+    }
+    if (
       lower.includes('f&b') ||
       lower.includes('ẩm thực') ||
       lower.includes('nhà hàng') ||
-      lower.includes('đồ uống')
+      lower.includes('đồ uống') ||
+      lower.includes('quán café') ||
+      lower.includes('coffee')
     ) {
       return 'fnb';
     }
@@ -74,14 +116,6 @@ export default function ContactForm() {
       lower.includes('real_estate')
     ) {
       return 'real_estate';
-    }
-    if (
-      lower.includes('bán lẻ') ||
-      lower.includes('e-commerce') ||
-      lower.includes('retail') ||
-      lower.includes('chuỗi cửa hàng')
-    ) {
-      return 'retail_ecommerce';
     }
     return 'other';
   }
@@ -218,7 +252,7 @@ export default function ContactForm() {
         setFieldErrors((prev) => ({ ...prev, message: undefined }));
       }
       if (data.industry) {
-        setIndustry(mapToIndustryValue(data.industry));
+        setIndustry(mapToIndustryValue(data.industry, data.message));
       }
       if (data.company_size || data.companySize) {
         setCompanySize(mapToCompanySizeValue(data.company_size || data.companySize));
@@ -481,7 +515,7 @@ export default function ContactForm() {
                 onBlur={(e) => {
                   setFieldErrors((prev) => ({ ...prev, phone: validatePhone(e.target.value) }));
                 }}
-                placeholder="0826 868 979 hoặc +84..."
+                placeholder="0933 798 609 hoặc +84..."
                 className={`w-full p-3.5 rounded-xl bg-slate-50 dark:bg-[#060913] border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none transition-colors ${
                   fieldErrors.phone
                     ? 'border-red-500/70 focus:border-red-500 bg-red-500/[0.02]'

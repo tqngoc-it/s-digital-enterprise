@@ -40,7 +40,7 @@ export const FALLBACK_COMPANY: CompanyInfo = {
     'Với đội ngũ chuyên gia giàu kinh nghiệm thực chiến trong cả hai lĩnh vực công nghệ truyền thông số và tổ chức sự kiện thể thao, S-Digital tự hào mang đến các giải pháp trọn gói từ tư vấn chiến lược, sản xuất nội dung sáng tạo, booking KOLs/KOCs đến vận hành giải đấu quy mô quốc gia và quốc tế.',
   address: '101 Đường số 1, cư xá Đô Thành phường Bàn Cờ TP. Hồ Chí Minh',
   contact_email: 'contact@s-digital.com.vn',
-  contact_phone: '0826 868 979',
+  contact_phone: '0933 798 609',
   working_hours: {
     weekday: 'Thứ 2 - Thứ 6: 8:00 - 18:00',
     weekend: 'Thứ 7: 8:00 - 12:00 (Chủ nhật trực sự kiện)'

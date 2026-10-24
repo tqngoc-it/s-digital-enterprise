@@ -156,7 +156,7 @@ const SortablePricingCard = memo(function SortablePricingCard({
             type="button"
             disabled={idx === 0}
             onClick={() => onMove(idx, 'UP')}
-            className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-25 disabled:cursor-not-allowed shadow-sm transition-all cursor-pointer"
             title="Di chuyển lên trước"
           >
             <ArrowUp className="w-3.5 h-3.5" />
@@ -165,7 +165,7 @@ const SortablePricingCard = memo(function SortablePricingCard({
             type="button"
             disabled={idx === totalLength - 1}
             onClick={() => onMove(idx, 'DOWN')}
-            className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all border border-slate-200 dark:border-white/5 cursor-pointer"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white disabled:opacity-25 disabled:cursor-not-allowed shadow-sm transition-all cursor-pointer"
             title="Di chuyển xuống sau"
           >
             <ArrowDown className="w-3.5 h-3.5" />
@@ -176,7 +176,7 @@ const SortablePricingCard = memo(function SortablePricingCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEdit(p)}
-            className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-blue-500/20 text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-300 dark:hover:border-blue-500/40 shadow-sm text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <Edit2 className="w-3.5 h-3.5" />
             <span>Sửa</span>
@@ -184,7 +184,7 @@ const SortablePricingCard = memo(function SortablePricingCard({
           {p.id && (
             <button
               onClick={() => onDelete(p.id)}
-              className="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-500/20 bg-rose-50/70 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 hover:border-rose-300 dark:hover:border-rose-500/40 hover:text-rose-700 dark:hover:text-rose-300 shadow-sm text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Xóa</span>
@@ -432,7 +432,11 @@ export default function PricingClient({ initialPlans }: { initialPlans: PricingP
             )}
             <span>{toast.message}</span>
           </div>
-          <button onClick={() => setToast(null)} className="p-1 text-slate-400 hover:text-white">
+          <button
+            onClick={() => setToast(null)}
+            className="p-1 text-slate-400 hover:text-white"
+            aria-label="Đóng thông báo"
+          >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>

@@ -167,6 +167,8 @@ export default function CaseStudiesClient({ initialStudies }: { initialStudies: 
               <button
                 onClick={() => setSelectedCase(null)}
                 className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
+                title="Đóng chi tiết"
+                aria-label="Đóng chi tiết Case Study"
               >
                 <X className="w-5 h-5" />
               </button>

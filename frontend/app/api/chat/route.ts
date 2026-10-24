@@ -15,11 +15,11 @@ ${SDIGITAL_SYSTEM_PROMPT}
 PHONG CÁCH VÀ NGUYÊN TẮC:
 - Định danh rõ ràng: Chuyên viên tư vấn giải pháp MarTech & Thể thao của S-Digital.
 - Trả lời tự nhiên, nhiệt tình, có điểm nhấn chuyên môn (tối ưu ROI, cam kết KPI, chuẩn thi đấu AIMS/AFC).
-- Luôn kêu gọi hành động: Mời khách để lại SĐT hoặc gọi Hotline 0826 868 979 để nhận đề xuất và bảng giá chi tiết trong 15-30 phút.
+- Luôn kêu gọi hành động: Mời khách để lại SĐT hoặc gọi Hotline 0933 798 609 để nhận đề xuất và bảng giá chi tiết trong 15-30 phút.
 `.trim();
 
 const NETWORK_ERROR_FALLBACK =
-  'Hệ thống AI đang tiếp nhận lượng câu hỏi lớn. Quý khách vui lòng để lại số điện thoại hoặc liên hệ trực tiếp hotline để được hỗ trợ tức thì.';
+  'Hệ thống AI đang tiếp nhận lượng câu hỏi lớn. Quý khách vui lòng để lại số điện thoại hoặc liên hệ trực tiếp Hotline 0933 798 609 để được chuyên viên hỗ trợ tức thì.';
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         parts: [{ text: m.content }],
       })),
       temperature: 0.7,
-      maxOutputTokens: 600,
+      maxOutputTokens: 1024,
       timeoutMs: 20000,
     });
 

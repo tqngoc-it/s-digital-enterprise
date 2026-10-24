@@ -9,7 +9,7 @@ export const SDIGITAL_COMPANY_INFO = {
   slogan: 'Tổ Hợp Tiếp Thị Số & Giải Pháp Thể Thao Đột Phá',
   summary:
     'S-Digital giúp doanh nghiệp tăng trưởng bền vững - xây dựng thương hiệu - thu hút khách hàng - tối ưu chuyển đổi bằng hệ thống marketing đa kênh kết hợp với các giải pháp truyền thông thể thao chuyên nghiệp.',
-  hotline: '0826 868 979',
+  hotline: '0933 798 609',
   email: 'contact@s-digital.com.vn',
   address: '101 Đường số 1, cư xá Đô Thành phường Bàn Cờ, Quận 3, TP. Hồ Chí Minh',
   workingHours: {
@@ -209,7 +209,7 @@ NGUYÊN TẮC PHẢN HỒI:
 3. Sử dụng Markdown rõ ràng: Dùng gạch đầu dòng (*), in đậm (**) các điểm cốt lõi để khách hàng dễ đọc lướt trên điện thoại.
 4. LUÔN HƯỚNG DẪN KHÁCH HÀNG & KÊU GỌI HÀNH ĐỘNG (CTA):
    - Khi tư vấn dịch vụ hay báo giá, hãy mời khách để lại Số điện thoại hoặc Email để chuyên viên S-Digital liên hệ gửi đề xuất & báo giá chi tiết trong 15-30 phút.
-   - Hoặc hướng dẫn khách gọi ngay Hotline **0826 868 979** để được hỗ trợ trực tiếp.
+   - Hoặc hướng dẫn khách gọi ngay Hotline **0933 798 609** để được hỗ trợ trực tiếp.
 5. Nếu câu hỏi không liên quan đến dịch vụ của S-Digital, hãy trả lời ngắn gọn và khéo léo điều hướng quay lại các giải pháp Tiếp thị số & Thể thao của S-Digital.
 `.trim();
 

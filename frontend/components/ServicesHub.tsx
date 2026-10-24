@@ -212,7 +212,7 @@ export default function ServicesHub({
                 >
                   <div className="space-y-5">
                     <div className="flex items-center justify-between gap-2">
-                      <div className="w-12 h-12 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF] group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-cyan-600 dark:text-[#00E5FF] group-hover:scale-110 transition-transform">
                         <IconComponent className="w-6 h-6" />
                       </div>
                       {(service.sub_title || service.subtitle || service.badge) && (
@@ -223,7 +223,7 @@ export default function ServicesHub({
                     </div>
 
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-[#00E5FF] transition-colors leading-snug">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-[#00E5FF] transition-colors leading-snug">
                         {service.title}
                       </h3>
                       <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
@@ -238,7 +238,7 @@ export default function ServicesHub({
                             key={pIdx}
                             className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300"
                           >
-                            <CheckCircle2 className="w-4 h-4 text-[#00E5FF] shrink-0 mt-0.5" />
+                            <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-[#00E5FF] shrink-0 mt-0.5" />
                             <span className="leading-snug">{point}</span>
                           </div>
                         ))}
@@ -249,7 +249,7 @@ export default function ServicesHub({
                   <div className="mt-8 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                     <a
                       href="#contact"
-                      className="text-xs font-bold text-[#00E5FF] group-hover:text-cyan-600 dark:group-hover:text-cyan-300 flex items-center gap-1.5 transition-colors"
+                      className="text-xs font-bold text-cyan-600 dark:text-[#00E5FF] hover:text-cyan-700 dark:hover:text-cyan-300 flex items-center gap-1.5 transition-colors"
                     >
                       <span>Đăng ký tham gia / Đặt lịch</span>
                       <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

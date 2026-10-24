@@ -75,6 +75,7 @@ DỮ LIỆU DỊCH VỤ VÀ BẢNG GIÁ THỰC TẾ S-DIGITAL:
 - Gói Cơ Bản (Starter): Từ 15.000.000 VNĐ/tháng. Phù hợp cho ngân sách dưới 20 triệu, SME & Startup. Chạy Google/Facebook Ads cơ bản, 12 bài viết fanpage, báo cáo tháng.
 - Gói Chuyên Nghiệp (Growth - Phổ biến nhất): Từ 35.000.000 VNĐ/tháng. Phù hợp cho ngân sách 20 - 50 triệu và 50 - 100 triệu. Tối ưu đa kênh Meta, Google, TikTok Ads; sản xuất 4 video ngắn + TVC; booking 3-5 KOLs/KOCs; tối ưu SEO và Landing Page; Dashboard realtime 24/7.
 - Gói Doanh Nghiệp (Enterprise): May đo riêng (thường > 100 triệu). Trọn gói Omni-channel, chiến lược thương hiệu độc quyền, dedicated account team.
+- Dịch vụ Thiết Kế Website Chuẩn SEO & UX Chuyên Sâu (Web & CRO Tech): Từ 25.000.000 VNĐ. Thiết kế website doanh nghiệp, landing page tối ưu chuyển đổi CRO, chuẩn SEO On-page, responsive hoàn hảo, tích hợp CMS bảo mật cao trên Next.js.
 - Dịch vụ Giải pháp Thể thao: Tổ chức giải chạy Marathon (chuẩn quốc tế AIMS, hệ thống chip timing điện tử), giải bóng đá doanh nghiệp, đại hội thể thao đa môn, cung cấp 100+ trọng tài quốc tế AFC/FIBA, học viện thể thao.
 - Dịch vụ Xử lý Khủng hoảng Truyền thông 24/7: Phản ứng nhanh trong 30 phút, bảo vệ danh tiếng thương hiệu an toàn tuyệt đối.
 
@@ -105,20 +106,25 @@ Hãy phân tích bài toán và trả về JSON đề xuất giải pháp tối 
     systemInstruction,
     prompt: userPrompt,
     temperature: 0.3,
-    maxOutputTokens: 800,
+    maxOutputTokens: 1024,
     responseMimeType: 'application/json',
     timeoutMs: 25000,
   });
 
   if (!result || !result.text) return null;
 
-  const parsed = parseJsonResult(result.text);
-  if (!parsed) return null;
+  try {
+    const parsed = parseJsonResult(result.text);
+    if (!parsed) return null;
 
-  return {
-    data: parsed,
-    model: result.model,
-  };
+    return {
+      data: parsed,
+      model: result.model,
+    };
+  } catch (err) {
+    console.warn('[RECOMMEND_PARSE_WARN] Lỗi khi bóc tách JSON đề xuất từ Gemini, chuyển fallback:', err);
+    return null;
+  }
 }
 
 function parseJsonResult(rawText?: string): RecommendationResult | null {
@@ -212,6 +218,35 @@ function computeSmartFallback(
         'Quan hệ báo chí và xử lý truyền thông khủng hoảng',
         'Booking KOLs định hướng dư luận',
         'Phục hồi hình ảnh thương hiệu sau sự cố',
+      ],
+    };
+  }
+
+  // Nhánh 3: Thiết kế Website & Tối ưu chuyển đổi CRO (Web & Growth Tech)
+  if (
+    goalLower.includes('website') ||
+    goalLower.includes('landing page') ||
+    goalLower.includes('web') ||
+    goalLower.includes('cro') ||
+    goalLower.includes('giao diện') ||
+    goalLower.includes('ux')
+  ) {
+    return {
+      recommendedPlan: 'Gói Thiết Kế Website Chuẩn SEO & UX Chuyên Sâu',
+      estimatedBudget: 'Từ 25.000.000 VNĐ (May đo theo tính năng)',
+      analysis: `Đối với mục tiêu ${goal} trong lĩnh vực ${industry}, giải pháp phát triển Website & Landing Page chuyên sâu của S-Digital tập trung tối đa vào trải nghiệm người dùng (UX/UI), tốc độ tải trang vượt trội (< 1.5s) và cấu trúc chuẩn SEO Google. Nền tảng được xây dựng trên công nghệ hiện đại (Next.js, TailwindCSS) giúp tối đa hóa tỷ lệ chuyển đổi (CRO) từ khách truy cập thành khách hàng thực tế.`,
+      keyDeliverables: [
+        'Thiết kế giao diện UI/UX độc quyền, responsive hoàn hảo trên Mobile và Desktop',
+        'Tối ưu tốc độ tải trang đạt chuẩn Google PageSpeed 90+ và cấu trúc chuẩn SEO On-page',
+        'Tích hợp hệ thống quản trị nội dung CMS trực quan và biểu mẫu thu thập Leads B2B',
+        'Bàn giao toàn bộ mã nguồn, chứng chỉ SSL miễn phí và bảo hành kỹ thuật 12 tháng',
+      ],
+      timeline: '2 - 4 tuần bàn giao',
+      suggestedServices: [
+        'Thiết Kế Website Chuẩn SEO & UX Chuyên Sâu',
+        'Tối Ưu Tỷ Lệ Chuyển Đổi Landing Page (CRO)',
+        'Dịch Vụ Lưu Trữ Tốc Độ Cao Cloud Hosting',
+        'Tích Hợp Hệ Thống Quản Trị Dữ Liệu CMS',
       ],
     };
   }

@@ -29,11 +29,12 @@ export interface RecommendationData {
 }
 
 const INDUSTRIES = [
-  { id: 'fnb_retail', label: 'F&B, Bán Lẻ & Chuỗi Cửa Hàng', desc: 'Nhà hàng, thời trang, tiêu dùng nhanh' },
+  { id: 'tech_services', label: 'Công Nghệ, Phần Mềm & Dịch Vụ Số', desc: 'Website, app di động, giải pháp số & startup' },
   { id: 'sports_events', label: 'Thể Thao, Sự Kiện & Giải Đấu', desc: 'Giải chạy marathon, bóng đá, Olympic nội bộ' },
+  { id: 'retail_ecommerce', label: 'Bán Lẻ, Chuỗi Cửa Hàng & TMĐT', desc: 'Thời trang, tiêu dùng nhanh, sàn thương mại điện tử' },
   { id: 'b2b_mfg', label: 'Doanh Nghiệp B2B & Sản Xuất', desc: 'Công nghiệp, xuất nhập khẩu, giải pháp kỹ thuật' },
   { id: 'finance_realestate', label: 'Tài Chính, Ngân Hàng & Bất Động Sản', desc: 'Quỹ đầu tư, sàn môi giới, dịch vụ tài chính' },
-  { id: 'tech_ecommerce', label: 'Công Nghệ, TMĐT & Khởi Nghiệp', desc: 'Phần mềm, ứng dụng, sàn thương mại điện tử' },
+  { id: 'fnb', label: 'F&B (Ẩm Thực, Nhà Hàng & Đồ Uống)', desc: 'Nhà hàng, quán café, chuỗi đồ uống & ẩm thực' },
   { id: 'other', label: 'Lĩnh Vực & Ngành Nghề Khác', desc: 'Tư vấn chiến lược may đo theo đặc thù riêng' },
 ];
 
@@ -75,8 +76,11 @@ export default function ServiceRecommendationWizard({
   };
 
   useEffect(() => {
-    const handleOpenEvent = () => {
+    const handleOpenEvent = (e: any) => {
       setInternalIsOpen(true);
+      if (e?.detail?.industry) setSelectedIndustry(e.detail.industry);
+      if (e?.detail?.goal) setSelectedGoal(e.detail.goal);
+      if (e?.detail?.step) setStep(e.detail.step);
     };
     window.addEventListener('sdigital:open-wizard', handleOpenEvent);
     return () => {
@@ -132,25 +136,73 @@ export default function ServiceRecommendationWizard({
       }
     } catch (err) {
       console.warn('Fallback recommendation trigger:', err);
-      // Fallback an toàn
-      setResult({
-        recommendedPlan: 'Gói Chuyên Nghiệp (Growth - Đề xuất tối ưu)',
-        estimatedBudget: 'Từ 35.000.000 VNĐ / tháng',
-        analysis: `Với mục tiêu ${selectedGoal} trong lĩnh vực ${selectedIndustry}, gói giải pháp kết hợp đa kênh giữa quảng cáo tối ưu ROI và sản xuất nội dung video ngắn giúp doanh nghiệp tiếp cận đúng khách hàng tiềm năng và tối ưu chi phí chuyển đổi.`,
-        keyDeliverables: [
-          'Quảng cáo đa nền tảng Meta, Google & TikTok tối ưu ROAS',
-          'Sản xuất 4 video viral ngắn và 1 TVC định kỳ',
-          'Booking 3 - 5 KOLs/KOCs theo ngành hàng',
-          'Dashboard theo dõi chỉ số realtime 24/7',
-        ],
-        timeline: '3 - 4 tuần triển khai',
-        suggestedServices: [
-          'Performance Marketing',
-          'Sản xuất Video Viral 4K',
-          'Influencer Marketing',
-          'Tối ưu Landing Page & SEO',
-        ],
-      });
+      // Fallback an toàn phù hợp theo mục tiêu đã chọn
+      const goalLower = (selectedGoal || '').toLowerCase();
+      if (
+        goalLower.includes('website') ||
+        goalLower.includes('landing page') ||
+        goalLower.includes('web') ||
+        goalLower.includes('cro') ||
+        goalLower.includes('giao diện') ||
+        goalLower.includes('ux')
+      ) {
+        setResult({
+          recommendedPlan: 'Gói Thiết Kế Website Chuẩn SEO & UX Chuyên Sâu',
+          estimatedBudget: 'Từ 25.000.000 VNĐ',
+          analysis: `Với mục tiêu ${selectedGoal} trong lĩnh vực ${selectedIndustry}, giải pháp thiết kế Website & Landing Page chuyên sâu của S-Digital tập trung tối đa vào trải nghiệm người dùng (UX/UI), tốc độ tải trang cao và tối ưu SEO nhằm tối đa hóa tỷ lệ chuyển đổi khách hàng.`,
+          keyDeliverables: [
+            'Giao diện UI/UX thiết kế riêng biệt, chuẩn nhận diện thương hiệu',
+            'Tối ưu tốc độ tải trang Google PageSpeed 90+ và chuẩn SEO On-page',
+            'Tích hợp CMS quản trị trực quan và form thu thập khách hàng tiềm năng',
+            'Cam kết bảo hành kỹ thuật và hỗ trợ vận hành 12 tháng',
+          ],
+          timeline: '2 - 4 tuần bàn giao',
+          suggestedServices: [
+            'Thiết Kế Website Chuẩn SEO & UX Chuyên Sâu',
+            'Tối Ưu Tỷ Lệ Chuyển Đổi Landing Page (CRO)',
+            'Tích Hợp Quản Trị Nội Dung CMS',
+            'Bảo Mật & Tối Ưu Tốc Độ',
+          ],
+        });
+      } else if (goalLower.includes('marathon') || goalLower.includes('thể thao') || goalLower.includes('trọng tài')) {
+        setResult({
+          recommendedPlan: 'Gói Giải Pháp Thể Thao & Điều Hành Giải Đấu Toàn Diện',
+          estimatedBudget: 'Từ 45.000.000 VNĐ',
+          analysis: `Với mục tiêu ${selectedGoal} trong lĩnh vực ${selectedIndustry}, S-Digital cung cấp giải pháp tổ chức giải đấu thể thao trọn gói từ kỹ thuật chip timing AIMS đến điều hành của mạng lưới hơn 100 trọng tài quốc tế.`,
+          keyDeliverables: [
+            'Khảo sát và thiết kế cung đường hoặc điều hành sân bãi đạt chuẩn',
+            'Cung cấp hệ thống timing chip điện tử và bảo trợ y tế',
+            'Đội ngũ trọng tài đạt chứng chỉ quốc gia và quốc tế',
+            'Sản xuất tư liệu truyền thông và recap sự kiện 4K',
+          ],
+          timeline: '4 - 8 tuần',
+          suggestedServices: [
+            'Tổ chức giải chạy Marathon chuẩn AIMS',
+            'Mạng lưới trọng tài quốc tế AFC/FIBA',
+            'Sản xuất video TVC và recap 4K',
+            'Truyền thông sự kiện thể thao',
+          ],
+        });
+      } else {
+        setResult({
+          recommendedPlan: 'Gói Chuyên Nghiệp (Growth - Đề xuất tối ưu)',
+          estimatedBudget: 'Từ 35.000.000 VNĐ / tháng',
+          analysis: `Với mục tiêu ${selectedGoal} trong lĩnh vực ${selectedIndustry}, gói giải pháp kết hợp đa kênh giữa quảng cáo tối ưu ROI và sản xuất nội dung video ngắn giúp doanh nghiệp tiếp cận đúng khách hàng tiềm năng và tối ưu chi phí chuyển đổi.`,
+          keyDeliverables: [
+            'Quảng cáo đa nền tảng Meta, Google & TikTok tối ưu ROAS',
+            'Sản xuất 4 video viral ngắn và 1 TVC định kỳ',
+            'Booking 3 - 5 KOLs/KOCs theo ngành hàng',
+            'Dashboard theo dõi chỉ số realtime 24/7',
+          ],
+          timeline: '3 - 4 tuần triển khai',
+          suggestedServices: [
+            'Performance Marketing',
+            'Sản xuất Video Viral 4K',
+            'Influencer Marketing',
+            'Tối ưu Landing Page & SEO',
+          ],
+        });
+      }
     } finally {
       // Đợi hiệu ứng scanner mượt mà
       setTimeout(() => {
@@ -160,46 +212,74 @@ export default function ServiceRecommendationWizard({
   };
 
 // Ánh xạ sang enum chuẩn của hệ thống cho form B2B Leads
-function mapWizardIndustryToEnum(industryText: string): string {
-  const lower = (industryText || '').toLowerCase();
+function mapWizardIndustryToEnum(industryText: string, goalText?: string): string {
+  const lowerInd = (industryText || '').toLowerCase();
+  const lowerGoal = (goalText || '').toLowerCase();
+
+  // 1. Kiểm tra chính xác theo ngành nghề trước
   if (
-    lower.includes('công nghệ') ||
-    lower.includes('tmđt') ||
-    lower.includes('khởi nghiệp') ||
-    lower.includes('tech')
+    lowerInd.includes('bán lẻ') ||
+    lowerInd.includes('e-commerce') ||
+    lowerInd.includes('retail') ||
+    lowerInd.includes('tmđt') ||
+    lowerInd.includes('thương mại điện tử') ||
+    lowerInd.includes('chuỗi cửa hàng') ||
+    lowerInd.includes('tiêu dùng')
+  ) {
+    return 'retail_ecommerce';
+  }
+  if (
+    lowerInd.includes('công nghệ') ||
+    lowerInd.includes('dịch vụ số') ||
+    lowerInd.includes('khởi nghiệp') ||
+    lowerInd.includes('tech') ||
+    lowerInd.includes('phần mềm') ||
+    lowerInd.includes('software') ||
+    lowerInd.includes('website') ||
+    lowerInd.includes('web') ||
+    lowerInd.includes('chuyển đổi số')
   ) {
     return 'tech_services';
   }
   if (
-    lower.includes('thể thao') ||
-    lower.includes('sự kiện') ||
-    lower.includes('giải đấu') ||
-    lower.includes('sports')
-  ) {
-    return 'sports_entertainment';
-  }
-  if (
-    lower.includes('f&b') ||
-    lower.includes('ẩm thực') ||
-    lower.includes('nhà hàng')
+    lowerInd.includes('f&b') ||
+    lowerInd.includes('ẩm thực') ||
+    lowerInd.includes('nhà hàng') ||
+    lowerInd.includes('đồ uống') ||
+    lowerInd.includes('quán café') ||
+    lowerInd.includes('coffee')
   ) {
     return 'fnb';
   }
   if (
-    lower.includes('bất động sản') ||
-    lower.includes('địa ốc') ||
-    lower.includes('tài chính') ||
-    lower.includes('ngân hàng')
+    lowerInd.includes('bất động sản') ||
+    lowerInd.includes('địa ốc') ||
+    lowerInd.includes('tài chính') ||
+    lowerInd.includes('ngân hàng')
   ) {
     return 'real_estate';
   }
+
+  // 2. Nếu ngành nghề là 'other' hoặc chưa xác định, đối chiếu theo mục tiêu chiến lược
   if (
-    lower.includes('bán lẻ') ||
-    lower.includes('e-commerce') ||
-    lower.includes('retail')
+    lowerGoal.includes('website') ||
+    lowerGoal.includes('landing page') ||
+    lowerGoal.includes('web') ||
+    lowerGoal.includes('cro') ||
+    lowerGoal.includes('giao diện') ||
+    lowerGoal.includes('ux')
   ) {
-    return 'retail_ecommerce';
+    return 'tech_services';
   }
+  if (
+    lowerGoal.includes('thể thao') ||
+    lowerGoal.includes('giải chạy') ||
+    lowerGoal.includes('marathon') ||
+    lowerGoal.includes('trọng tài')
+  ) {
+    return 'sports_entertainment';
+  }
+
   return 'other';
 }
 
@@ -316,7 +396,7 @@ function mapWizardTimelineToEnum(
 ${note ? `- Ghi chú thêm: ${note}` : ''}
 Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản kế hoạch chi tiết.`;
 
-    const mappedIndustry = mapWizardIndustryToEnum(selectedIndustry);
+    const mappedIndustry = mapWizardIndustryToEnum(selectedIndustry, selectedGoal);
     const mappedBudget = mapWizardBudgetToEnum(selectedBudget || result.estimatedBudget);
     const mappedCompanySize = mapWizardCompanySizeToEnum(mappedBudget, note);
     const mappedTimeline = mapWizardTimelineToEnum(selectedGoal, result.timeline, note);
@@ -407,6 +487,7 @@ Kính nhờ chuyên viên chiến lược S-Digital liên hệ và gửi bản k
             onClick={handleClose}
             className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
             title="Đóng cửa sổ"
+            aria-label="Đóng cửa sổ khảo sát"
           >
             <X className="w-5 h-5" />
           </button>

@@ -79,9 +79,10 @@ export async function createCaseStudyAction(formData: FormData) {
       return { success: false, error: data?.message || 'Không thể tạo Case Study mới.' };
     }
 
+    revalidatePath('/case-studies');
+    revalidatePath('/');
     revalidatePath('/admin/case-studies');
     revalidatePath('/admin');
-    revalidatePath('/');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể tạo Case Study mới.' };
@@ -164,9 +165,10 @@ export async function updateCaseStudyAction(id: string, formData: FormData) {
       return { success: false, error: data?.message || 'Không thể cập nhật Case Study.' };
     }
 
+    revalidatePath('/case-studies');
+    revalidatePath('/');
     revalidatePath('/admin/case-studies');
     revalidatePath('/admin');
-    revalidatePath('/');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Không thể cập nhật Case Study.' };

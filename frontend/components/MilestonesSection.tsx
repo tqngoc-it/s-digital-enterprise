@@ -21,7 +21,7 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
       label: 'Tăng Trưởng ROI',
       desc: 'Mức tăng trưởng trung bình về lợi nhuận đầu tư cho các chiến dịch quảng cáo.',
       icon: TrendingUp,
-      color: 'text-[#00E5FF]',
+      color: 'text-cyan-600 dark:text-[#00E5FF]',
       border: 'hover:border-[#00E5FF]/50',
       glow: 'group-hover:shadow-[#00E5FF]/10',
     },

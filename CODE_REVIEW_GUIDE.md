@@ -107,7 +107,7 @@ Thư mục `backend/` trong dự án đã được khởi tạo bằng **NestJS 
 * **Cơ chế Phòng thủ 3 Bước (3-Layer Resilience Architecture)**:
   1. **Lớp 1 (Primary)**: Google Gemini API qua endpoint `gemini-3.7-flash` trực tiếp bằng REST fetch với timeout signal 15 giây.
   2. **Lớp 2 (Model Fallback)**: Tự động đảo sang model dự phòng `gemini-2.5-flash` nếu model chính gặp lỗi khu vực hoặc quá tải.
-  3. **Lớp 3 (Rule-based Fallback)**: Kích hoạt bộ phản hồi nội bộ chuẩn hóa từ `knowledgeBase.ts`, điều hướng người dùng tới hotline `0826 868 979`, đảm bảo người dùng không bao giờ thấy lỗi crash.
+  3. **Lớp 3 (Rule-based Fallback)**: Kích hoạt bộ phản hồi nội bộ chuẩn hóa từ `knowledgeBase.ts`, điều hướng người dùng tới hotline `0933 798 609`, đảm bảo người dùng không bao giờ thấy lỗi crash.
 
 ### 3.2. Module 2: Hoạch định Gói Giải pháp Chiến lược (`/api/recommend`)
 * **Quy trình Khảo sát 3 bước**: Tiếp nhận thông số từ Wizard (Ngành nghề $\rightarrow$ Mục tiêu $\rightarrow$ Mức ngân sách).

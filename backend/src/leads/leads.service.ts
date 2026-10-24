@@ -508,20 +508,25 @@ Hãy thẩm định khách hàng này theo khung tiêu chuẩn BANT và trả v�
       systemInstruction: systemPrompt,
       prompt: userPrompt,
       temperature: 0.2,
-      maxOutputTokens: 300,
+      maxOutputTokens: 1024,
       responseMimeType: 'application/json',
       timeoutMs: 25000,
     });
 
     if (!result || !result.text) return null;
 
-    const parsed = this.parseGeminiScoreResponse(result.text);
-    if (!parsed) return null;
+    try {
+      const parsed = this.parseGeminiScoreResponse(result.text);
+      if (!parsed) return null;
 
-    return {
-      ...parsed,
-      source: result.model,
-    };
+      return {
+        ...parsed,
+        source: result.model,
+      };
+    } catch (parseErr) {
+      this.logger.warn(`[AI_SCORE_PARSE_WARN] Lỗi khi bóc tách JSON từ Gemini, kích hoạt fallback: ${parseErr}`);
+      return null;
+    }
   }
 
   private parseGeminiScoreResponse(rawText?: string): ScoreLeadResponse | null {
