@@ -83,8 +83,10 @@ export default function ServiceRecommendationWizard({
       if (e?.detail?.step) setStep(e.detail.step);
     };
     window.addEventListener('sdigital:open-wizard', handleOpenEvent);
+    window.addEventListener('open-recommendation-wizard', handleOpenEvent);
     return () => {
       window.removeEventListener('sdigital:open-wizard', handleOpenEvent);
+      window.removeEventListener('open-recommendation-wizard', handleOpenEvent);
     };
   }, []);
 

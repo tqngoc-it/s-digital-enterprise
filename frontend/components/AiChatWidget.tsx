@@ -26,12 +26,38 @@ const INITIAL_MESSAGE: Message = {
   timestamp: 'Vừa xong',
 };
 
-export default function AiChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+export interface AiChatWidgetProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function AiChatWidget({
+  isOpen: controlledIsOpen,
+  onClose: controlledOnClose,
+}: AiChatWidgetProps = {}) {
+  const [internalIsOpen, setInternalIsOpen] = useState(true);
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+
+  const handleClose = () => {
+    if (controlledOnClose) {
+      controlledOnClose();
+    } else {
+      setInternalIsOpen(false);
+    }
+  };
+
+  const handleToggle = () => {
+    if (isOpen) {
+      handleClose();
+    } else {
+      setInternalIsOpen(true);
+    }
+  };
+
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -198,10 +224,7 @@ export default function AiChatWidget() {
         )}
 
         <button
-          onClick={() => {
-            setIsOpen(!isOpen);
-            setShowTooltip(false);
-          }}
+          onClick={handleToggle}
           className={`relative group flex items-center justify-center rounded-full transition-all duration-300 ${
             isOpen
               ? 'w-13 h-13 bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 shadow-xl text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white'
@@ -265,7 +288,7 @@ export default function AiChatWidget() {
                 <RotateCcw className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Thu nhỏ khung chat"
                 aria-label="Thu nhỏ khung chat"
