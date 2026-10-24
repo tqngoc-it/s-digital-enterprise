@@ -386,7 +386,7 @@ export default function ContactForm() {
             <span>TƯ VẤN 1:1 MIỄN PHÍ</span>
           </div>
           <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">Gửi Yêu Cầu Tư Vấn</h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
             Điền thông tin bên dưới và chuyên viên chiến lược S-Digital sẽ liên hệ lại trực tiếp trong vòng 24 giờ.
           </p>
         </div>
@@ -416,13 +416,15 @@ export default function ContactForm() {
           {/* HỌ VÀ TÊN & DOANH NGHIỆP */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-fullname" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Họ và tên <span className="text-[#FF5722]">*</span>
               </label>
               <input
+                id="lead-fullname"
                 type="text"
                 name="full_name"
                 required
+                aria-label="Họ và tên của bạn"
                 value={fullName}
                 onChange={(e) => {
                   setFullName(e.target.value);
@@ -449,12 +451,14 @@ export default function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-company-name" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Doanh nghiệp / Tổ chức
               </label>
               <input
+                id="lead-company-name"
                 type="text"
                 name="company_name"
+                aria-label="Tên doanh nghiệp hoặc tổ chức"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="Tên công ty / Câu lạc bộ"
@@ -466,13 +470,15 @@ export default function ContactForm() {
           {/* EMAIL & SĐT */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-email" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Email <span className="text-[#FF5722]">*</span>
               </label>
               <input
+                id="lead-email"
                 type="email"
                 name="email"
                 required
+                aria-label="Địa chỉ email liên hệ"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -499,12 +505,14 @@ export default function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-phone" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Số điện thoại (Việt Nam)
               </label>
               <input
+                id="lead-phone"
                 type="tel"
                 name="phone"
+                aria-label="Số điện thoại liên hệ"
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);
@@ -534,11 +542,13 @@ export default function ContactForm() {
           {/* PHÂN LOẠI KHÁCH HÀNG B2B: NGÀNH NGHỀ & QUY MÔ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-industry" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Ngành nghề hoạt động
               </label>
               <select
+                id="lead-industry"
                 name="industry"
+                aria-label="Ngành nghề hoạt động của doanh nghiệp"
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
                 className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
@@ -553,11 +563,13 @@ export default function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-company-size" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Quy mô doanh nghiệp
               </label>
               <select
+                id="lead-company-size"
                 name="company_size"
+                aria-label="Quy mô nhân sự doanh nghiệp"
                 value={companySize}
                 onChange={(e) => setCompanySize(e.target.value)}
                 className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
@@ -572,11 +584,13 @@ export default function ContactForm() {
           {/* PHÂN LOẠI KHÁCH HÀNG B2B: NGÂN SÁCH & THỜI GIAN */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-budget" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Ngân sách dự kiến
               </label>
               <select
+                id="lead-budget"
                 name="budget"
+                aria-label="Mức ngân sách dự kiến đầu tư"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
                 className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
@@ -589,11 +603,13 @@ export default function ContactForm() {
             </div>
 
             <div>
-              <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+              <label htmlFor="lead-timeline" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                 Thời gian triển khai
               </label>
               <select
+                id="lead-timeline"
                 name="timeline"
+                aria-label="Thời gian dự kiến triển khai dự án"
                 value={timeline}
                 onChange={(e) => setTimeline(e.target.value)}
                 className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-[#060913] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#FF5722] transition-colors cursor-pointer"
@@ -607,7 +623,7 @@ export default function ContactForm() {
 
           {/* LỜI NHẮN */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+            <label htmlFor="contact-message-input" className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
               Nhu cầu tư vấn / Lời nhắn <span className="text-[#FF5722]">*</span>
             </label>
             <textarea
@@ -615,6 +631,7 @@ export default function ContactForm() {
               name="message"
               rows={4}
               required
+              aria-label="Nội dung nhu cầu tư vấn hoặc lời nhắn của bạn"
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
@@ -667,7 +684,7 @@ export default function ContactForm() {
           <div className="max-w-md w-full p-8 rounded-3xl bg-white dark:bg-[#0B111E] border border-emerald-500/30 space-y-6 text-center shadow-2xl relative">
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
               aria-label="Đóng"
             >
               <X className="w-4 h-4" />

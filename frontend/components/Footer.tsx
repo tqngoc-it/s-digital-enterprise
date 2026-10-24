@@ -14,7 +14,7 @@ export default function Footer({ companyInfo }: FooterProps) {
   const copyrightText = companyInfo?.copyright_text || FALLBACK_COMPANY.copyright_text;
 
   return (
-    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#04060C] text-xs text-slate-600 dark:text-slate-400 py-16 transition-colors">
+    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#04060C] text-xs text-slate-600 dark:text-slate-300 py-16 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* COL 1: BRAND INFO (5 COLS) */}
@@ -28,22 +28,22 @@ export default function Footer({ companyInfo }: FooterProps) {
                   S-DIGITAL
                   <Flame className="w-3.5 h-3.5 text-[#FF5722]" />
                 </span>
-                <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-mono tracking-widest uppercase">
                   Media & Sports Solutions
                 </span>
               </div>
             </Link>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-xs max-w-sm">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-xs max-w-sm">
               {companyName} - Tổ hợp tiếp thị số đa kênh và giải pháp tổ chức giải đấu thể thao chuyên nghiệp hàng đầu Việt Nam.
             </p>
-            <p className="text-[11px] text-slate-500 font-mono">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">
               MST: 0317589920 · Giấy phép ĐKKD cấp bởi Sở KH&ĐT TP.HCM
             </p>
           </div>
 
           {/* COL 2: QUICK NAVIGATION (3 COLS) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Hệ Sinh Thái</h4>
+            <p className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Hệ Sinh Thái</p>
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="/#about" className="hover:text-[#FF5722] transition-colors">
@@ -90,7 +90,7 @@ export default function Footer({ companyInfo }: FooterProps) {
 
           {/* COL 3: CONTACT & HEADQUARTER (4 COLS) */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Thông Tin Liên Hệ</h4>
+            <p className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Thông Tin Liên Hệ</p>
             <div className="space-y-2 text-xs">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#FF5722] shrink-0 mt-0.5" />
@@ -110,7 +110,7 @@ export default function Footer({ companyInfo }: FooterProps) {
                 <Mail className="w-4 h-4 text-[#FF5722] shrink-0" />
                 <span>{contactEmail}</span>
               </div>
-              <div className="flex items-start gap-2.5 pt-1 text-slate-500">
+              <div className="flex items-start gap-2.5 pt-1 text-slate-600 dark:text-slate-400">
                 <Clock className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
                 <span>Thứ 2 - Thứ 6: 8:00 - 18:00 | Thứ 7: 8:00 - 12:00</span>
               </div>
@@ -119,7 +119,7 @@ export default function Footer({ companyInfo }: FooterProps) {
         </div>
 
         {/* BOTTOM COPYRIGHT */}
-        <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-600 dark:text-slate-400">
           <p>{copyrightText}</p>
           <a
             href="#home"

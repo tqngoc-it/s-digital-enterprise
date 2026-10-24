@@ -28,9 +28,9 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FF5722]/10 border border-[#FF5722]/20 text-[#FF5722] text-xs font-mono font-bold">
             <span>ABOUT S-DIGITAL</span>
           </div>
-          <h1 className="text-xs uppercase tracking-widest text-slate-500 font-mono font-semibold">
+          <span className="text-xs uppercase tracking-widest text-slate-600 dark:text-slate-400 font-mono font-semibold block">
             Về Chúng Tôi
-          </h1>
+          </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
             {data.about_heading}
           </h2>
@@ -38,7 +38,7 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
 
         <div className="lg:col-span-6 space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           <p>{data.about_text}</p>
-          <p className="text-slate-500 dark:text-slate-400">{data.about_description_2}</p>
+          <p className="text-slate-600 dark:text-slate-300">{data.about_description_2}</p>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ export default function AboutSection({ companyInfo }: AboutSectionProps) {
                 <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-[#FF5722] transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {item.desc}
                 </p>
               </div>

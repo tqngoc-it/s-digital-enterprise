@@ -18,8 +18,9 @@ import {
   FALLBACK_BLOGS,
   FALLBACK_SERVICES,
 } from '@/lib/fallbackData';
+import dynamic from 'next/dynamic';
 
-import InteractiveWidgets from '@/components/InteractiveWidgets';
+const InteractiveWidgets = dynamic(() => import('@/components/InteractiveWidgets'));
 
 export const revalidate = 60;
 

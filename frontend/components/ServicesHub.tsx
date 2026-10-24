@@ -80,7 +80,7 @@ export default function ServicesHub({
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             Dịch Vụ Của <span className="text-[#FF5722]">Chúng Tôi</span>
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
             Chúng tôi cung cấp giải pháp truyền thông toàn diện, từ quảng cáo số đến tổ chức sự kiện thể thao, giúp doanh nghiệp tiếp cận khách hàng hiệu quả và xây dựng thương hiệu bền vững.
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function ServicesHub({
               className={`px-6 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2.5 transition-all cursor-pointer ${
                 activeTab === 'DIGITAL'
                   ? 'bg-[#FF5722] text-white shadow-lg shadow-[#FF5722]/25'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
@@ -108,7 +108,7 @@ export default function ServicesHub({
               className={`px-6 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2.5 transition-all cursor-pointer ${
                 activeTab === 'SPORTS'
                   ? 'bg-[#00E5FF] text-slate-950 shadow-lg shadow-[#00E5FF]/25'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
               }`}
             >
               <Trophy className="w-4 h-4" />
@@ -144,7 +144,7 @@ export default function ServicesHub({
                         <IconComponent className="w-6 h-6" />
                       </div>
                       {(service.sub_title || service.subtitle || service.badge) && (
-                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                           {service.sub_title || service.subtitle || service.badge}
                         </span>
                       )}
@@ -155,7 +155,7 @@ export default function ServicesHub({
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-[#FF5722] transition-colors leading-snug">
                         {service.title}
                       </h3>
-                      <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                      <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
                         {service.short_description || service.desc}
                       </p>
                     </div>
@@ -226,7 +226,7 @@ export default function ServicesHub({
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-[#00E5FF] transition-colors leading-snug">
                         {service.title}
                       </h3>
-                      <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                      <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
                         {service.short_description || service.desc}
                       </p>
                     </div>

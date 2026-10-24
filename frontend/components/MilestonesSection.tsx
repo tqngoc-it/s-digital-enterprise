@@ -61,7 +61,7 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
           PROVEN TRACK RECORD & STATS
         </span>
         <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white">Thành Tựu Nổi Bật</h2>
-        <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300">
           Hiệu quả thực chiến được chứng minh qua hàng trăm chiến dịch truyền thông và sự kiện thể thao quy mô lớn.
         </p>
       </div>
@@ -83,7 +83,7 @@ export default function MilestonesSection({ stats }: MilestonesSectionProps) {
                 </div>
               </div>
               <h3 className="font-bold text-slate-900 dark:text-white text-base pt-2">{item.label}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{item.desc}</p>
             </div>
           );
         })}

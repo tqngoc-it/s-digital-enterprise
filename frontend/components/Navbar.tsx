@@ -48,7 +48,7 @@ export default function Navbar() {
               S-DIGITAL
               <Flame className="w-4 h-4 text-[#FF5722] inline-block animate-pulse" />
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-widest uppercase">Media & Sports</span>
+            <span className="text-[10px] text-slate-600 dark:text-slate-300 font-mono tracking-widest uppercase">Media & Sports</span>
           </div>
         </Link>
 

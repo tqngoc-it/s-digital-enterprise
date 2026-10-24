@@ -53,7 +53,7 @@ export default function PricingSection({
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
           Bảng Giá Dịch Vụ Linh Hoạt
         </h2>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
           Lựa chọn phương án đầu tư tối ưu phù hợp với quy mô và mục tiêu tăng trưởng của doanh nghiệp bạn.
         </p>
       </div>
@@ -61,10 +61,10 @@ export default function PricingSection({
       {/* STRATEGIC RECOMMENDATION BANNER */}
       <div className="max-w-3xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FF5722]/10 via-[#00E5FF]/10 to-[#FF5722]/10 border border-[#00E5FF]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm dark:shadow-[0_0_25px_rgba(0,229,255,0.08)]">
         <div className="space-y-1 text-center sm:text-left">
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+          <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
             Chưa chắc chắn gói nào phù hợp với doanh nghiệp?
-          </h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400">
+          </p>
+          <p className="text-xs text-slate-600 dark:text-slate-300">
             Hệ thống sẽ đối chiếu lĩnh vực, mục tiêu và mức đầu tư để gợi ý phương án tối ưu ROI cho doanh nghiệp trong 30 giây.
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function PricingSection({
                         </span>
                       )}
                       <h3 className="text-2xl font-black text-slate-900 dark:text-white pt-2">{plan.tier_name}</h3>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed min-h-[36px]">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed min-h-[36px]">
                         {plan.target_audience}
                       </p>
                     </div>
@@ -129,7 +129,7 @@ export default function PricingSection({
                         {plan.price_display}
                       </span>
                       {plan.period && (
-                        <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{plan.period}</span>
+                        <span className="text-xs font-normal text-slate-600 dark:text-slate-300">{plan.period}</span>
                       )}
                     </div>
 
@@ -193,7 +193,7 @@ export default function PricingSection({
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#0097a7] dark:group-hover:text-[#00E5FF] transition-colors">
                   {c.title}
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{c.desc}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{c.desc}</p>
               </div>
             );
           })}

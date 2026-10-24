@@ -31,19 +31,17 @@ export default function HeroSection({ brandSlogan, aboutText }: HeroSectionProps
         <span className="tracking-wide">{defaultSlogan}</span>
       </div>
 
-      {/* 2-ROW FIXED TITLE */}
-      <div className="space-y-3 md:space-y-4">
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-          Giải Pháp Truyền Thông &
-        </h1>
-        <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center gap-3 md:gap-4 flex-wrap leading-tight">
+      {/* SINGLE H1 HEADING (WCAG HIERARCHY COMPLIANT) */}
+      <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-tight space-y-2 md:space-y-3">
+        <span className="block">Giải Pháp Truyền Thông &</span>
+        <span className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
           <span>Marketing</span>
           <TypewriterTitle text="Toàn Diện" words={['Toàn Diện', 'Đột Phá', 'Đa Kênh', 'Hiệu Quả']} />
-        </h2>
-      </div>
+        </span>
+      </h1>
 
       {/* ABOUT INTRO TEXT (100% SPEC) */}
-      <p className="max-w-3xl mx-auto text-sm md:text-base text-slate-600 dark:text-slate-300/90 leading-relaxed font-normal">
+      <p className="max-w-3xl mx-auto text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
         {defaultAboutText}
       </p>
 
@@ -61,7 +59,7 @@ export default function HeroSection({ brandSlogan, aboutText }: HeroSectionProps
           className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white dark:border-white/15 font-bold text-sm border transition-all hover:scale-105 flex items-center justify-center gap-2 backdrop-blur-sm shadow-sm"
         >
           <span>Tìm Hiểu Thêm</span>
-          <ChevronRight className="w-4 h-4 text-slate-400" />
+          <ChevronRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
         </a>
       </div>
 
@@ -79,7 +77,7 @@ export default function HeroSection({ brandSlogan, aboutText }: HeroSectionProps
               </div>
               <div>
                 <div className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">{stat.value}</div>
-                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">{stat.label}</div>
+                <div className="text-xs font-semibold text-slate-600 dark:text-slate-300 mt-1">{stat.label}</div>
               </div>
             </div>
           );

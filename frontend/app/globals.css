@@ -53,22 +53,22 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Infinite Marquee Keyframes & Utilities */
+/* Infinite Marquee Keyframes & Utilities (Hardware-Accelerated 3D Compositing) */
 @keyframes marquee {
   0% {
-    transform: translateX(0%);
+    transform: translate3d(0%, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 @keyframes marquee-reverse {
   0% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
   100% {
-    transform: translateX(0%);
+    transform: translate3d(0%, 0, 0);
   }
 }
 
@@ -76,12 +76,18 @@ body {
   display: flex;
   width: max-content;
   animation: marquee 35s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .animate-marquee-reverse {
   display: flex;
   width: max-content;
   animation: marquee-reverse 35s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .animate-marquee:hover,

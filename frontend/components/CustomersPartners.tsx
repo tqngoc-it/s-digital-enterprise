@@ -57,7 +57,7 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
         <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white">
           Khách Hàng & Đối Tác Chiến Lược
         </h2>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
           Đồng hành cùng các tập đoàn, thương hiệu lớn và các tổ chức, học viện thể thao hàng đầu Việt Nam.
         </p>
 
@@ -89,7 +89,7 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
 
         {/* ROW 1: ENTERPRISE CLIENTS (LEFT TO RIGHT) */}
         <div className="flex overflow-hidden py-1">
-          <div className="animate-marquee gap-3 md:gap-4 items-center">
+          <div className="animate-marquee transform-gpu will-change-transform gap-3 md:gap-4 items-center">
             {row1Customers.map((item, idx) => (
               <div
                 key={item.id ? `customer-${item.id}-${idx}` : `customer-${idx}-${item.name}`}
@@ -100,7 +100,7 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
                   {item.name}
                 </span>
                 {item.industry && (
-                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-normal tracking-normal group-hover:text-slate-700 dark:group-hover:text-zinc-300 transition-colors">
+                  <span className="text-xs text-slate-600 dark:text-zinc-300 font-normal tracking-normal group-hover:text-slate-800 dark:group-hover:text-zinc-200 transition-colors">
                     · {item.industry}
                   </span>
                 )}
@@ -111,7 +111,7 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
 
         {/* ROW 2: STRATEGIC PARTNERS (RIGHT TO LEFT) */}
         <div className="flex overflow-hidden py-1">
-          <div className="animate-marquee-reverse gap-3 md:gap-4 items-center">
+          <div className="animate-marquee-reverse transform-gpu will-change-transform gap-3 md:gap-4 items-center">
             {row2Partners.map((item, idx) => (
               <div
                 key={item.id ? `partner-${item.id}-${idx}` : `partner-${idx}-${item.name}`}
@@ -122,7 +122,7 @@ export default function CustomersPartners({ partners = [] }: CustomersPartnersPr
                   {item.name}
                 </span>
                 {item.industry && (
-                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-normal tracking-normal group-hover:text-slate-700 dark:group-hover:text-zinc-300 transition-colors">
+                  <span className="text-xs text-slate-600 dark:text-zinc-300 font-normal tracking-normal group-hover:text-slate-800 dark:group-hover:text-zinc-200 transition-colors">
                     · {item.industry}
                   </span>
                 )}

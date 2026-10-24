@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface TypewriterTitleProps {
   text?: string;
@@ -13,9 +13,12 @@ export default function TypewriterTitle({
   words,
   className = 'text-[#FF5722]',
 }: TypewriterTitleProps) {
-  const wordList = words && words.length > 0 ? words : [text, 'Đột Phá', 'Đa Kênh', 'Hiệu Quả'];
+  const wordList = useMemo(
+    () => (words && words.length > 0 ? words : [text, 'Đột Phá', 'Đa Kênh', 'Hiệu Quả']),
+    [words, text]
+  );
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState(text || 'Toàn Diện');
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -38,8 +41,10 @@ export default function TypewriterTitle({
           setDisplayedText(fullWord.slice(0, displayedText.length - 1));
         }, 60);
       } else {
-        setIsDeleting(false);
-        setCurrentWordIndex((prev) => (prev + 1) % wordList.length);
+        timeout = setTimeout(() => {
+          setIsDeleting(false);
+          setCurrentWordIndex((prev) => (prev + 1) % wordList.length);
+        }, 200);
       }
     }
 

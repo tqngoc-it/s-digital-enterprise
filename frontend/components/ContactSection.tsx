@@ -53,7 +53,7 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
               Sẵn Sàng Bứt Phá Doanh Thu Cùng S-Digital?
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
               Đội ngũ chuyên gia chiến lược của S-Digital sẵn sàng lắng nghe và xây dựng kế hoạch truyền thông, marketing & giải pháp thể thao phù hợp nhất cho thương hiệu của bạn.
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="space-y-0.5">
-                    <h4 className="font-bold text-slate-900 dark:text-white text-xs">{info.title}</h4>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-xs">{info.title}</h3>
                     {info.icon === Phone ? (
                       <a
                         href="tel:0933798609"
@@ -83,7 +83,7 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
                       <p className="text-slate-800 dark:text-slate-200 font-medium">{info.content}</p>
                     )}
                     {info.subContent && (
-                      <p className="text-slate-500 text-[11px]">{info.subContent}</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px]">{info.subContent}</p>
                     )}
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export default function ContactSection({ companyInfo }: ContactSectionProps) {
             })}
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
+          <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
             <ShieldCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" />
             <span>Cam kết bảo mật 100% dữ liệu dự án và thông tin đối tác theo tiêu chuẩn NDA.</span>
           </div>

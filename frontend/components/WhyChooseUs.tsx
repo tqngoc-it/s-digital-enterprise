@@ -1,12 +1,8 @@
 import {
-  ShieldAlert,
   Users,
   Network,
   Trophy,
   ShieldCheck,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
   Zap,
 } from 'lucide-react';
 import { FALLBACK_WHY_CHOOSE_US, WhyChooseUsData } from '@/lib/fallbackData';
@@ -33,7 +29,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
           Tại Sao Khách Hàng Tin Chọn Chúng Tôi?
         </h2>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
           Sự kết hợp độc bản giữa tư duy chiến lược marketing đa kênh và năng lực điều hành thể thao đỉnh cao.
         </p>
       </div>
@@ -64,7 +60,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
                 {data.crisis_highlight.reaction_time}
               </div>
               <div className="text-xs font-bold text-slate-900 dark:text-white">Thời gian tiếp nhận & phản ứng</div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">Trực chiến 24/7 không gián đoạn</p>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300">Trực chiến 24/7 không gián đoạn</p>
             </div>
 
             <div className="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.03] border border-red-100 dark:border-white/10 space-y-1 shadow-xs">
@@ -72,7 +68,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
                 {data.crisis_highlight.cases_handled}
               </div>
               <div className="text-xs font-bold text-slate-900 dark:text-white">Xử lý thành công các case lớn</div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">Bảo toàn danh tiếng & doanh số</p>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300">Bảo toàn danh tiếng & doanh số</p>
             </div>
 
             <div className="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.03] border border-red-100 dark:border-white/10 space-y-1 shadow-xs">
@@ -98,7 +94,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
               <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-[#FF5722] transition-colors">
                 {pillar.title}
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{pillar.desc}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{pillar.desc}</p>
             </div>
           );
         })}
@@ -113,7 +109,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
           <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
             Quy Trình 5 Bước Hợp Tác Chuyên Nghiệp
           </h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-300">
             Minh bạch từng bước, kiểm soát tiến độ chặt chẽ và bàn giao kết quả vượt cam kết.
           </p>
         </div>
@@ -129,7 +125,7 @@ export default function WhyChooseUs({ data = FALLBACK_WHY_CHOOSE_US }: WhyChoose
                   {step.step}
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">{step.title}</h4>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">{step.desc}</p>
               </div>
               <div className="pt-2 border-t border-slate-200 dark:border-white/5">
                 <span className="text-[10px] font-mono text-cyan-600 dark:text-[#00E5FF]/80">Giai đoạn {idx + 1}/5</span>

@@ -8,10 +8,8 @@ import {
   Sparkles,
   Users,
   Newspaper,
-  Eye,
   ArrowRight,
   Star,
-  ExternalLink,
   ChevronRight,
   X,
   CheckCircle2,
@@ -56,7 +54,7 @@ export default function SolutionsSection({
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white">
             Giải Pháp & Dự Án Tiêu Biểu
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
             Minh chứng năng lực vận hành giải đấu thể thao chuyên nghiệp và chiến dịch marketing quy mô lớn từ S-Digital.
           </p>
         </div>
@@ -164,7 +162,7 @@ export default function SolutionsSection({
                 <div className="lg:w-5/12 flex flex-col justify-between space-y-6 p-6 sm:p-8 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10">
                   {/* 3 DYNAMIC METRIC PILLARS */}
                   <div className="space-y-3">
-                    <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider block">
                       KẾT QUẢ ĐẠT ĐƯỢC
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -173,7 +171,7 @@ export default function SolutionsSection({
                           key={`metric-${idx}-${mIdx}`}
                           className="p-3.5 rounded-xl bg-white dark:bg-[#060913]/60 border border-slate-200 dark:border-white/5 space-y-1 text-center sm:text-left shadow-xs"
                         >
-                          <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                          <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-600 dark:text-slate-300">
                             {mIdx === 0 && <Users className="w-3.5 h-3.5 text-[#FF5722]" />}
                             {mIdx === 1 && <Newspaper className="w-3.5 h-3.5 text-cyan-600 dark:text-[#00E5FF]" />}
                             {mIdx === 2 && <TrendingUp className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />}
@@ -374,8 +372,8 @@ export default function SolutionsSection({
                 </div>
                 <div>
                   <div className="text-xs font-bold text-slate-900 dark:text-white">{t.author}</div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {t.role} · <span className="text-slate-700 dark:text-slate-300 font-semibold">{t.brand}</span>
+                  <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                    {t.role} · <span className="text-slate-700 dark:text-slate-200 font-semibold">{t.brand}</span>
                   </div>
                 </div>
               </div>
